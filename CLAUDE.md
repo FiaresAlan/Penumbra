@@ -29,7 +29,9 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 - `src/shared/` — Config, Enums, tipos.
 - `src/server/systems/` — NoiseSystem, LootSystem, GuardianAI, ExtractionSystem.
 - `src/client/ui/` — NoiseBar, ExtractionUI.
-- Assets do mapa são montados no Studio, não versionados no Rojo.
+- O mapa (lobby, caverna, marcadores) é gerado por `src/server/world/MapBuilder.lua`,
+  autorizado pelo Alan em 02/11/2026. Peças novas que o código precise vão lá.
+- Decoração e assets pesados continuam sendo montados no Studio.
 
 ## Estado atual
 - Fase 0 concluída e validada (loop de extração funcional).

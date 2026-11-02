@@ -38,6 +38,9 @@ Config.ExpeditionResetDelay = 5
 Config.TeleportHeight = 3
 Config.StreamTimeout = 5
 
+-- Mapa gerado por src/server/world/MapBuilder.lua
+Config.MapSeed = 1337
+
 -- QA (botões do painel; só existem no Studio)
 Config.QAButtons = {
     { id = "EndFailure", label = "Encerrar: falha" },

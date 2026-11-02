@@ -23,6 +23,9 @@ getOrCreateRemote("VoiceSpike", "RemoteEvent")
 getOrCreateRemote("ElevatorUpdate", "RemoteEvent")
 getOrCreateRemote("HUDUpdate", "RemoteEvent")
 
+-- O mapa é gerado antes dos sistemas, que procuram as peças pelo nome
+require(script:WaitForChild("world"):WaitForChild("MapBuilder")).Build()
+
 -- Carrega sistemas na ordem correta
 local systems = script:WaitForChild("systems")
 local PlayerState = require(systems:WaitForChild("PlayerState"))
