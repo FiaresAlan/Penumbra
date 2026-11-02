@@ -80,6 +80,17 @@ local commands: { [string]: (player: Player) -> () } = {
     ResetProfile = function(player)
         PlayerProfile.QAReset(player)
     end,
+    GiveHook = function(player)
+        PlayerProfile.SetUpgrade(player, "Hook")
+    end,
+    NearHook = function(player)
+        local folder = workspace:FindFirstChild("HookPoints")
+        local point = folder and folder:FindFirstChild("Hook1")
+        local character = player.Character
+        if point and point:IsA("BasePart") and character and PlayerState.Get(player) == Enums.PlayerLocation.Cave then
+            character:PivotTo(CFrame.new(point.Position.X, 4, point.Position.Z + 8))
+        end
+    end,
     FillStash = function(player)
         PlayerProfile.AddStashItems(player, {
             { type = "Core", rarity = "Common", value = 10 },

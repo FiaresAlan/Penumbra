@@ -67,8 +67,14 @@ Config.LobbyMarketRate = 0.8
 Config.MarketRadius = 20
 Config.BootsPrice = 500
 Config.BootsMoveMultiplier = 0.6
+Config.HookPrice = 1500
+Config.HookRange = 40
+Config.HookCooldown = 10
+Config.HookNoise = 1.2
+Config.HookPullTime = 0.5
 Config.Upgrades = {
     Boots = { name = "Botas Silenciosas", price = 500 },
+    Hook = { name = "Gancho", price = 1500 },
 }
 
 -- Pity
@@ -141,6 +147,8 @@ Config.QAButtons = {
     { id = "FillStash", label = "Encher baú" },
     { id = "OpenMarket", label = "Ir ao mercado" },
     { id = "OpenWorkshop", label = "Ir à oficina" },
+    { id = "GiveHook", label = "Dar gancho" },
+    { id = "NearHook", label = "Perto do gancho" },
 }
 
 return Config

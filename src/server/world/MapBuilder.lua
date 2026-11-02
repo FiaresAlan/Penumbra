@@ -509,6 +509,27 @@ local function buildCaveMarkers(grid: Grid, rng: Random)
     end
 end
 
+-- Saliências altas que só o gancho alcança, com um núcleo em cima de cada uma.
+local function buildLedges()
+    local hooks = newFolder("HookPoints")
+    local ledges = { { 12, 3, "B", "Rare" }, { 15, 11, "B", "Rare" }, { 27, 11, "C", "Legendary" } }
+    for index, ledge in ipairs(ledges) do
+        local center = cellCenter(ledge[1] :: number, ledge[2] :: number)
+        local zone = ledge[3] :: string
+        local topY = FLOOR_Y + 10
+        newPart("Ledge", Vector3.new(CELL * 1.5, 1, CELL * 1.2), CFrame.new(center.X, topY - 0.5, center.Z),
+            { Material = Enum.Material.Slate, Color = STYLES[zone].color:Lerp(Color3.new(0, 0, 0), 0.3) }, mapFolder)
+        -- Faixa luminosa na borda: marca visualmente onde o gancho pode prender
+        newPart("HookGlow", Vector3.new(CELL * 1.5, 0.3, 0.6), CFrame.new(center.X, topY + 0.15, center.Z + CELL * 0.6 - 0.3),
+            { Material = Enum.Material.Neon, Color = Color3.fromRGB(80, 220, 255), CanCollide = false }, mapFolder)
+        -- O ponto fica na borda da frente, fora do bloco, para haver linha de visão vinda do chão.
+        -- O atributo Land diz onde o jogador aterrissa em relação ao ponto (para dentro da saliência).
+        local hook = marker("Hook" .. index, Vector3.new(4, 1, 4), CFrame.new(center.X, topY + 1, center.Z + CELL * 0.6 + 0.5), hooks)
+        hook:SetAttribute("Land", Vector3.new(0, 3, -4.5))
+        makeCore("LedgeCore" .. index, Vector3.new(center.X + 4, topY + 2.4, center.Z), ledge[4] :: string, zone)
+    end
+end
+
 local function buildGuardian()
     local home = cellCenter(24, 8)
     task.spawn(function()
@@ -565,6 +586,7 @@ function MapBuilder.Build()
     -- Modelo para núcleos criados em tempo de jogo (pity, Enganador)
     makeCore("CoreTemplate", Vector3.zero, "Common", "A", "Core", ServerStorage)
     buildCaveMarkers(grid, rng)
+    buildLedges()
     buildGuardian()
 
     print(string.format("[Map] Mapa gerado (seed %d, %d partes)", Config.MapSeed, #mapFolder:GetDescendants()))
