@@ -137,6 +137,23 @@ local function buildLobby()
     local lobbyElevator = newPart("LobbyElevator", Vector3.new(10, 5, 10), CFrame.new(48, 3.7, 0), { Material = Enum.Material.Metal, Color = Color3.fromRGB(70, 140, 220) }, workspace)
     lobbyElevator:SetAttribute("Generated", true)
     addPrompt(lobbyElevator, "Descer", 1, 14)
+
+    -- Painel de estado do elevador (face voltada para o spawn); o texto é atualizado pelo LocationSync
+    local statusGui = Instance.new("SurfaceGui")
+    statusGui.Name = "StatusGui"
+    statusGui.Face = Enum.NormalId.Left
+    statusGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+    statusGui.PixelsPerStud = 40
+    statusGui.Parent = lobbyElevator
+    local statusLabel = Instance.new("TextLabel")
+    statusLabel.Name = "Status"
+    statusLabel.Size = UDim2.fromScale(1, 1)
+    statusLabel.BackgroundTransparency = 1
+    statusLabel.TextColor3 = Color3.new(1, 1, 1)
+    statusLabel.Font = Enum.Font.GothamBold
+    statusLabel.TextScaled = true
+    statusLabel.Text = "Pronto para descer"
+    statusLabel.Parent = statusGui
     for _, dz in ipairs({ -7, 7 }) do
         newPart("ElevatorPillar", Vector3.new(2, 14, 2), CFrame.new(48, 8, dz), { Material = Enum.Material.Metal, Color = Color3.fromRGB(50, 55, 65) }, mapFolder)
     end

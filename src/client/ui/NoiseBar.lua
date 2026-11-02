@@ -7,7 +7,7 @@ local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
 local NoiseBar = {}
-local barFill, spikeIndicator
+local barFrame, barFill, spikeIndicator
 
 function NoiseBar.Init()
     local gui = Instance.new("ScreenGui")
@@ -15,7 +15,7 @@ function NoiseBar.Init()
     gui.ResetOnSpawn = false
     gui.Parent = playerGui
 
-    local barFrame = Instance.new("Frame")
+    barFrame = Instance.new("Frame")
     barFrame.Size = UDim2.new(0, 300, 0, 20)
     barFrame.Position = UDim2.new(0.5, -150, 1, -60)
     barFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -60,6 +60,13 @@ function NoiseBar.Init()
             barFill.BackgroundColor3 = Color3.fromRGB(220, 80, 60)
         end
     end)
+end
+
+-- A barra só faz sentido na caverna; no lobby ela some.
+function NoiseBar.SetVisible(visible)
+    if barFrame then
+        barFrame.Visible = visible
+    end
 end
 
 function NoiseBar.ShowSpike()
