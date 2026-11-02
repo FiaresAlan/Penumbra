@@ -1,12 +1,15 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
 local NoiseSystem = require(script.Parent:WaitForChild("NoiseSystem"))
+local PlayerState = require(script.Parent:WaitForChild("PlayerState"))
 
 local GuardianAI = {}
+
+local caughtEvent = Instance.new("BindableEvent")
+GuardianAI.PlayerCaught = caughtEvent.Event
 
 local guardianModel, guardianHumanoid, guardianRoot
 local homePosition
@@ -14,11 +17,40 @@ local homeCFrame
 local currentState = Enums.GuardianState.Sleeping
 local lastKnownPosition
 local stateTimer = 0
+local silenceTimer = 0
+local sleptAt = os.clock()
+local hearThreshold = Config.GuardianHearThreshold
+local speedMultipliers = {}
+local lastMoveAt = 0
+local lastMoveTarget
+local lastCatchCheck = 0
 
 local function setState(newState)
     currentState = newState
     stateTimer = 0
+    silenceTimer = 0
+    if newState == Enums.GuardianState.Sleeping then
+        sleptAt = os.clock()
+    end
     print("[Guardian] -> " .. newState)
+end
+
+local function speedMultiplier()
+    local total = 1
+    for _, value in pairs(speedMultipliers) do
+        total = total * value
+    end
+    return total
+end
+
+-- Chama MoveTo no máximo a cada Config.GuardianMoveInterval, e só se o destino mudou.
+local function moveTo(target)
+    local now = os.clock()
+    if now - lastMoveAt < Config.GuardianMoveInterval then return end
+    if lastMoveTarget and (lastMoveTarget - target).Magnitude < 1 then return end
+    lastMoveAt = now
+    lastMoveTarget = target
+    guardianHumanoid:MoveTo(target)
 end
 
 local function findGuardian()
@@ -44,12 +76,47 @@ function GuardianAI.WakeUp()
     end
 end
 
+function GuardianAI.GetState()
+    return currentState
+end
+
+-- Cada sistema usa a sua própria chave (tier de tempo, pity...) e os fatores se multiplicam.
+function GuardianAI.SetSpeedMultiplier(key, value)
+    speedMultipliers[key] = value
+end
+
+function GuardianAI.SetHearThreshold(value)
+    hearThreshold = value
+end
+
 function GuardianAI.Reset()
     lastKnownPosition = nil
+    lastMoveTarget = nil
     setState(Enums.GuardianState.Sleeping)
     if guardianModel and guardianRoot and homeCFrame then
         guardianModel:PivotTo(homeCFrame)
         guardianRoot.AssemblyLinearVelocity = Vector3.zero
+    end
+end
+
+-- Usado só pelo QA do Studio
+function GuardianAI.TeleportTo(position)
+    if guardianModel then
+        guardianModel:PivotTo(CFrame.new(position))
+        guardianRoot.AssemblyLinearVelocity = Vector3.zero
+    end
+end
+
+local function checkCatch()
+    for _, player in ipairs(PlayerState.GetPlayersIn(Enums.PlayerLocation.Cave)) do
+        local char = player.Character
+        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+        local root = char and char:FindFirstChild("HumanoidRootPart")
+        if humanoid and root and humanoid.Health > 0 then
+            if (root.Position - guardianRoot.Position).Magnitude <= Config.GuardianCatchRadius then
+                caughtEvent:Fire(player)
+            end
+        end
     end
 end
 
@@ -59,15 +126,23 @@ local function update(dt)
     end
     stateTimer = stateTimer + dt
 
+    local multiplier = speedMultiplier()
+    local loudest, noise = NoiseSystem.GetLoudestPlayer()
+    local loudestRoot = loudest and loudest.Character and loudest.Character:FindFirstChild("HumanoidRootPart")
+    local hears = loudestRoot ~= nil and noise > hearThreshold
+
     if currentState == Enums.GuardianState.Sleeping then
         guardianHumanoid.WalkSpeed = 0
+        if hears and workspace:GetAttribute("FirstCoreExtracted")
+            and os.clock() - sleptAt >= Config.GuardianRestTime then
+            setState(Enums.GuardianState.Alert)
+        end
 
     elseif currentState == Enums.GuardianState.Alert then
         guardianHumanoid.WalkSpeed = 0
-        local loudest = NoiseSystem.GetLoudestPlayer()
-        if loudest and loudest.Character and loudest.Character.PrimaryPart then
+        if loudestRoot then
             if stateTimer >= Config.GuardianAlertDelay then
-                lastKnownPosition = loudest.Character.PrimaryPart.Position
+                lastKnownPosition = loudestRoot.Position
                 setState(Enums.GuardianState.Hunting)
             end
         elseif stateTimer > 3 then
@@ -75,36 +150,50 @@ local function update(dt)
         end
 
     elseif currentState == Enums.GuardianState.Hunting then
-        guardianHumanoid.WalkSpeed = Config.GuardianChaseSpeed
-        local loudest, noise = NoiseSystem.GetLoudestPlayer()
-        if loudest and loudest.Character and loudest.Character.PrimaryPart and noise > 1.5 then
-            lastKnownPosition = loudest.Character.PrimaryPart.Position
-            guardianHumanoid:MoveTo(lastKnownPosition)
+        guardianHumanoid.WalkSpeed = Config.GuardianChaseSpeed * multiplier
+        if hears then
+            lastKnownPosition = loudestRoot.Position
+            silenceTimer = 0
         else
-            if lastKnownPosition then
-                guardianHumanoid:MoveTo(lastKnownPosition)
-            end
-            if stateTimer > Config.GuardianLostScentTime then
-                setState(Enums.GuardianState.LostScent)
-            end
+            silenceTimer = silenceTimer + dt
+        end
+        if lastKnownPosition then
+            moveTo(lastKnownPosition)
+        end
+        if silenceTimer >= Config.GuardianLostScentTime then
+            setState(Enums.GuardianState.LostScent)
         end
 
     elseif currentState == Enums.GuardianState.LostScent then
-        guardianHumanoid.WalkSpeed = Config.GuardianWalkSpeed
-        if lastKnownPosition then
-            guardianHumanoid:MoveTo(lastKnownPosition)
-        end
-        if stateTimer > Config.GuardianInvestigateTime then
-            setState(Enums.GuardianState.Returning)
+        guardianHumanoid.WalkSpeed = Config.GuardianWalkSpeed * multiplier
+        if hears then
+            lastKnownPosition = loudestRoot.Position
+            setState(Enums.GuardianState.Hunting)
+        else
+            if lastKnownPosition then
+                moveTo(lastKnownPosition)
+            end
+            if stateTimer > Config.GuardianInvestigateTime then
+                setState(Enums.GuardianState.Returning)
+            end
         end
 
     elseif currentState == Enums.GuardianState.Returning then
-        guardianHumanoid.WalkSpeed = Config.GuardianWalkSpeed
-        if homePosition then
-            guardianHumanoid:MoveTo(homePosition)
-            if guardianRoot and (guardianRoot.Position - homePosition).Magnitude < 5 then
+        guardianHumanoid.WalkSpeed = Config.GuardianWalkSpeed * multiplier
+        if hears then
+            setState(Enums.GuardianState.Alert)
+        elseif homePosition then
+            moveTo(homePosition)
+            if (guardianRoot.Position - homePosition).Magnitude < 5 then
                 setState(Enums.GuardianState.Sleeping)
             end
+        end
+    end
+
+    if currentState == Enums.GuardianState.Hunting or currentState == Enums.GuardianState.LostScent then
+        if os.clock() - lastCatchCheck >= 0.1 then
+            lastCatchCheck = os.clock()
+            checkCatch()
         end
     end
 end

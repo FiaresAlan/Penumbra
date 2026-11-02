@@ -2,25 +2,45 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
+local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
 local Remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
 local VoiceSpike = Remotes:WaitForChild("VoiceSpike")
-local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
 local PlayerState = require(script.Parent:WaitForChild("PlayerState"))
 
 local NoiseSystem = {}
 
 local playerNoise = {}
 local voiceSpikes = {}
+local lastSamples = {}
+
+-- Velocidade horizontal medida no servidor pelo deslocamento entre duas leituras.
+local function measureSpeed(player, root)
+    local now = os.clock()
+    local last = lastSamples[player]
+    lastSamples[player] = { position = root.Position, time = now }
+    if not last then return 0 end
+
+    local dt = now - last.time
+    if dt <= 0 then return 0 end
+
+    local delta = root.Position - last.position
+    local speed = Vector3.new(delta.X, 0, delta.Z).Magnitude / dt
+    return math.min(speed, Config.SprintSpeed)
+end
 
 local function calculateNoise(player)
-    if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave then return 0 end
+    if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave then
+        lastSamples[player] = nil
+        return 0
+    end
     local char = player.Character
     if not char then return 0 end
     local humanoid = char:FindFirstChildOfClass("Humanoid")
-    if not humanoid then return 0 end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not humanoid or not root then return 0 end
 
     local weight = char:GetAttribute("CarryWeight") or 0
-    local speed = humanoid.WalkSpeed
+    local speed = measureSpeed(player, root)
     local baseNoise = Config.BaseNoise
     local runNoise = (speed / Config.SprintSpeed) * Config.RunNoiseMultiplier
     local weightNoise = (weight / Config.MaxCarryWeight) * Config.WeightNoiseMultiplier
@@ -67,6 +87,7 @@ function NoiseSystem.Init()
     Players.PlayerRemoving:Connect(function(p)
         playerNoise[p] = nil
         voiceSpikes[p] = nil
+        lastSamples[p] = nil
     end)
 
     task.spawn(function()

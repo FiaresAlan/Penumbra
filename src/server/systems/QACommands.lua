@@ -7,6 +7,7 @@ local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enu
 local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
 local ExtractionSystem = require(systems:WaitForChild("ExtractionSystem") :: ModuleScript)
 local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
+local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
 
 local QACommands = {}
 
@@ -33,6 +34,13 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     CallCaveElevator = function(player)
         ExtractionSystem.QACall(player)
+    end,
+    GuardianNear = function(player)
+        local character = player.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+        if root and root:IsA("BasePart") then
+            GuardianAI.TeleportTo(root.Position + Vector3.new(25, 6, 0))
+        end
     end,
 }
 

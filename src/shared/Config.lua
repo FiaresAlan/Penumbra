@@ -25,6 +25,10 @@ Config.GuardianChaseSpeed = 14
 Config.GuardianAlertDelay = 1.5
 Config.GuardianLostScentTime = 3.0
 Config.GuardianInvestigateTime = 5.0
+Config.GuardianHearThreshold = 0.5
+Config.GuardianRestTime = 10
+Config.GuardianCatchRadius = 6
+Config.GuardianMoveInterval = 0.25
 
 -- Extração
 Config.ElevatorArrivalTime = 20
@@ -50,6 +54,7 @@ Config.QAButtons = {
     { id = "GiveCore", label = "Dar núcleo" },
     { id = "GoToCaveElevator", label = "Ir ao elevador" },
     { id = "CallCaveElevator", label = "Chamar elevador" },
+    { id = "GuardianNear", label = "Guardião perto" },
 }
 
 return Config
