@@ -46,6 +46,10 @@ Config.ExpeditionResetDelay = 5
 Config.TeleportHeight = 3
 Config.StreamTimeout = 5
 
+-- Pity
+Config.PityFailureThreshold = 2
+Config.PityGuardianSpeedMultiplier = 0.9
+
 -- Sequestro e Ninho
 Config.DragMaxTime = 8
 Config.CaptiveTimeLimit = 120

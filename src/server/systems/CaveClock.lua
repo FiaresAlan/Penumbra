@@ -10,6 +10,7 @@ local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
 local NoiseSystem = require(systems:WaitForChild("NoiseSystem") :: ModuleScript)
 local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
+local PitySystem = require(systems:WaitForChild("PitySystem") :: ModuleScript)
 local AudioBroadcast = require(systems:WaitForChild("AudioBroadcast") :: ModuleScript)
 
 local CaveClock = {}
@@ -35,6 +36,19 @@ function CaveClock.Init()
     ExpeditionSystem.Started:Connect(function()
         apply(CaveRules.GetTier(0), false)
         LootSystem.SetValueMultiplier(1)
+        GuardianAI.SetSpeedMultiplier("pity", PitySystem.GetGuardianSpeedMultiplier())
+    end)
+
+    -- O resultado alimenta o pity; se ativo, um núcleo Common espera na primeira sala
+    ExpeditionSystem.Ended:Connect(function(outcome: string)
+        PitySystem.RecordResult(outcome)
+        local active = PitySystem.IsActive()
+        if active then
+            LootSystem.SpawnGuaranteedCore()
+        else
+            LootSystem.RemoveGuaranteedCore()
+        end
+        print(string.format("[Pity] falhas=%d, %s", PitySystem.GetConsecutiveFailures(), if active then "ativo" else "inativo"))
     end)
 
     task.spawn(function()

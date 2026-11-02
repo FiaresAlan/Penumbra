@@ -189,6 +189,32 @@ function LootSystem.ResetCores()
     end
 end
 
+-- Núcleo Common garantido na primeira sala (pity). Só existe um por vez.
+local guaranteedCore = nil
+
+function LootSystem.RemoveGuaranteedCore()
+    if guaranteedCore then
+        guaranteedCore:Destroy()
+        guaranteedCore = nil
+    end
+end
+
+function LootSystem.SpawnGuaranteedCore()
+    LootSystem.RemoveGuaranteedCore()
+    local template = game:GetService("ServerStorage"):FindFirstChild("CoreTemplate")
+    local point = workspace:FindFirstChild("PitySpawnPoint")
+    if not template or not point then
+        warn("[Loot] CoreTemplate ou PitySpawnPoint não encontrado; sem núcleo garantido.")
+        return false
+    end
+    local core = template:Clone()
+    core.Name = "GuaranteedCore"
+    core.Position = point.Position
+    core.Parent = workspace -- por último, para os atributos já estarem no lugar
+    guaranteedCore = core
+    return true
+end
+
 function LootSystem.Init()
     local function tryConnect(parent)
         if parent and parent:GetAttribute("IsCore") then

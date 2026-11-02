@@ -3,6 +3,7 @@
 -- Tudo que é criado aqui leva o Attribute Generated e é recriado a cada partida.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 
@@ -98,6 +99,10 @@ local function clearPrevious()
         if child:GetAttribute("Generated") then
             child:Destroy()
         end
+    end
+    local oldTemplate = ServerStorage:FindFirstChild("CoreTemplate")
+    if oldTemplate then
+        oldTemplate:Destroy()
     end
     for _, name in ipairs(LEGACY_NAMES) do
         local old = workspace:FindFirstChild(name)
@@ -350,7 +355,7 @@ local function shuffle<T>(list: { T }, rng: Random)
     end
 end
 
-local function makeCore(name: string, position: Vector3, rarity: string, depthZone: string, itemType: string?)
+local function makeCore(name: string, position: Vector3, rarity: string, depthZone: string, itemType: string?, parent: Instance?): Part
     local core = Instance.new("Part")
     core.Name = name
     core.Shape = Enum.PartType.Ball
@@ -366,7 +371,8 @@ local function makeCore(name: string, position: Vector3, rarity: string, depthZo
     core:SetAttribute("ItemType", itemType or "Core")
     addLight(core, RARITY_COLORS[rarity], 14, 1.5)
     addPrompt(core, "Pegar", 0.5, 10)
-    core.Parent = mapFolder
+    core.Parent = parent or mapFolder
+    return core
 end
 
 local function openCellsByZone(grid: Grid): { [string]: { { number } } }
@@ -539,6 +545,8 @@ function MapBuilder.Build()
     local grid = carveCave(rng)
     buildCaveGeometry(grid)
     placeCores(grid, rng)
+    -- Modelo para núcleos criados em tempo de jogo (pity, Enganador)
+    makeCore("CoreTemplate", Vector3.zero, "Common", "A", "Core", ServerStorage)
     buildCaveMarkers(grid, rng)
     buildGuardian()
 
