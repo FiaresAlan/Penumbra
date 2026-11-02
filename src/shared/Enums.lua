@@ -23,6 +23,11 @@ return {
         Failure = "failure",
         Abandoned = "abandoned",
     },
+    GuardianVariant = {
+        Blind = "Blind",
+        Mimic = "Mimic",
+        Deceiver = "Deceiver",
+    },
     CoreRarity = {
         Common = "Common",
         Rare = "Rare",

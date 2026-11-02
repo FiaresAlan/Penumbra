@@ -9,6 +9,7 @@ local ExtractionSystem = require(systems:WaitForChild("ExtractionSystem") :: Mod
 local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
 local KidnapSystem = require(systems:WaitForChild("KidnapSystem") :: ModuleScript)
+local GuardianDirector = require(systems:WaitForChild("GuardianDirector") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 
@@ -51,6 +52,18 @@ local commands: { [string]: (player: Player) -> () } = {
         if PlayerState.Get(player) == Enums.PlayerLocation.Captive then
             KidnapSystem.Release(player)
         end
+    end,
+    NextBlind = function(_player)
+        GuardianDirector.ForceNext(Enums.GuardianVariant.Blind)
+    end,
+    NextDeceiver = function(_player)
+        GuardianDirector.ForceNext(Enums.GuardianVariant.Deceiver)
+    end,
+    TouchFake = function(player)
+        LootSystem.QATriggerNearestFake(player)
+    end,
+    NextMimic = function(_player)
+        GuardianDirector.ForceNext(Enums.GuardianVariant.Mimic)
     end,
     Minute3 = function(_player)
         ExpeditionSystem.SetElapsedForQA(180)

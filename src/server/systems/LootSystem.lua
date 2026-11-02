@@ -135,6 +135,41 @@ end
 -- Estado original de cada item coletável, para ResetCores restaurar entre expedições
 local coreOriginals = setmetatable({}, { __mode = "k" })
 
+-- Núcleos falsos do Enganador. Só o servidor sabe quais são: nada marca o falso no cliente.
+local fakeCores = setmetatable({}, { __mode = "k" })
+
+-- Deve ser chamado antes de a peça entrar no Workspace. onTriggered(player, position).
+function LootSystem.MarkFake(part, onTriggered)
+    fakeCores[part] = onTriggered
+end
+
+local function triggerFake(corePart, player)
+    local onTriggered = fakeCores[corePart]
+    if not onTriggered then return false end
+    fakeCores[corePart] = nil
+    onTriggered(player, corePart.Position)
+    corePart:Destroy()
+    return true
+end
+
+-- Usado só pelo QA: aciona o falso mais próximo, como se o jogador o tivesse tocado.
+function LootSystem.QATriggerNearestFake(player)
+    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+    local nearest, best = nil, 40
+    for part in pairs(fakeCores) do
+        if part.Parent then
+            local distance = (part.Position - root.Position).Magnitude
+            if distance < best then
+                nearest, best = part, distance
+            end
+        end
+    end
+    if nearest then
+        triggerFake(nearest, player)
+    end
+end
+
 local function setCoreLights(corePart, enabled)
     for _, child in ipairs(corePart:GetChildren()) do
         if child:IsA("Light") then
@@ -155,8 +190,7 @@ local function connectCore(corePart, prompt)
     prompt.Triggered:Connect(function(player)
         if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave then return end
         if corePart:GetAttribute("Collected") then return end
-        if corePart:GetAttribute("IsFake") then
-            corePart:Destroy()
+        if triggerFake(corePart, player) then
             return
         end
 

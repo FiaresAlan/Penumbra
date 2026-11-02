@@ -46,6 +46,21 @@ Config.ExpeditionResetDelay = 5
 Config.TeleportHeight = 3
 Config.StreamTimeout = 5
 
+-- Enganador
+Config.DeceiverCoreInterval = 8
+Config.DeceiverMaxFakeCores = 3
+Config.DeceiverCoreLifetime = 20
+Config.DeceiverMinDistance = 8
+Config.DeceiverMaxDistance = 20
+Config.DeceiverWallInterval = 20
+Config.DeceiverWallLifetime = 5
+
+-- Corista
+Config.MimicTriggerIntensity = 5
+Config.MimicCooldown = 12
+Config.MimicMinDistance = 15
+Config.MimicMaxDistance = 30
+
 -- Pity
 Config.PityFailureThreshold = 2
 Config.PityGuardianSpeedMultiplier = 0.9
@@ -107,6 +122,10 @@ Config.QAButtons = {
     { id = "ReleaseCaptive", label = "Soltar preso" },
     { id = "Minute3", label = "Minuto 3" },
     { id = "Minute8", label = "Minuto 8" },
+    { id = "NextBlind", label = "Próximo: Cego" },
+    { id = "NextMimic", label = "Próximo: Corista" },
+    { id = "NextDeceiver", label = "Próximo: Enganador" },
+    { id = "TouchFake", label = "Tocar falso" },
 }
 
 return Config
