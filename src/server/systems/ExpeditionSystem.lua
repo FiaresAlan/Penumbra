@@ -286,15 +286,6 @@ function ExpeditionSystem.Init()
         checkForEnd(nil)
     end)
 
-    -- Temporário até o M7 (sequestro): ser pego devolve o jogador ao lobby sem a mochila.
-    GuardianAI.PlayerCaught:Connect(function(player)
-        if PlayerState.Get(player) ~= Location.Cave then
-            return
-        end
-        print("[Expedition] " .. player.Name .. " foi pego pelo Guardião.")
-        ExpeditionSystem.ReturnToLobby(player, false)
-    end)
-
     lobbyElevator = getPart("LobbyElevator")
     if lobbyElevator then
         lobbyPrompt = lobbyElevator:FindFirstChildOfClass("ProximityPrompt")

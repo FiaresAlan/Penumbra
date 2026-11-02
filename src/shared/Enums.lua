@@ -5,6 +5,7 @@ return {
         Hunting = "Caçando",
         LostScent = "PerdeuRastro",
         Returning = "Voltando",
+        Dragging = "Arrastando",
     },
     PlayerLocation = {
         Lobby = "Lobby",

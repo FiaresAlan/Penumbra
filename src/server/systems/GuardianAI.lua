@@ -25,6 +25,7 @@ local speedMultipliers = {}
 local lastMoveAt = 0
 local lastMoveTarget
 local lastCatchCheck = 0
+local dragTarget
 
 local function setState(newState)
     currentState = newState
@@ -159,9 +160,27 @@ function GuardianAI.SetHearThreshold(value)
     hearThreshold = value
 end
 
+function GuardianAI.GetRoot()
+    return guardianRoot
+end
+
+-- Sequestro: o Guardião caminha até o Ninho levando o jogador. Quem move o jogador é o KidnapSystem.
+function GuardianAI.BeginDrag(position)
+    dragTarget = position
+    setState(Enums.GuardianState.Dragging)
+end
+
+function GuardianAI.EndDrag()
+    dragTarget = nil
+    if currentState == Enums.GuardianState.Dragging then
+        setState(Enums.GuardianState.Alert)
+    end
+end
+
 function GuardianAI.Reset()
     lastKnownPosition = nil
     lastMoveTarget = nil
+    dragTarget = nil
     clearPath()
     setState(Enums.GuardianState.Sleeping)
     if guardianModel and guardianRoot and homeCFrame then
@@ -247,6 +266,12 @@ local function update(dt)
             if stateTimer > Config.GuardianInvestigateTime then
                 setState(Enums.GuardianState.Returning)
             end
+        end
+
+    elseif currentState == Enums.GuardianState.Dragging then
+        guardianHumanoid.WalkSpeed = Config.GuardianWalkSpeed * multiplier
+        if dragTarget then
+            moveTo(dragTarget)
         end
 
     elseif currentState == Enums.GuardianState.Returning then

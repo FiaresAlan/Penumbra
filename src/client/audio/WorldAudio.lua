@@ -11,15 +11,13 @@ local WorldAudio = {}
 
 local listenerReady = false
 
--- Se o jogo não cria um AudioListener sozinho, cria um na câmera para ouvir os emissores.
+-- Emissores só são ouvidos por um AudioListener. Cria um na câmera, uma única vez.
+-- (SoundService.DefaultListenerLocation só pode ser lida por plugins, então não dá para checar.)
 local function ensureListener()
     if listenerReady then
         return
     end
     listenerReady = true
-    if SoundService.DefaultListenerLocation.Name ~= "None" then
-        return
-    end
     local camera = workspace.CurrentCamera
     if not camera then
         return

@@ -8,6 +8,9 @@ local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: Mod
 local ExtractionSystem = require(systems:WaitForChild("ExtractionSystem") :: ModuleScript)
 local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
+local KidnapSystem = require(systems:WaitForChild("KidnapSystem") :: ModuleScript)
+local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
+local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 
 local QACommands = {}
 
@@ -37,6 +40,17 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     CallCaveElevator = function(player)
         ExtractionSystem.QACall(player)
+    end,
+    ForceKidnap = function(player)
+        KidnapSystem.QAForce(player)
+    end,
+    HurryCaptive = function(_player)
+        NestSystem.QAHurry(5)
+    end,
+    ReleaseCaptive = function(player)
+        if PlayerState.Get(player) == Enums.PlayerLocation.Captive then
+            KidnapSystem.Release(player)
+        end
     end,
     Minute3 = function(_player)
         ExpeditionSystem.SetElapsedForQA(180)

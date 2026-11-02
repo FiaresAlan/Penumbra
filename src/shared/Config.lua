@@ -46,6 +46,14 @@ Config.ExpeditionResetDelay = 5
 Config.TeleportHeight = 3
 Config.StreamTimeout = 5
 
+-- Sequestro e Ninho
+Config.DragMaxTime = 8
+Config.CaptiveTimeLimit = 120
+Config.RescueHoldTime = 5
+Config.RescueNoise = 1.5
+Config.CaptiveBangCooldown = 3
+Config.CaptivePulse = 1.0
+
 -- Itens e profundidade
 Config.ItemWeights = { Core = 2, Relic = 6 }
 Config.RelicValue = 500
@@ -90,6 +98,9 @@ Config.QAButtons = {
     { id = "CallCaveElevator", label = "Chamar elevador" },
     { id = "GuardianNear", label = "Guardião perto" },
     { id = "GiveRelic", label = "Dar relíquia" },
+    { id = "ForceKidnap", label = "Forçar sequestro" },
+    { id = "HurryCaptive", label = "Acelerar preso" },
+    { id = "ReleaseCaptive", label = "Soltar preso" },
     { id = "Minute3", label = "Minuto 3" },
     { id = "Minute8", label = "Minuto 8" },
 }

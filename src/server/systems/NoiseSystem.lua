@@ -16,6 +16,8 @@ local playerNoise = {}
 local voiceSpikes = {}
 local lastSamples = {}
 local lastVoiceAt = {}
+local boosts = {} -- boosts[player][chave] = quantidade somada ao ruído
+local pulses = {} -- pulses[player] = { amount, expiresAt }
 local furyActive = false
 
 -- Velocidade horizontal medida no servidor pelo deslocamento entre duas leituras.
@@ -49,11 +51,42 @@ local function inFuryZone(position)
     return false
 end
 
+-- Voz, picos e reforços temporários (resgate, batidas nas grades)
+local function extraNoise(player)
+    local total = 0
+    local now = os.clock()
+
+    local vs = voiceSpikes[player]
+    if vs and now < vs.expiresAt then
+        total = total + vs.amount
+    end
+    local pulse = pulses[player]
+    if pulse and now < pulse.expiresAt then
+        total = total + pulse.amount
+    end
+    if boosts[player] then
+        for _, amount in pairs(boosts[player]) do
+            total = total + amount
+        end
+    end
+    return total
+end
+
 local function calculateNoise(player)
-    if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave then
+    local location = PlayerState.Get(player)
+    local isCave = location == Enums.PlayerLocation.Cave
+    local isCaptive = location == Enums.PlayerLocation.Captive
+    if not isCave and not isCaptive then
         lastSamples[player] = nil
         return 0
     end
+
+    -- O preso não se move nem carrega peso: só faz barulho por voz e batidas
+    if isCaptive then
+        lastSamples[player] = nil
+        return extraNoise(player)
+    end
+
     local char = player.Character
     if not char then return 0 end
     local humanoid = char:FindFirstChildOfClass("Humanoid")
@@ -66,13 +99,7 @@ local function calculateNoise(player)
     local runNoise = (speed / Config.SprintSpeed) * Config.RunNoiseMultiplier
     local weightNoise = (weight / Config.MaxCarryWeight) * Config.WeightNoiseMultiplier
 
-    local spike = 0
-    local vs = voiceSpikes[player]
-    if vs and os.clock() < vs.expiresAt then
-        spike = vs.amount
-    end
-
-    local total = baseNoise + runNoise + weightNoise + spike
+    local total = baseNoise + runNoise + weightNoise + extraNoise(player)
     if furyActive and inFuryZone(root.Position) then
         total = math.max(total, Config.FuryZoneNoise)
     end
@@ -87,13 +114,25 @@ function NoiseSystem.SetFury(active)
     furyActive = active
 end
 
+-- amount = nil remove o reforço daquela chave
+function NoiseSystem.SetNoiseBoost(player, key, amount)
+    boosts[player] = boosts[player] or {}
+    boosts[player][key] = amount
+end
+
+function NoiseSystem.AddPulse(player, amount, seconds)
+    pulses[player] = { amount = amount, expiresAt = os.clock() + seconds }
+end
+
 function NoiseSystem.GetLoudestPlayer()
     local loudest = nil
     local maxNoise = -1
     for p, n in pairs(playerNoise) do
         local char = p.Character
-        if PlayerState.Get(p) == Enums.PlayerLocation.Cave
-            and char and char:FindFirstChildOfClass("Humanoid") and char.Humanoid.Health > 0 then
+        local location = PlayerState.Get(p)
+        local eligible = location == Enums.PlayerLocation.Cave
+            or (location == Enums.PlayerLocation.Captive and n > 0)
+        if eligible and char and char:FindFirstChildOfClass("Humanoid") and char.Humanoid.Health > 0 then
             if n > maxNoise then
                 maxNoise = n
                 loudest = p
@@ -129,6 +168,8 @@ function NoiseSystem.Init()
         voiceSpikes[p] = nil
         lastSamples[p] = nil
         lastVoiceAt[p] = nil
+        boosts[p] = nil
+        pulses[p] = nil
     end)
 
     task.spawn(function()
