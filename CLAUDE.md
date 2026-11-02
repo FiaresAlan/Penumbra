@@ -32,7 +32,7 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
   ContractSystem, BlackMarketSystem, HighlightsSystem, ClipSystem, MovementGuard, ClientSync etc.).
 - `src/server/world/` — MapBuilder (só chama os módulos, na ordem), CaveLayout (grade e zonas, funções puras), WorldUtil,
   Lobby, Forest, CaveGeometry, CaveDecor, Cores, CaveMarkers, Props, GuardianModel e WorldBake (prévia no modo de edição).
-  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=1164 hash=225447236 nucleos=26`:
+  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=1158 hash=226959300 nucleos=26` (mudou no R6: as barracas viraram casas):
   se mudar sem querer, o gerador mudou o mapa. O QA tem "Auditar caminhos" (esperado: 28 ok, 0 falhas, 3 só pelo gancho).
 - `src/client/` — init, VoiceNoise, ZoneLighting, Flashlight, SneakInput, GuardianPresence, HookController;
   `ui/` (NoiseBar, ExtractionUI, QAPanel, NestUI, ProfileHUD, ShopUI, ClipPrompt, TutorialHints),

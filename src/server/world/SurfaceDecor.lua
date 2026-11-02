@@ -343,6 +343,13 @@ local function buildProvisional(forest: Folder, rng: Random)
 end
 
 function SurfaceDecor.Build(root: Folder, log: (string) -> ())
+    -- Refaz só a floresta, os detalhes e os adereços: a vila (outra pasta) fica como está
+    for _, name in ipairs({ "Forest", "Details", "Props" }) do
+        local existing = root:FindFirstChild(name)
+        if existing then
+            existing:Destroy()
+        end
+    end
     local forest = Instance.new("Folder")
     forest.Name = "Forest"
     forest.Parent = root

@@ -92,25 +92,20 @@ local function buildLobby()
     local VZ = Config.WorldPads.Vila.z
 
     -- Mercado
-    local market = newPart("LobbyMarket", Vector3.new(12, 3, 5), CFrame.new(VX - 30, 2.5, VZ - 30), { Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(150, 105, 60) }, workspace)
+    local market = newPart("LobbyMarket", Vector3.new(12, 3, 5), CFrame.new(VX - 30, 2.5, VZ - 46), { Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(150, 105, 60) }, workspace)
     market:SetAttribute("Generated", true)
-    newPart("MarketRoof", Vector3.new(15, 1, 9), CFrame.new(VX - 30, 10, VZ - 30), { Material = Enum.Material.Fabric, Color = Color3.fromRGB(200, 70, 60) }, mapFolder)
-    for _, dx in ipairs({ -6, 6 }) do
-        newPart("MarketPole", Vector3.new(1, 9, 1), CFrame.new(VX - 30 + dx, 5.5, VZ - 33), { Material = Enum.Material.Wood, Color = Color3.fromRGB(100, 70, 40) }, mapFolder)
-    end
 
     -- Oficina, com os suportes das Relíquias
-    local workshop = newPart("LobbyWorkshop", Vector3.new(12, 3, 5), CFrame.new(VX - 30, 2.5, VZ + 30), { Material = Enum.Material.Metal, Color = Color3.fromRGB(95, 100, 110) }, workspace)
+    local workshop = newPart("LobbyWorkshop", Vector3.new(12, 3, 5), CFrame.new(VX - 30, 2.5, VZ + 47), { Material = Enum.Material.Metal, Color = Color3.fromRGB(95, 100, 110) }, workspace)
     workshop:SetAttribute("Generated", true)
-    newPart("WorkshopRoof", Vector3.new(15, 1, 9), CFrame.new(VX - 30, 10, VZ + 30), { Material = Enum.Material.Metal, Color = Color3.fromRGB(70, 75, 85) }, mapFolder)
     local displays = newFolder("RelicDisplays")
     for index, z in ipairs({ 24, 30, 36 }) do
-        local stand = newPart("RelicStand" .. index, Vector3.new(3, 3, 3), CFrame.new(VX - 48, 2.5, VZ + z), { Material = Enum.Material.Marble, Color = Color3.fromRGB(220, 220, 225) }, displays)
+        local stand = newPart("RelicStand" .. index, Vector3.new(3, 3, 3), CFrame.new(VX - 52, 2.5, VZ + z + 20), { Material = Enum.Material.Marble, Color = Color3.fromRGB(220, 220, 225) }, displays)
         stand:SetAttribute("Generated", true)
     end
 
     -- Quadro de contratos
-    local board = newPart("LobbyBoard", Vector3.new(14, 8, 1), CFrame.new(VX, 5, VZ - 60), { Material = Enum.Material.Wood, Color = Color3.fromRGB(110, 80, 50) }, workspace)
+    local board = newPart("LobbyBoard", Vector3.new(14, 8, 1), CFrame.new(VX + 22, 5, VZ - 44), { Material = Enum.Material.Wood, Color = Color3.fromRGB(110, 80, 50) }, workspace)
     board:SetAttribute("Generated", true)
 
     for _, point in ipairs({ { -55, -55 }, { 55, -55 }, { -55, 55 }, { 55, 55 }, { 0, 40 }, { 0, -40 }, { 30, -16 }, { -30, 0 }, { VX - 60, VZ - 40 }, { VX + 30, VZ - 40 }, { VX - 60, VZ + 40 }, { VX + 30, VZ + 40 }, { VX - 10, VZ } }) do

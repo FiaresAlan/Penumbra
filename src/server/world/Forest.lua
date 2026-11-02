@@ -16,11 +16,8 @@ local function buildForest(_rng: Random)
     -- Barraca do Mercado Negro
     local stall = newPart("BlackMarketStall", Vector3.new(12, 3, 5), CFrame.new(BX, 2.5, BZ), { Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(70, 48, 40) }, workspace)
     stall:SetAttribute("Generated", true)
-    newPart("StallRoof", Vector3.new(15, 1, 9), CFrame.new(BX, 10, BZ), { Material = Enum.Material.Fabric, Color = Color3.fromRGB(40, 30, 50) }, mapFolder)
-    for _, dx in ipairs({ -6, 6 }) do
-        newPart("StallPole", Vector3.new(1, 9, 1), CFrame.new(BX + dx, 5.5, BZ - 3), { Material = Enum.Material.Wood, Color = Color3.fromRGB(60, 44, 32) }, mapFolder)
-    end
-    local lantern = newPart("StallLantern", Vector3.new(1.5, 1.5, 1.5), CFrame.new(BX, 8.5, BZ + 2), { Material = Enum.Material.Neon, Color = Color3.fromRGB(255, 150, 70), CanCollide = false }, mapFolder)
+    newPart("StallPoste", Vector3.new(1, 9, 1), CFrame.new(BX + 7, 5.5, BZ), { Material = Enum.Material.Wood, Color = Color3.fromRGB(60, 44, 32) }, mapFolder)
+    local lantern = newPart("StallLantern", Vector3.new(1.5, 1.5, 1.5), CFrame.new(BX + 7, 10.2, BZ), { Material = Enum.Material.Neon, Color = Color3.fromRGB(255, 150, 70), CanCollide = false }, mapFolder)
     addLight(lantern, Color3.fromRGB(255, 150, 70), 30, 1.4)
 
     -- Quadro de pedidos, junto ao elevador do lobby: o texto é atualizado pelo BlackMarketSystem

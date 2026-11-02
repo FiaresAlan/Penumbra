@@ -330,6 +330,8 @@ Módulo R5. Siga as seções 6 e 7. Depende do A1.
 
 ### R6. Vila e construções
 
+**Feito em 02/11/2026** (Rota 2, Quaternius MegaKit): 9 casas na vila, poço, placas MERCADO/OFICINA/TAVERNA, torre de madeira sobre o elevador e cabana do Mercado Negro, em `Village.lua` e `VillageHouses.lua`, gravadas em WorldBaked.Village (`WorldBake.BakeVillage()` refaz só a vila). Testado em Play: prompts do mercado, oficina, contratos e Mercado Negro abrem; Output sem erros. Falta: bancos e lampiões extras, vitrine das relíquias dentro da oficina, botão "Gerar só a vila" no plugin.
+
 **O que faz:** as tendas e caixas viram casas e lojas de verdade, conforme a escolha do Alan no A1.
 
 **Teste:** sem ler nada, dá para distinguir mercado, oficina, contratos, taverna e Mercado Negro a 30 studs. Todos os prompts funcionam. Você não fica preso em nenhuma peça. **Auditar assets** sem scripts.

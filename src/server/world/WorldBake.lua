@@ -8,6 +8,7 @@ local MapBuilder = require(script.Parent:WaitForChild("MapBuilder") :: ModuleScr
 local VillageHouses = require(script.Parent:WaitForChild("VillageHouses") :: ModuleScript)
 local SurfaceTerrain = require(script.Parent:WaitForChild("SurfaceTerrain") :: ModuleScript)
 local SurfaceDecor = require(script.Parent:WaitForChild("SurfaceDecor") :: ModuleScript)
+local Village = require(script.Parent:WaitForChild("Village") :: ModuleScript)
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 
 local WorldBake = {}
@@ -39,12 +40,13 @@ function WorldBake.BakeWorld(): (boolean, string)
     local root = Instance.new("Folder")
     root.Name = "WorldBaked"
     SurfaceDecor.Build(root, log)
+    Village.Build(root, log)
     root.Parent = workspace
     workspace:SetAttribute("WorldVersion", Config.WorldVersion)
     return true, string.format("Mundo gerado em %.0f s (versão %d). Salve o lugar com File > Save to Roblox.", os.clock() - startedAt, Config.WorldVersion)
 end
 
--- Só refaz a floresta e a natureza (workspace.WorldBaked), sem mexer no Terrain. Mais rápido que BakeWorld.
+-- Só refaz a floresta e a natureza, sem mexer no Terrain nem na vila. Mais rápido que BakeWorld.
 function WorldBake.BakeForest(): (boolean, string)
     if RunService:IsRunning() then
         return false, "Pare o jogo antes de gerar a floresta."
@@ -53,16 +55,33 @@ function WorldBake.BakeForest(): (boolean, string)
     local function log(text: string)
         print("[World] " .. text)
     end
-    local old = workspace:FindFirstChild("WorldBaked")
-    if old then
-        old:Destroy()
+    local root = workspace:FindFirstChild("WorldBaked")
+    if not root then
+        root = Instance.new("Folder")
+        root.Name = "WorldBaked"
+        root.Parent = workspace
     end
-    local root = Instance.new("Folder")
-    root.Name = "WorldBaked"
-    SurfaceDecor.Build(root, log)
-    root.Parent = workspace
-    local parts = #root:GetDescendants()
-    return true, string.format("Floresta gerada em %.0f s: %d peças.", os.clock() - startedAt, parts)
+    SurfaceDecor.Build(root :: Folder, log)
+    return true, string.format("Floresta gerada em %.0f s: %d peças no total.", os.clock() - startedAt, #(root :: Folder):GetDescendants())
+end
+
+-- Só refaz a vila (casas, poço, placas, torre da mina e cabana do Mercado Negro).
+function WorldBake.BakeVillage(): (boolean, string)
+    if RunService:IsRunning() then
+        return false, "Pare o jogo antes de gerar a vila."
+    end
+    local startedAt = os.clock()
+    local function log(text: string)
+        print("[World] " .. text)
+    end
+    local root = workspace:FindFirstChild("WorldBaked")
+    if not root then
+        root = Instance.new("Folder")
+        root.Name = "WorldBaked"
+        root.Parent = workspace
+    end
+    Village.Build(root :: Folder, log)
+    return true, string.format("Vila gerada em %.0f s.", os.clock() - startedAt)
 end
 
 -- Falha se houver qualquer script no cenário salvo ou na biblioteca de assets.
@@ -95,8 +114,8 @@ function WorldBake.PreviewTestHouse(): (boolean, string)
     ground.Color = Color3.fromRGB(70, 110, 60)
     ground.CFrame = CFrame.new(-600, -0.5, 0)
     ground.Parent = folder
-    -- A frente (-Z da casa) fica virada para +X, que é o lado da câmera padrão do Studio
-    VillageHouses.Small(CFrame.new(-588, 0, -12) * CFrame.Angles(0, math.rad(-90), 0), folder)
+    -- A frente fica virada para +Z (sul): a câmera do Studio, sem giro, olha para -Z
+    VillageHouses.BuildCentered(-600, 0, 0, 180, { w = 3, d = 4, chimney = true, shutters = true }, folder)
     folder.Parent = workspace
     return true, "Casa de teste criada em X -600. Use F com a casa selecionada para enquadrar."
 end
