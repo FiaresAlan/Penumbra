@@ -162,6 +162,23 @@ local function buildLobby()
     -- Mural de destaques e quadro de pedidos (preparados para os módulos de UI)
     local wall = newPart("HighlightsWall", Vector3.new(1, 10, 22), CFrame.new(64, 7, -22), { Material = Enum.Material.SmoothPlastic, Color = Color3.fromRGB(30, 30, 38) }, workspace)
     wall:SetAttribute("Generated", true)
+    local wallGui = Instance.new("SurfaceGui")
+    wallGui.Name = "HighlightsGui"
+    wallGui.Face = Enum.NormalId.Left
+    wallGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+    wallGui.PixelsPerStud = 30
+    wallGui.Parent = wall
+    local wallLabel = Instance.new("TextLabel")
+    wallLabel.Name = "Text"
+    wallLabel.Size = UDim2.fromScale(1, 1)
+    wallLabel.BackgroundTransparency = 1
+    wallLabel.TextColor3 = Color3.fromRGB(235, 235, 245)
+    wallLabel.Font = Enum.Font.GothamBold
+    wallLabel.TextScaled = true
+    wallLabel.TextXAlignment = Enum.TextXAlignment.Left
+    wallLabel.TextYAlignment = Enum.TextYAlignment.Top
+    wallLabel.Text = "MURAL DE DESTAQUES"
+    wallLabel.Parent = wallGui
     local orders = newPart("OrdersBoard", Vector3.new(1, 8, 14), CFrame.new(64, 6, 24), { Material = Enum.Material.SmoothPlastic, Color = Color3.fromRGB(40, 30, 25) }, workspace)
     orders:SetAttribute("Generated", true)
 

@@ -13,6 +13,7 @@ local GuardianDirector = require(systems:WaitForChild("GuardianDirector") :: Mod
 local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScript)
 local ContractSystem = require(systems:WaitForChild("ContractSystem") :: ModuleScript)
 local BlackMarketSystem = require(systems:WaitForChild("BlackMarketSystem") :: ModuleScript)
+local HighlightsSystem = require(systems:WaitForChild("HighlightsSystem") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 
@@ -81,6 +82,16 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     ResetProfile = function(player)
         PlayerProfile.QAReset(player)
+    end,
+    RefreshWall = function(_player)
+        HighlightsSystem.Flush()
+    end,
+    GoToWall = function(player)
+        local wall = workspace:FindFirstChild("HighlightsWall")
+        local character = player.Character
+        if wall and wall:IsA("BasePart") and character and PlayerState.Get(player) == Enums.PlayerLocation.Lobby then
+            character:PivotTo(CFrame.lookAt(wall.Position + Vector3.new(-14, -3, 0), wall.Position + Vector3.new(0, -3, 0)))
+        end
     end,
     RotateOrders = function(_player)
         BlackMarketSystem.Rotate()

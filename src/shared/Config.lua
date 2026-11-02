@@ -75,8 +75,9 @@ Config.ContractDefs = {
 Config.DailyPool = { "extract5", "extract8", "relic1", "late", "rescue" }
 Config.WeeklyPool = { "weekly20", "weeklyRelic3" }
 
--- Mercado Negro
+-- Mercado Negro e Mural
 Config.BlackMarketRotation = 600
+Config.HighlightsRefresh = 300
 
 -- Baú, mercado e oficina
 Config.StashMaxItems = 40
@@ -171,6 +172,8 @@ Config.QAButtons = {
     { id = "GiveItemsQA", label = "Simular extração" },
     { id = "RotateOrders", label = "Girar pedidos" },
     { id = "OpenBlackMarket", label = "Ir ao mercado negro" },
+    { id = "RefreshWall", label = "Atualizar mural" },
+    { id = "GoToWall", label = "Ir ao mural" },
 }
 
 return Config
