@@ -44,6 +44,10 @@ function ExtractionUI.Init()
             statusLabel.Text = string.format("⏳ Elevador chegando em %ds", data.timeLeft)
         elseif data.stage == "open" then
             statusLabel.Text = string.format("🚪 PORTAS ABERTAS — %ds", data.timeLeft)
+        elseif data.stage == "cooldown" then
+            statusLabel.Text = string.format("🔁 Elevador voltando em %ds", data.timeLeft)
+        elseif data.stage == "idle" then
+            statusLabel.Text = ""
         elseif data.stage == "closed" then
             statusLabel.Text = "🚫 Portas fechadas"
             task.delay(3, function()

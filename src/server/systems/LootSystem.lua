@@ -5,6 +5,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Co
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
 local Remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
 local HUDUpdate = Remotes:WaitForChild("HUDUpdate")
+local PlayerState = require(script.Parent:WaitForChild("PlayerState"))
 
 local LootSystem = {}
 
@@ -44,8 +45,33 @@ function LootSystem.ClearInventory(player)
     sendInventoryUpdate(player)
 end
 
+-- Coloca um núcleo na mochila. Usado pela coleta e pelos comandos de QA.
+function LootSystem.GrantCore(player, rarity)
+    rarity = rarity or Enums.CoreRarity.Common
+    local value = Config.CoreValue[rarity] or 10
+
+    local inv = getOrCreateInventory(player)
+    table.insert(inv.cores, { rarity = rarity, value = value })
+    inv.totalValue = inv.totalValue + value
+
+    updateCarryWeight(player)
+    sendInventoryUpdate(player)
+
+    if not workspace:GetAttribute("FirstCoreExtracted") then
+        workspace:SetAttribute("FirstCoreExtracted", true)
+    end
+end
+
 -- Estado original de cada núcleo, para ResetCores restaurar entre expedições
 local coreOriginals = setmetatable({}, { __mode = "k" })
+
+local function setCoreLights(corePart, enabled)
+    for _, child in ipairs(corePart:GetChildren()) do
+        if child:IsA("Light") then
+            child.Enabled = enabled
+        end
+    end
+end
 
 local function connectCore(corePart, prompt)
     coreOriginals[corePart] = {
@@ -57,6 +83,7 @@ local function connectCore(corePart, prompt)
     }
 
     prompt.Triggered:Connect(function(player)
+        if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave then return end
         if corePart:GetAttribute("Collected") then return end
         if corePart:GetAttribute("IsFake") then
             corePart:Destroy()
@@ -64,23 +91,13 @@ local function connectCore(corePart, prompt)
         end
 
         local rarity = corePart:GetAttribute("Rarity") or Enums.CoreRarity.Common
-        local value = Config.CoreValue[rarity] or 10
-
-        local inv = getOrCreateInventory(player)
-        table.insert(inv.cores, { rarity = rarity, value = value })
-        inv.totalValue = inv.totalValue + value
+        LootSystem.GrantCore(player, rarity)
 
         corePart:SetAttribute("Collected", true)
         corePart.Transparency = 1
         corePart.CanCollide = false
         prompt.Enabled = false
-
-        updateCarryWeight(player)
-        sendInventoryUpdate(player)
-
-        if not workspace:GetAttribute("FirstCoreExtracted") then
-            workspace:SetAttribute("FirstCoreExtracted", true)
-        end
+        setCoreLights(corePart, false)
     end)
 end
 
@@ -91,6 +108,7 @@ function LootSystem.ResetCores()
             corePart.Transparency = original.transparency
             corePart.CanCollide = original.canCollide
             original.prompt.Enabled = original.promptEnabled
+            setCoreLights(corePart, true)
         else
             coreOriginals[corePart] = nil
         end

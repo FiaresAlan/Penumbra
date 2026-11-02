@@ -29,6 +29,7 @@ Config.GuardianInvestigateTime = 5.0
 -- Extração
 Config.ElevatorArrivalTime = 20
 Config.ElevatorCloseTime = 30
+Config.ElevatorCooldown = 15
 
 -- Expedição
 Config.DescentCountdown = 10
@@ -45,6 +46,10 @@ Config.MapSeed = 1337
 Config.QAButtons = {
     { id = "EndFailure", label = "Encerrar: falha" },
     { id = "EndSuccess", label = "Encerrar: sucesso" },
+    { id = "DescendNow", label = "Descer agora" },
+    { id = "GiveCore", label = "Dar núcleo" },
+    { id = "GoToCaveElevator", label = "Ir ao elevador" },
+    { id = "CallCaveElevator", label = "Chamar elevador" },
 }
 
 return Config

@@ -2,8 +2,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local systems = script.Parent :: Instance
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums") :: ModuleScript)
-local ExpeditionSystem = require((script.Parent :: Instance):WaitForChild("ExpeditionSystem") :: ModuleScript)
+local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
+local ExtractionSystem = require(systems:WaitForChild("ExtractionSystem") :: ModuleScript)
+local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 
 local QACommands = {}
 
@@ -14,6 +17,22 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     EndSuccess = function(_player)
         ExpeditionSystem.End(Enums.ExpeditionOutcome.Success)
+    end,
+    DescendNow = function(player)
+        ExpeditionSystem.ForceStart(player)
+    end,
+    GiveCore = function(player)
+        LootSystem.GrantCore(player, Enums.CoreRarity.Common)
+    end,
+    GoToCaveElevator = function(player)
+        local elevator = workspace:FindFirstChild("Elevator")
+        local character = player.Character
+        if elevator and elevator:IsA("BasePart") and character then
+            character:PivotTo(CFrame.new(elevator.Position + Vector3.new(-9, 4 - elevator.Size.Y / 2, 0)))
+        end
+    end,
+    CallCaveElevator = function(player)
+        ExtractionSystem.QACall(player)
     end,
 }
 

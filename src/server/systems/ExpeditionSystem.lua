@@ -172,14 +172,33 @@ local function checkForEnd(leaving: Player?)
     end
 end
 
-local function startExpedition()
-    local elevator = lobbyElevator
+local function launch(passengers: { Player })
     local arrival = getPart("CaveArrival")
-    if not elevator or phase ~= Phase.Waiting then
+    if phase ~= Phase.Waiting then
         return
     end
     if not arrival then
         warn("[Expedition] CaveArrival não encontrado. Descida cancelada.")
+        return
+    end
+
+    phase = Phase.Active
+    startTime = os.clock()
+    extracted = {}
+    hasExtraction = false
+
+    for _, player in ipairs(passengers) do
+        PlayerState.Set(player, Location.Cave)
+        task.spawn(teleportTo, player, arrival)
+    end
+
+    print(string.format("[Expedition] Iniciada com %d jogador(es)", #passengers))
+    startedEvent:Fire()
+end
+
+local function startExpedition()
+    local elevator = lobbyElevator
+    if not elevator or phase ~= Phase.Waiting then
         return
     end
 
@@ -197,19 +216,14 @@ local function startExpedition()
         print("[Expedition] Ninguém no elevador. Descida cancelada.")
         return
     end
+    launch(passengers)
+end
 
-    phase = Phase.Active
-    startTime = os.clock()
-    extracted = {}
-    hasExtraction = false
-
-    for _, player in ipairs(passengers) do
-        PlayerState.Set(player, Location.Cave)
-        task.spawn(teleportTo, player, arrival)
+-- Usado só pelos comandos de QA do Studio: desce sem contagem nem proximidade.
+function ExpeditionSystem.ForceStart(player: Player)
+    if PlayerState.Get(player) == Location.Lobby and not descending then
+        launch({ player })
     end
-
-    print(string.format("[Expedition] Iniciada com %d jogador(es)", #passengers))
-    startedEvent:Fire()
 end
 
 local function beginDescent()
