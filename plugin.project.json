@@ -1,0 +1,6 @@
+{
+  "name": "EcosTools",
+  "tree": {
+    "$path": "plugin/src"
+  }
+}
