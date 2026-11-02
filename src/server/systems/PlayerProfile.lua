@@ -38,6 +38,7 @@ local ATTEMPTS = if isStudio then 1 else 4
 local store: DataStore? = nil
 local profiles: { [Player]: Profile } = {}
 local memoryOnly: { [Player]: boolean } = {}
+local saving: { [number]: boolean } = {} -- UserId com salvamento de saída ainda em andamento
 
 local function defaultProfile(): Profile
     return {
@@ -225,10 +226,18 @@ function PlayerProfile.AddStashItems(player: Player, items: { any })
     end
     -- Teto duro: o que passar vira moedas na hora, para o perfil nunca crescer até o limite do DataStore
     while #profile.stash > Config.StashHardLimit do
-        local removed = table.remove(profile.stash, 1)
-        if removed then
-            profile.money += math.floor(removed.value * Config.LobbyMarketRate)
+        -- Vende o item de menor valor; Relíquias nunca são vendidas automaticamente
+        local lowest = 0
+        for index, item in ipairs(profile.stash) do
+            if item.type ~= "Relic" and (lowest == 0 or item.value < profile.stash[lowest].value) then
+                lowest = index
+            end
         end
+        if lowest == 0 then
+            break
+        end
+        local removed = table.remove(profile.stash, lowest)
+        profile.money += math.floor(removed.value * Config.LobbyMarketRate)
     end
     local notice = if #profile.stash > Config.StashMaxItems then "Baú cheio: venda itens antes da próxima descida" else nil
     sendUpdate(player, notice)
@@ -312,6 +321,12 @@ local function onPlayerAdded(player: Player)
     task.spawn(function()
         local profile: Profile? = nil
         local locked = false
+        -- Se a mesma pessoa acabou de sair, espera o salvamento dela terminar antes de ler (evita dados velhos)
+        local waited = 0
+        while saving[player.UserId] and waited < 30 do
+            task.wait(0.5)
+            waited += 0.5
+        end
         for _ = 1, 3 do
             profile, locked = loadProfile(player)
             if profile or not locked then
@@ -363,10 +378,13 @@ local function onPlayerAdded(player: Player)
 end
 
 local function onPlayerRemoving(player: Player)
+    local userId = player.UserId
+    saving[userId] = true
     task.spawn(function()
         saveProfile(player, true)
         profiles[player] = nil
         memoryOnly[player] = nil
+        saving[userId] = nil
     end)
 end
 

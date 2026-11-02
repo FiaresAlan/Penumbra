@@ -50,6 +50,9 @@ VoiceNoise.Init()
 WorldAudio.Init()
 AmbientAudio.Init()
 
+-- Tudo iniciado: pede ao servidor o estado atual (perfil, pedidos, local), que pode ter chegado antes dos eventos
+ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("ClientReady"):FireServer()
+
 -- Tecla V = "grito" (simula voz por enquanto)
 UserInputService.InputBegan:Connect(function(input, processed)
     if processed then return end

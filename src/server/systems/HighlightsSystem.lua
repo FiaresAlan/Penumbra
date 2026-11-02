@@ -152,7 +152,9 @@ function HighlightsSystem.Init()
         if total <= 0 then
             return
         end
-        pending[player.UserId] = math.max(pending[player.UserId] or 0, total)
+        if not receipt.qa then -- extrações de teste do Studio não gravam no ranking real
+            pending[player.UserId] = math.max(pending[player.UserId] or 0, total)
+        end
 
         local minute = math.floor((receipt.elapsed or ExpeditionSystem.GetElapsedTime()) / 60)
         if minute >= 10 then

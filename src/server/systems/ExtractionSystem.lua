@@ -58,7 +58,7 @@ local function isInsideElevator(player: Player): boolean
     if not elevator or not root then
         return false
     end
-    return (root.Position - elevator.Position).Magnitude < 15
+    return (root.Position - elevator.Position).Magnitude < Config.ElevatorBoardRadius
 end
 
 local function updatePrompt()
@@ -178,7 +178,7 @@ function ExtractionSystem.Init()
                 return
             end
             local root = getRoot(player)
-            if not root or (root.Position - elevator.Position).Magnitude > 20 then
+            if not root or (root.Position - elevator.Position).Magnitude > Config.ElevatorPromptRadius then
                 return
             end
             task.spawn(runCycle)

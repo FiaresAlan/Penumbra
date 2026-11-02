@@ -20,10 +20,15 @@ local lastVoiceAt = {}
 local boosts = {} -- boosts[player][chave] = quantidade somada ao ruído
 local pulses = {} -- pulses[player] = { amount, expiresAt }
 local furyActive = false
+local ignoreUntil = {} -- jogadores movidos pelo servidor: o deslocamento não vira ruído
 
 -- Velocidade horizontal medida no servidor pelo deslocamento entre duas leituras.
 local function measureSpeed(player, root)
     local now = os.clock()
+    if (ignoreUntil[player] or 0) > now then
+        lastSamples[player] = nil
+        return 0
+    end
     local last = lastSamples[player]
     lastSamples[player] = { position = root.Position, time = now }
     if not last then return 0 end
@@ -113,6 +118,11 @@ function NoiseSystem.GetNoise(player)
     return playerNoise[player] or 0
 end
 
+function NoiseSystem.IgnoreMovement(player, seconds)
+    ignoreUntil[player] = os.clock() + seconds
+    lastSamples[player] = nil
+end
+
 function NoiseSystem.SetFury(active)
     furyActive = active
 end
@@ -146,6 +156,11 @@ function NoiseSystem.GetLoudestPlayer()
 end
 
 function NoiseSystem.Init()
+    -- Reforços (como o do resgate) não sobrevivem a uma troca de local: evita ruído preso no jogador
+    PlayerState.Changed:Connect(function(player)
+        boosts[player] = nil
+    end)
+
     VoiceSpike.OnServerEvent:Connect(function(player, intensity)
         if typeof(intensity) ~= "number" then return end
         if intensity ~= intensity then return end -- NaN
@@ -173,6 +188,7 @@ function NoiseSystem.Init()
         lastVoiceAt[p] = nil
         boosts[p] = nil
         pulses[p] = nil
+        ignoreUntil[p] = nil
     end)
 
     task.spawn(function()

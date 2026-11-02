@@ -9,6 +9,7 @@ local systems = script.Parent :: Instance
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
+local NoiseSystem = require(systems:WaitForChild("NoiseSystem") :: ModuleScript)
 
 local MovementGuard = {}
 
@@ -20,6 +21,8 @@ local exemptUntil: { [Player]: number } = {}
 -- Chamado antes de o servidor mover o jogador (teleporte, gancho, QA).
 function MovementGuard.Exempt(player: Player, seconds: number)
     exemptUntil[player] = os.clock() + seconds
+    -- Movimento feito pelo servidor também não conta como barulho de passos
+    NoiseSystem.IgnoreMovement(player, seconds)
     samples[player] = nil
 end
 

@@ -31,6 +31,10 @@ local function updateElevatorPanel()
     end
 end
 
+function LocationSync.Send(player: Player)
+    remote:FireClient(player, PlayerState.Get(player))
+end
+
 function LocationSync.Init()
     PlayerState.Changed:Connect(function(player: Player, location: string)
         remote:FireClient(player, location)

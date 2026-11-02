@@ -61,6 +61,11 @@ function BlackMarketSystem.Rotate()
     print("[BlackMarket] pedidos girados: " .. #orders)
 end
 
+-- Reenvia os pedidos atuais a todos (usado quando um cliente termina de iniciar)
+function BlackMarketSystem.Publish()
+    publish()
+end
+
 local function nearStall(player: Player): boolean
     local stall = workspace:FindFirstChild("BlackMarketStall")
     local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")

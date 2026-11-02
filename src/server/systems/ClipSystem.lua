@@ -13,6 +13,10 @@ local ClipSystem = {}
 local recording: { [Player]: boolean } = {}
 
 function ClipSystem.Init()
+    game:GetService("Players").PlayerRemoving:Connect(function(player)
+        recording[player] = nil
+    end)
+
     PlayerState.Changed:Connect(function(player: Player, location: string)
         if location == Enums.PlayerLocation.Lobby then
             if recording[player] then

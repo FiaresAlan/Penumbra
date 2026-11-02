@@ -11,6 +11,9 @@ local QAPanel = {}
 
 function QAPanel.Init()
     -- O remote só existe no Studio; fora dele o painel simplesmente não aparece.
+    if not game:GetService("RunService"):IsStudio() then
+        return -- fora do Studio não há painel, e não vale esperar o remote
+    end
     local remote = Remotes:WaitForChild("QACommand", 5)
     if not remote or not remote:IsA("RemoteEvent") then
         return

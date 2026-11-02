@@ -27,6 +27,7 @@ local lastMoveAt = 0
 local lastMoveTarget
 local lastCatchCheck = 0
 local dragTarget
+local forcedHunt = false -- o primeiro núcleo acorda o Guardião mesmo com todos em silêncio
 
 local function setState(newState)
     -- Rosnado no instante em que a caçada começa, vindo do Guardião
@@ -54,7 +55,8 @@ end
 local function directMoveTo(target)
     local now = os.clock()
     if now - lastMoveAt < Config.GuardianMoveInterval then return end
-    if lastMoveTarget and (lastMoveTarget - target).Magnitude < 1 then return end
+    -- O MoveTo do Humanoid expira em cerca de 8s: reemite a cada 5s mesmo com o alvo parado
+    if lastMoveTarget and (lastMoveTarget - target).Magnitude < 1 and now - lastMoveAt < 5 then return end
     lastMoveAt = now
     lastMoveTarget = target
     guardianHumanoid:MoveTo(target)
@@ -148,6 +150,7 @@ end
 
 function GuardianAI.WakeUp()
     if currentState == Enums.GuardianState.Sleeping then
+        forcedHunt = true
         setState(Enums.GuardianState.Alert)
     end
 end
@@ -235,8 +238,10 @@ local function update(dt)
 
     elseif currentState == Enums.GuardianState.Alert then
         guardianHumanoid.WalkSpeed = 0
-        if loudestRoot then
+        -- Só caça quem foi ouvido. A exceção é o despertar pelo primeiro núcleo.
+        if loudestRoot and (hears or forcedHunt) then
             if stateTimer >= Config.GuardianAlertDelay then
+                forcedHunt = false
                 lastKnownPosition = loudestRoot.Position
                 setState(Enums.GuardianState.Hunting)
             end

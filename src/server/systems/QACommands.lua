@@ -132,7 +132,7 @@ local commands: { [string]: (player: Player) -> () } = {
             { type = "Core", rarity = "Common", value = 10 }, { type = "Core", rarity = "Common", value = 10 },
             { type = "Core", rarity = "Rare", value = 50 }, { type = "Core", rarity = "Rare", value = 50 },
             { type = "Relic", rarity = "Legendary", value = 500 },
-        }, total = 620, multiplier = 1 }
+        }, total = 620, multiplier = 1, qa = true }
         ExtractionSystem.QAFireExtracted(player, receipt)
     end,
     GiveHook = function(player)

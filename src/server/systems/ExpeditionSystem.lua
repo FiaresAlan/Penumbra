@@ -10,6 +10,7 @@ local Enums = require(Shared:WaitForChild("Enums") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
+local MovementGuard = require(systems:WaitForChild("MovementGuard") :: ModuleScript)
 
 local Location = Enums.PlayerLocation
 local Phase = Enums.ExpeditionPhase
@@ -66,6 +67,8 @@ local function teleportTo(player: Player, destination: BasePart)
         return
     end
     local target = destination.CFrame + Vector3.new(0, Config.TeleportHeight, 0)
+    -- A espera pelo carregamento do destino pode demorar: o anti-teleporte não pode agir nesse intervalo
+    MovementGuard.Exempt(player, Config.StreamTimeout + 3)
 
     if workspace.StreamingEnabled then
         local ok, err = pcall(function()
@@ -77,6 +80,7 @@ local function teleportTo(player: Player, destination: BasePart)
     end
 
     if player.Character == character and character.Parent then
+        MovementGuard.Exempt(player, 3)
         character:PivotTo(target)
     end
 end
