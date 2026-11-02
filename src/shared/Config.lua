@@ -81,6 +81,7 @@ Config.HighlightsRefresh = 300
 
 -- Baú, mercado e oficina
 Config.StashMaxItems = 40
+Config.StashHardLimit = 150
 Config.LobbyMarketRate = 0.8
 Config.MarketRadius = 20
 Config.BootsPrice = 500

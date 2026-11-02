@@ -137,7 +137,7 @@ function HighlightsSystem.Init()
         end
         pending[player.UserId] = math.max(pending[player.UserId] or 0, total)
 
-        local minute = math.floor(ExpeditionSystem.GetElapsedTime() / 60)
+        local minute = math.floor((receipt.elapsed or ExpeditionSystem.GetElapsedTime()) / 60)
         if minute >= 10 then
             addStory(string.format("%s extraiu no minuto %d", player.Name, minute))
         end

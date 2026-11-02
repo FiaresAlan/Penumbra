@@ -129,7 +129,7 @@ function ContractSystem.Init()
         end
         advance(player, "items", items)
         advance(player, "relic", relics)
-        if ExpeditionSystem.GetElapsedTime() >= Config.LateMinute * 60 then
+        if (receipt.elapsed or ExpeditionSystem.GetElapsedTime()) >= Config.LateMinute * 60 then
             advance(player, "late", 1)
         end
     end)

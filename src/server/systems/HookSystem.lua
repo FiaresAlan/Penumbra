@@ -53,7 +53,12 @@ local function pull(player: Player, target: Vector3)
     local startedAt = os.clock()
     while true do
         if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave or player.Parent ~= Players then
-            return -- foi pego ou saiu: quem o congelou cuida do resto
+            -- Se foi sequestrado, o KidnapSystem é o dono do congelamento; nos demais casos libera aqui
+            local location = PlayerState.Get(player)
+            if location ~= Enums.PlayerLocation.Dragged and location ~= Enums.PlayerLocation.Captive then
+                root.Anchored = false
+            end
+            return
         end
         local alpha = math.min((os.clock() - startedAt) / Config.HookPullTime, 1)
         local eased = 1 - (1 - alpha) ^ 2

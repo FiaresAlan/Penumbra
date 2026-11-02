@@ -95,10 +95,13 @@ local function carryPassengers()
     end
 
     -- O multiplicador é calculado uma vez: ao sair o último passageiro a expedição pode acabar.
-    local multiplier = CaveRules.GetValueMultiplier(ExpeditionSystem.GetElapsedTime())
+    local elapsed = ExpeditionSystem.GetElapsedTime()
+    local multiplier = CaveRules.GetValueMultiplier(elapsed)
 
     for _, player in ipairs(passengers) do
         local receipt = LootSystem.FinalizeExtraction(player, multiplier)
+        -- O tempo vai no recibo: quem escuta o evento pode ler depois de a expedição já ter terminado
+        receipt.elapsed = elapsed
         print(string.format("[Extraction] %s subiu com %d itens (%d 💎, x%.2f)",
             player.Name, #receipt.items, receipt.total, receipt.multiplier))
         if #receipt.items > 0 then

@@ -5,6 +5,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 local VoiceSpike = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("VoiceSpike") :: RemoteEvent
+-- O log de voz só aparece no Studio, nunca em produção
+local debugEnabled = Config.VoiceDebug and game:GetService("RunService"):IsStudio()
 
 local VoiceNoise = {}
 
@@ -36,7 +38,7 @@ function VoiceNoise.Init()
             local rms = analyzer.RmsLevel
             local now = os.clock()
 
-            if Config.VoiceDebug and rms >= 0.05 and now - lastLog >= 0.5 then
+            if debugEnabled and rms >= 0.05 and now - lastLog >= 0.5 then
                 lastLog = now
                 print(string.format("[Voice] rms=%.3f", rms))
             end
@@ -48,7 +50,7 @@ function VoiceNoise.Init()
                     lastSent = now
                     local intensity = math.clamp(rms / 0.5 * 10, 0, 10)
                     VoiceSpike:FireServer(intensity)
-                    if Config.VoiceDebug then
+                    if debugEnabled then
                         print(string.format("[Voice] spike intensidade=%.1f", intensity))
                     end
                 end

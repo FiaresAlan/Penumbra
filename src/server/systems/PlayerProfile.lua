@@ -223,6 +223,13 @@ function PlayerProfile.AddStashItems(player: Player, items: { any })
             value = item.value,
         })
     end
+    -- Teto duro: o que passar vira moedas na hora, para o perfil nunca crescer até o limite do DataStore
+    while #profile.stash > Config.StashHardLimit do
+        local removed = table.remove(profile.stash, 1)
+        if removed then
+            profile.money += math.floor(removed.value * Config.LobbyMarketRate)
+        end
+    end
     local notice = if #profile.stash > Config.StashMaxItems then "Baú cheio: venda itens antes da próxima descida" else nil
     sendUpdate(player, notice)
 end
@@ -328,6 +335,19 @@ local function onPlayerAdded(player: Player)
         end
 
         if player.Parent ~= Players then
+            -- Saiu durante o carregamento: a trava já foi tomada, então precisa ser liberada
+            local activeStore = store
+            if activeStore and not memoryOnly[player] then
+                pcall(function()
+                    activeStore:UpdateAsync(keyFor(player), function(old: any)
+                        if old and old.lock and old.lock.jobId == game.JobId then
+                            old.lock = nil
+                            return old
+                        end
+                        return nil
+                    end)
+                end)
+            end
             return
         end
         profiles[player] = profile :: Profile

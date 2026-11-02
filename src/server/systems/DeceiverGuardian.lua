@@ -72,6 +72,19 @@ local function spawnFakeCore()
     local position = floor + Vector3.new(0, 2.2, 0)
     local fake = source:Clone()
     fake.Position = position
+    -- Nome e zona coerentes com os núcleos de verdade, para o falso não se denunciar ao cliente
+    local highest = 0
+    local mapFolder = workspace:FindFirstChild("Map")
+    if mapFolder then
+        for _, child in ipairs(mapFolder:GetChildren()) do
+            local number = tonumber(string.match(child.Name, "^Core(%d+)$"))
+            if number and number > highest then
+                highest = number
+            end
+        end
+    end
+    fake.Name = "Core" .. (highest + 1)
+    fake:SetAttribute("DepthZone", if position.X < 580 then "A" elseif position.X < 724 then "B" else "C")
     LootSystem.MarkFake(fake, function(_player: Player, at: Vector3)
         AudioBroadcast.Play("Laugh", at)
     end)

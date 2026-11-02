@@ -190,6 +190,13 @@ local function connectCore(corePart, prompt)
     prompt.Triggered:Connect(function(player)
         if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave then return end
         if corePart:GetAttribute("Collected") then return end
+
+        -- Além do limite do prompt, o servidor confere vida e distância
+        local character = player.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if not root or not humanoid or humanoid.Health <= 0 then return end
+        if (root.Position - corePart.Position).Magnitude > prompt.MaxActivationDistance + 6 then return end
         if triggerFake(corePart, player) then
             return
         end
