@@ -174,6 +174,27 @@ Config.AmbientLayers = {
 
 -- Mapa gerado por src/server/world/MapBuilder.lua
 Config.MapSeed = 1337
+-- Mundo da superfície (R4): o terreno é gerado uma vez por WorldBake.BakeWorld e salvo no lugar.
+-- Mude WorldVersion quando mudar qualquer valor abaixo: o jogo avisa se o lugar foi gerado com outra versão.
+Config.WorldVersion = 1
+Config.WorldSeed = 4242
+Config.WorldFloorY = 1 -- altura das áreas planas, a mesma do piso antigo do lobby
+Config.WorldBounds = { MinX = -1400, MaxX = 380, MinZ = -600, MaxZ = 600, MinY = -20, MaxY = 180 }
+-- Áreas planas: Mina (elevador, mural, pedidos), Vila (lojas) e Mercado Negro (escondido a oeste)
+Config.WorldPads = {
+    Mina = { x = 0, z = 0, r = 110 },
+    Vila = { x = -640, z = 0, r = 100 },
+    MercadoNegro = { x = -1120, z = 60, r = 45 },
+}
+-- Trilhas de terra: pontos {x, z}. A primeira liga a mina à vila; a segunda, mais estreita, leva ao Mercado Negro.
+Config.WorldTrails = {
+    { width = 9, points = { { -60, 12 }, { -150, 48 }, { -250, -20 }, { -330, -60 }, { -420, -40 }, { -500, 40 }, { -570, 28 }, { -620, 0 } } },
+    { width = 4.5, points = { { -700, 0 }, { -770, -55 }, { -860, -35 }, { -940, 60 }, { -1020, 35 }, { -1090, 70 }, { -1112, 62 } } },
+}
+-- Riacho raso de norte a sul: dá para atravessar andando (água com 1,5 stud)
+Config.WorldStream = { x = -300, amp = 45, period = 90, halfWidth = 8, bank = 14, bedY = -1.5, waterY = 0 }
+Config.WorldMountains = { edge = 230, height = 150 }
+
 -- X onde a caverna passa da zona A para a B e da B para a C (ORIGIN_X 420 + colunas 10 e 19 de 16 studs)
 Config.ZoneBoundaryB = 580
 Config.ZoneBoundaryC = 724
@@ -213,6 +234,7 @@ Config.QAButtons = {
     { id = "RefreshWall", label = "Atualizar mural" },
     { id = "GoToWall", label = "Ir ao mural" },
     { id = "AuditPaths", label = "Auditar caminhos" },
+    { id = "GoToVillage", label = "Ir à vila" },
 }
 
 return Config

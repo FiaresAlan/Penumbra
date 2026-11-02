@@ -6,6 +6,9 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local MapBuilder = require(script.Parent:WaitForChild("MapBuilder") :: ModuleScript)
 local VillageHouses = require(script.Parent:WaitForChild("VillageHouses") :: ModuleScript)
+local SurfaceTerrain = require(script.Parent:WaitForChild("SurfaceTerrain") :: ModuleScript)
+local SurfaceDecor = require(script.Parent:WaitForChild("SurfaceDecor") :: ModuleScript)
+local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 
 local WorldBake = {}
 
@@ -16,6 +19,29 @@ function WorldBake.Preview(): (boolean, string)
     end
     MapBuilder.Build({ waitForProps = true })
     return true, "Prévia gerada. Ao dar Play o mapa é recriado do zero."
+end
+
+-- Gera o cenário da superfície (Terrain e árvores) e o guarda no lugar. Demora; chame de uma thread própria.
+-- Apaga o Terrain que existir. Depois, salve o lugar no Studio (File > Save to Roblox).
+function WorldBake.BakeWorld(): (boolean, string)
+    if RunService:IsRunning() then
+        return false, "Pare o jogo antes de gerar o mundo."
+    end
+    local startedAt = os.clock()
+    local function log(text: string)
+        print("[World] " .. text)
+    end
+    local old = workspace:FindFirstChild("WorldBaked")
+    if old then
+        old:Destroy()
+    end
+    SurfaceTerrain.Build(log)
+    local root = Instance.new("Folder")
+    root.Name = "WorldBaked"
+    SurfaceDecor.Build(root, log)
+    root.Parent = workspace
+    workspace:SetAttribute("WorldVersion", Config.WorldVersion)
+    return true, string.format("Mundo gerado em %.0f s (versão %d). Salve o lugar com File > Save to Roblox.", os.clock() - startedAt, Config.WorldVersion)
 end
 
 -- Casa de teste feita com as peças do Quaternius, em um chão simples a oeste do mapa. Serve para ver as texturas e as medidas.

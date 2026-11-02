@@ -279,6 +279,8 @@ Arquivos: CaveTerrain.lua, CaveDecor.lua, Props.lua, WorldBake.lua, ZoneLighting
 
 ### R4. Mundo: mina, floresta e vila
 
+**Feito em 02/11/2026** (terreno, trilhas, riacho, montanhas, bancadas na vila, Mercado Negro a oeste, 420 árvores provisórias). Falta: ponte e a floresta densa (R5), as construções (R6) e a viagem (R9: hoje a vila fica a cerca de 40 s a pé).
+
 **O que faz:** troca as lajes por um mapa grande de Terrain. As bancadas mudam de lugar, mas mantêm os nomes.
 
 **Teste:**

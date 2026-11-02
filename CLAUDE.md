@@ -32,12 +32,16 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
   ContractSystem, BlackMarketSystem, HighlightsSystem, ClipSystem, MovementGuard, ClientSync etc.).
 - `src/server/world/` — MapBuilder (só chama os módulos, na ordem), CaveLayout (grade e zonas, funções puras), WorldUtil,
   Lobby, Forest, CaveGeometry, CaveDecor, Cores, CaveMarkers, Props, GuardianModel e WorldBake (prévia no modo de edição).
-  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=1218 hash=226980241 nucleos=26`:
+  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=1164 hash=225447236 nucleos=26`:
   se mudar sem querer, o gerador mudou o mapa. O QA tem "Auditar caminhos" (esperado: 28 ok, 0 falhas, 3 só pelo gancho).
 - `src/client/` — init, VoiceNoise, ZoneLighting, Flashlight, SneakInput, GuardianPresence, HookController;
   `ui/` (NoiseBar, ExtractionUI, QAPanel, NestUI, ProfileHUD, ShopUI, ClipPrompt, TutorialHints),
   `audio/` (WorldAudio, AmbientAudio) e `clips/` (ClipExporter).
 - `plugin/` — plugin de Studio "Ecos Tools". `tools/` — scripts e assets de origem (KayKit, sons, referências).
+- **Mundo da superfície (R4, 02/11/2026):** o chão é Terrain gerado por `WorldBake.BakeWorld` (botão "Gerar mundo" do plugin;
+  forma em `SurfaceShape`, escrita em `SurfaceTerrain`, árvores provisórias em `SurfaceDecor`) e salvo no lugar. Mina em X 0, Vila em X -640
+  (mercado, oficina, contratos), Mercado Negro em X -1120. Mude `Config.WorldVersion` ao mudar qualquer `Config.World*`.
+  O Studio guarda módulos em cache: depois de mudar o Config, reinicie o Studio antes de gerar de novo.
 - **Próxima fase:** `docs/PLANO-REFINO.md` (mundo vivo, floresta grande, assets Synty, inventário). Nele, o cenário
   (Terrain, árvores, casas) passa a ser gerado por botão no Studio e salvo no lugar; o `MapBuilder` continua criando
   só o que é de jogo (núcleos, elevadores, marcadores, Guardião) a cada partida.

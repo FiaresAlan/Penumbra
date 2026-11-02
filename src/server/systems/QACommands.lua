@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local systems = script.Parent :: Instance
+local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums") :: ModuleScript)
 local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
 local ExtractionSystem = require(systems:WaitForChild("ExtractionSystem") :: ModuleScript)
@@ -172,6 +173,14 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     AuditPaths = function(_player)
         PathAudit.Run()
+    end,
+    GoToVillage = function(player)
+        local pad = Config.WorldPads.Vila
+        local character = player.Character
+        if character and PlayerState.Get(player) == Enums.PlayerLocation.Lobby then
+            MovementGuard.Exempt(player, 3)
+            character:PivotTo(CFrame.new(pad.x + 20, 4, pad.z))
+        end
     end,
     GuardianNear = function(player)
         local character = player.Character

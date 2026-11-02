@@ -15,10 +15,10 @@ local LOBBY: { [string]: any } = {
     Brightness = 2,
     Ambient = Color3.fromRGB(120, 120, 130),
     OutdoorAmbient = Color3.fromRGB(140, 140, 150),
-    ClockTime = 14,
-    FogColor = Color3.fromRGB(190, 200, 215),
-    FogStart = 0,
-    FogEnd = 100000,
+    ClockTime = 16.8, -- fim de tarde sobre o vale
+    FogColor = Color3.fromRGB(215, 195, 175),
+    FogStart = 250,
+    FogEnd = 1300,
     ExposureCompensation = -0.3,
 }
 
