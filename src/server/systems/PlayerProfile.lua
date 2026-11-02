@@ -166,6 +166,7 @@ local function sendUpdate(player: Player, notice: string?)
         stash = profile.stash,
         upgrades = profile.upgrades,
         relicDisplay = profile.relicDisplay,
+        contracts = profile.contracts,
         notice = notice,
     })
     updatedEvent:Fire(player)
@@ -179,6 +180,11 @@ end
 
 local function isWholeNumber(value: unknown): boolean
     return typeof(value) == "number" and value == value and value >= 0 and value == math.floor(value) and value < 1e12
+end
+
+-- Reenvia o perfil ao dono depois de uma mudança feita direto em Get(player) (ex.: contratos).
+function PlayerProfile.Refresh(player: Player)
+    sendUpdate(player)
 end
 
 function PlayerProfile.AddMoney(player: Player, amount: number): boolean

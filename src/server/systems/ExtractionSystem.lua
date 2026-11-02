@@ -144,6 +144,11 @@ local function runCycle()
     updatePrompt()
 end
 
+-- Usado só pelo QA: dispara o evento de extração com um recibo falso, para testar quem escuta (contratos).
+function ExtractionSystem.QAFireExtracted(player: Player, receipt: any)
+    extractedEvent:Fire(player, receipt)
+end
+
 -- Usado só pelos comandos de QA do Studio.
 function ExtractionSystem.QACall(player: Player)
     if PlayerState.Get(player) == Location.Cave then

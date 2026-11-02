@@ -11,6 +11,7 @@ local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
 local KidnapSystem = require(systems:WaitForChild("KidnapSystem") :: ModuleScript)
 local GuardianDirector = require(systems:WaitForChild("GuardianDirector") :: ModuleScript)
 local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScript)
+local ContractSystem = require(systems:WaitForChild("ContractSystem") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 
@@ -79,6 +80,23 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     ResetProfile = function(player)
         PlayerProfile.QAReset(player)
+    end,
+    NextDay = function(player)
+        ContractSystem.QAAdvanceDay()
+        ContractSystem.Open(player)
+    end,
+    OpenContracts = function(player)
+        goNear(player, "LobbyBoard", "contracts")
+    end,
+    GiveItemsQA = function(player)
+        -- Simula uma extração: 5 itens, 1 relíquia, depois do minuto 8
+        ExpeditionSystem.SetElapsedForQA(500)
+        local receipt = { items = {
+            { type = "Core", rarity = "Common", value = 10 }, { type = "Core", rarity = "Common", value = 10 },
+            { type = "Core", rarity = "Rare", value = 50 }, { type = "Core", rarity = "Rare", value = 50 },
+            { type = "Relic", rarity = "Legendary", value = 500 },
+        }, total = 620, multiplier = 1 }
+        ExtractionSystem.QAFireExtracted(player, receipt)
     end,
     GiveHook = function(player)
         PlayerProfile.SetUpgrade(player, "Hook")

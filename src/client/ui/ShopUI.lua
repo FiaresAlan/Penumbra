@@ -11,6 +11,7 @@ local SellItem = Remotes:WaitForChild("SellItem") :: RemoteEvent
 local BuyUpgrade = Remotes:WaitForChild("BuyUpgrade") :: RemoteEvent
 local DisplayRelic = Remotes:WaitForChild("DisplayRelic") :: RemoteEvent
 local RetrieveRelic = Remotes:WaitForChild("RetrieveRelic") :: RemoteEvent
+local ClaimContract = Remotes:WaitForChild("ClaimContract") :: RemoteEvent
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 local ProfileHUD = require((script.Parent :: Instance):WaitForChild("ProfileHUD") :: ModuleScript)
 
@@ -98,6 +99,30 @@ local function render()
                 SellItem:FireServer(item.id)
             end)
         end
+    elseif currentShop == "contracts" then
+        titleLabel.Text = string.format("Quadro de Contratos · %d 💎", profile.money)
+        local contracts = profile.contracts or {}
+        local function addScope(listName: string, label: string)
+            for _, id in ipairs(contracts[listName] or {}) do
+                local definition = Config.ContractDefs[id]
+                if definition then
+                    local progress = (contracts[listName .. "Progress"] or {})[id] or 0
+                    local claimed = (contracts[listName .. "Claimed"] or {})[id] == true
+                    local text = string.format("%s: %s (%d/%d) — +%d 💎", label, definition.text, progress, definition.goal, definition.reward)
+                    if claimed then
+                        addRow(text, "Recebido", nil)
+                    elseif progress >= definition.goal then
+                        addRow(text, "Receber", function()
+                            ClaimContract:FireServer(id)
+                        end)
+                    else
+                        addRow(text, nil, nil)
+                    end
+                end
+            end
+        end
+        addScope("daily", "Diário")
+        addScope("weekly", "Semanal")
     else
         titleLabel.Text = string.format("Oficina · %d 💎", profile.money)
         for id, definition in pairs(Config.Upgrades) do
@@ -183,7 +208,7 @@ function ShopUI.Init()
     layout.Parent = list
 
     OpenShop.OnClientEvent:Connect(function(shop: unknown)
-        if shop ~= "market" and shop ~= "workshop" then
+        if shop ~= "market" and shop ~= "workshop" and shop ~= "contracts" then
             return
         end
         currentShop = shop :: string

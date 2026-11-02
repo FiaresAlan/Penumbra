@@ -61,6 +61,20 @@ Config.MimicCooldown = 12
 Config.MimicMinDistance = 15
 Config.MimicMaxDistance = 30
 
+-- Contratos. kind: items, relic, late (extrair depois do minuto LateMinute) ou rescue
+Config.LateMinute = 8
+Config.ContractDefs = {
+    extract5 = { text = "Extraia 5 itens", kind = "items", goal = 5, reward = 60 },
+    extract8 = { text = "Extraia 8 itens", kind = "items", goal = 8, reward = 110 },
+    relic1 = { text = "Extraia 1 Relíquia", kind = "relic", goal = 1, reward = 150 },
+    late = { text = "Extraia depois do minuto 8", kind = "late", goal = 1, reward = 120 },
+    rescue = { text = "Resgate um preso", kind = "rescue", goal = 1, reward = 100 },
+    weekly20 = { text = "Semana: extraia 20 itens", kind = "items", goal = 20, reward = 350 },
+    weeklyRelic3 = { text = "Semana: extraia 3 Relíquias", kind = "relic", goal = 3, reward = 500 },
+}
+Config.DailyPool = { "extract5", "extract8", "relic1", "late", "rescue" }
+Config.WeeklyPool = { "weekly20", "weeklyRelic3" }
+
 -- Baú, mercado e oficina
 Config.StashMaxItems = 40
 Config.LobbyMarketRate = 0.8
@@ -149,6 +163,9 @@ Config.QAButtons = {
     { id = "OpenWorkshop", label = "Ir à oficina" },
     { id = "GiveHook", label = "Dar gancho" },
     { id = "NearHook", label = "Perto do gancho" },
+    { id = "NextDay", label = "Virar o dia" },
+    { id = "OpenContracts", label = "Ir aos contratos" },
+    { id = "GiveItemsQA", label = "Simular extração" },
 }
 
 return Config
