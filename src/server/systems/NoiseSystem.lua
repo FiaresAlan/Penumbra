@@ -6,6 +6,7 @@ local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enu
 local Remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
 local VoiceSpike = Remotes:WaitForChild("VoiceSpike")
 local PlayerState = require(script.Parent:WaitForChild("PlayerState"))
+local PlayerProfile = require(script.Parent:WaitForChild("PlayerProfile"))
 
 local NoiseSystem = {}
 
@@ -96,7 +97,9 @@ local function calculateNoise(player)
     local weight = char:GetAttribute("CarryWeight") or 0
     local speed = measureSpeed(player, root)
     local baseNoise = Config.BaseNoise
-    local runNoise = (speed / Config.SprintSpeed) * Config.RunNoiseMultiplier
+    -- Botas Silenciosas reduzem só o ruído de passos; voz, peso e reforços continuam iguais
+    local moveMultiplier = if PlayerProfile.HasUpgrade(player, "Boots") then Config.BootsMoveMultiplier else 1
+    local runNoise = (speed / Config.SprintSpeed) * Config.RunNoiseMultiplier * moveMultiplier
     local weightNoise = (weight / Config.MaxCarryWeight) * Config.WeightNoiseMultiplier
 
     local total = baseNoise + runNoise + weightNoise + extraNoise(player)

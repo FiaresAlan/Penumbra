@@ -22,17 +22,17 @@ function QAPanel.Init()
     gui.Parent = playerGui
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 196, 0, 0)
+    frame.Size = UDim2.new(0, 272, 0, 0)
     frame.AutomaticSize = Enum.AutomaticSize.Y
-    frame.Position = UDim2.new(1, -206, 0, 80)
+    frame.Position = UDim2.new(1, -282, 0, 70)
     frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     frame.BackgroundTransparency = 0.5
     frame.BorderSizePixel = 0
     frame.Parent = gui
 
-    -- Duas colunas, para a lista de botões caber na tela
+    -- Três colunas, para a lista de botões caber na tela
     local layout = Instance.new("UIGridLayout")
-    layout.CellSize = UDim2.new(0, 84, 0, 34)
+    layout.CellSize = UDim2.new(0, 82, 0, 30)
     layout.CellPadding = UDim2.new(0, 6, 0, 6)
     layout.Parent = frame
 

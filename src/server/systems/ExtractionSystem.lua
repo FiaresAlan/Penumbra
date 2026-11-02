@@ -12,6 +12,7 @@ local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
 local CaveRules = require(systems:WaitForChild("CaveRules") :: ModuleScript)
+local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScript)
 local receiptRemote = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("Receipt") :: RemoteEvent
 
 local Location = Enums.PlayerLocation
@@ -102,6 +103,8 @@ local function carryPassengers()
             player.Name, #receipt.items, receipt.total, receipt.multiplier))
         if #receipt.items > 0 then
             ExpeditionSystem.RecordExtraction(player)
+            -- Primeiro guarda no baú (valor já travado no recibo); só depois o jogador sobe
+            PlayerProfile.AddStashItems(player, receipt.items)
         end
         receiptRemote:FireClient(player, receipt)
         extractedEvent:Fire(player, receipt)

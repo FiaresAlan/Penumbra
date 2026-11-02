@@ -61,6 +61,16 @@ Config.MimicCooldown = 12
 Config.MimicMinDistance = 15
 Config.MimicMaxDistance = 30
 
+-- Baú, mercado e oficina
+Config.StashMaxItems = 40
+Config.LobbyMarketRate = 0.8
+Config.MarketRadius = 20
+Config.BootsPrice = 500
+Config.BootsMoveMultiplier = 0.6
+Config.Upgrades = {
+    Boots = { name = "Botas Silenciosas", price = 500 },
+}
+
 -- Pity
 Config.PityFailureThreshold = 2
 Config.PityGuardianSpeedMultiplier = 0.9
@@ -126,6 +136,11 @@ Config.QAButtons = {
     { id = "NextMimic", label = "Próximo: Corista" },
     { id = "NextDeceiver", label = "Próximo: Enganador" },
     { id = "TouchFake", label = "Tocar falso" },
+    { id = "GiveMoney", label = "Dar 100 moedas" },
+    { id = "ResetProfile", label = "Resetar perfil" },
+    { id = "FillStash", label = "Encher baú" },
+    { id = "OpenMarket", label = "Ir ao mercado" },
+    { id = "OpenWorkshop", label = "Ir à oficina" },
 }
 
 return Config

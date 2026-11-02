@@ -10,10 +10,22 @@ local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
 local KidnapSystem = require(systems:WaitForChild("KidnapSystem") :: ModuleScript)
 local GuardianDirector = require(systems:WaitForChild("GuardianDirector") :: ModuleScript)
+local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 
 local QACommands = {}
+
+-- Leva o jogador até uma bancada do lobby e abre a tela correspondente.
+local function goNear(player: Player, partName: string, shop: string)
+    local part = workspace:FindFirstChild(partName)
+    local character = player.Character
+    local openShop = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("OpenShop") :: RemoteEvent
+    if part and part:IsA("BasePart") and character and PlayerState.Get(player) == Enums.PlayerLocation.Lobby then
+        character:PivotTo(CFrame.new(part.Position + Vector3.new(8, 2, 0)))
+        openShop:FireClient(player, shop)
+    end
+end
 
 -- Para criar um botão novo: adicione o id aqui e em Config.QAButtons.
 local commands: { [string]: (player: Player) -> () } = {
@@ -61,6 +73,25 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     TouchFake = function(player)
         LootSystem.QATriggerNearestFake(player)
+    end,
+    GiveMoney = function(player)
+        PlayerProfile.AddMoney(player, 100)
+    end,
+    ResetProfile = function(player)
+        PlayerProfile.QAReset(player)
+    end,
+    FillStash = function(player)
+        PlayerProfile.AddStashItems(player, {
+            { type = "Core", rarity = "Common", value = 10 },
+            { type = "Core", rarity = "Rare", value = 50 },
+            { type = "Relic", rarity = "Legendary", value = 500 },
+        })
+    end,
+    OpenMarket = function(player)
+        goNear(player, "LobbyMarket", "market")
+    end,
+    OpenWorkshop = function(player)
+        goNear(player, "LobbyWorkshop", "workshop")
     end,
     NextMimic = function(_player)
         GuardianDirector.ForceNext(Enums.GuardianVariant.Mimic)
