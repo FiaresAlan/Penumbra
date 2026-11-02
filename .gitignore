@@ -13,3 +13,10 @@ tools/assets/sounds/
 # Lugares de referência (não versionar binários)
 *.rbxl
 *.rbxlx
+
+# Quaternius Medieval Village MegaKit (CC0): o zip e as texturas grandes ficam fora do Git; os FBX pequenos ficam
+tools/assets/quaternius-village/zip/
+tools/assets/quaternius-village/**/*.png
+
+# Portador de texturas do MegaKit (13 MB, regenerado por tools/convert_megakit.py)
+tools/assets/quaternius-village/glb/_texturas.glb

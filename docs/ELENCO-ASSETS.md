@@ -60,3 +60,18 @@ Inseridas pela Toolbox do Studio, só gratuitas, com o aviso de scripts lido ant
 - Levar as peças aprovadas, sem scripts, para `ServerStorage.EcosAssets` no lugar do jogo.
 - Comando "Auditar assets", que falha se houver script ali.
 - Atualizar `docs/CREDITOS.md` com autores e links (Synty, anomon, e o autor da casita, se identificado).
+
+## 6. Decisão do Alan: Rota 2 (Quaternius MegaKit) e o que o teste mostrou
+
+**Decidido em 02/11/2026: Rota 2.** O kit foi baixado (Standard, CC0) e testado no Roblox. Resultado do teste:
+
+| Pergunta | Resposta |
+|---|---|
+| O importador do Roblox aproveita as peças como vêm? | **Não.** Cada peça tem de 2 a 3 materiais, e o Roblox só aplica uma textura por malha: as outras ficam vazias (paredes de reboco sem textura). |
+| Dá para resolver? | **Sim.** `tools/convert_megakit.py` separa cada peça em uma malha por material. As texturas sobem uma vez, por um "portador". O jogo aplica a textura certa por nome do material. |
+| Tamanho das peças | Parede de 2 x 3,1 studs. O jogo multiplica por 3 (`VillageAssets.Scale`): módulo de 6 studs. |
+| Texturas | Cor e rugosidade funcionam. **Os mapas normais deixam tudo azulado** e ficaram desligados. Dá para tentar de novo com as normais da pasta "Normals Godot-Unity". |
+| Casa montada | Uma casa de 4 x 4 módulos foi montada por código (print `docs/elenco/casa-teste-quaternius.jpg`): reboco, madeira, telhado de telhas vermelhas, chaminé de tijolo. |
+| O que falta | Empena (peças `Roof_Front_Brick`), portas e janelas folheadas, andares, e um gerador de vila com layouts variados (R6). |
+
+Peças importadas: 69 (paredes, cantos, pisos, telhados, portas, janelas, venezianas, sacadas, beirais, escadas e adereços). Para ver a casa de teste no Studio, rode `WorldBake.PreviewTestHouse()` (a casa aparece em X -600).

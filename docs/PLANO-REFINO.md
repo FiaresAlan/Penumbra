@@ -178,7 +178,7 @@ Roblox avisa que assets da Creator Store podem conter scripts maliciosos e que a
 | [Blacksmith](https://create.roblox.com/store/asset/8162056813/Blacksmith) | @HolyBlack_Phantom | 8,2 mil triângulos, **2 scripts**, sem avaliações | Candidato à oficina, sem os scripts |
 | [Casas Medievales](https://create.roblox.com/store/asset/110321397681966/Casas-Medievales-Paquete-House-Village-Town-Shop) | @Matubono67 | 13 modelos, sem scripts segundo o autor, 6.336 partes, 259 Unions | Vila pronta, mas **pesada** e sem avaliações |
 | [tent market stall](https://create.roblox.com/store/asset/10970560969/tent-market-stall) | Não conferido | 100% | Barraca da praça |
-| Quaternius MegaKit | Quaternius | CC0, mais de 300 peças | **Plano B**: precisamos montar as casas |
+| Quaternius MegaKit | Quaternius | CC0, mais de 300 peças | **Escolhido (Rota 2, 02/11/2026)**: 69 peças importadas e testadas, ver `docs/ELENCO-ASSETS.md` seção 6 |
 
 ## 8. Bloco R: mundo
 

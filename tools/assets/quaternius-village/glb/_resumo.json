@@ -1,0 +1,265 @@
+{
+ "Wall_Plaster_Straight": [
+  "MI_WoodTrim",
+  "MI_Plaster"
+ ],
+ "Wall_Plaster_Straight_Base": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_Brick"
+ ],
+ "Wall_Plaster_Straight_L": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_Brick"
+ ],
+ "Wall_Plaster_Straight_R": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_Brick"
+ ],
+ "Wall_Plaster_Door_Flat": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_RockTrim"
+ ],
+ "Wall_Plaster_Door_Round": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_RockTrim"
+ ],
+ "Wall_Plaster_Door_RoundInset": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_RockTrim"
+ ],
+ "Wall_Plaster_Window_Wide_Round": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_Brick"
+ ],
+ "Wall_Plaster_Window_Wide_Flat": [
+  "MI_Plaster",
+  "MI_Brick",
+  "MI_WoodTrim"
+ ],
+ "Wall_Plaster_Window_Thin_Round": [
+  "MI_Plaster",
+  "MI_Brick",
+  "MI_WoodTrim"
+ ],
+ "Wall_Plaster_WoodGrid": [
+  "MI_WoodTrim",
+  "MI_Plaster"
+ ],
+ "Wall_UnevenBrick_Straight": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_UnevenBrick"
+ ],
+ "Wall_UnevenBrick_Door_Round": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_UnevenBrick"
+ ],
+ "Wall_UnevenBrick_Window_Wide_Round": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_UnevenBrick"
+ ],
+ "Wall_UnevenBrick_Window_Thin_Round": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_UnevenBrick"
+ ],
+ "Wall_Arch": [
+  "MI_WoodTrim"
+ ],
+ "Wall_BottomCover": [
+  "MI_WoodTrim"
+ ],
+ "Corner_Exterior_Wood": [
+  "MI_WoodTrim"
+ ],
+ "Corner_Exterior_Brick": [
+  "MI_RockTrim"
+ ],
+ "Corner_ExteriorWide_Wood": [
+  "MI_WoodTrim"
+ ],
+ "Corner_Interior_Big": [
+  "MI_WoodTrim"
+ ],
+ "Floor_WoodDark": [
+  "MI_WoodTrim"
+ ],
+ "Floor_Brick": [
+  "MI_Brick"
+ ],
+ "Floor_UnevenBrick": [
+  "MI_UnevenBrick"
+ ],
+ "Floor_WoodLight": [
+  "MI_WoodTrim"
+ ],
+ "Roof_RoundTiles_4x4": [
+  "MI_WoodTrim",
+  "MI_RoundTiles"
+ ],
+ "Roof_RoundTiles_6x6": [
+  "MI_WoodTrim",
+  "MI_RoundTiles"
+ ],
+ "Roof_RoundTiles_6x8": [
+  "MI_WoodTrim",
+  "MI_RoundTiles"
+ ],
+ "Roof_RoundTiles_8x8": [
+  "MI_WoodTrim",
+  "MI_RoundTiles"
+ ],
+ "Roof_RoundTiles_6x10": [
+  "MI_WoodTrim",
+  "MI_RoundTiles"
+ ],
+ "Roof_Front_Brick4": [
+  "MI_WoodTrim",
+  "MI_Plaster"
+ ],
+ "Roof_Front_Brick6": [
+  "MI_WoodTrim",
+  "MI_Plaster"
+ ],
+ "Roof_Front_Brick8": [
+  "MI_WoodTrim",
+  "MI_Plaster"
+ ],
+ "Roof_Tower_RoundTiles": [
+  "MI_WoodTrim",
+  "MI_RockTrim",
+  "MI_RoundTiles",
+  "MI_MetalOrnaments"
+ ],
+ "Roof_Dormer_RoundTile": [
+  "MI_WoodTrim",
+  "MI_Plaster",
+  "MI_WindowGlass",
+  "MI_RoundTiles"
+ ],
+ "Roof_Wooden_2x1": [
+  "MI_WoodTrim",
+  "MI_WoodTrim_Wear"
+ ],
+ "Roof_Wooden_2x1_Corner": [
+  "MI_WoodTrim",
+  "MI_WoodTrim_Wear"
+ ],
+ "Roof_Log": [
+  "MI_WoodTrim"
+ ],
+ "Roof_Support2": [
+  "MI_WoodTrim"
+ ],
+ "Roof_FrontSupports": [
+  "MI_WoodTrim"
+ ],
+ "Door_1_Round": [
+  "MI_WoodTrim",
+  "MI_WindowGlass"
+ ],
+ "Door_2_Round": [
+  "MI_WoodTrim_Wear",
+  "MI_MetalOrnaments"
+ ],
+ "Door_1_Flat": [
+  "MI_WoodTrim",
+  "MI_WindowGlass"
+ ],
+ "DoorFrame_Round_WoodDark": [
+  "MI_WoodTrim"
+ ],
+ "DoorFrame_Flat_WoodDark": [
+  "MI_WoodTrim"
+ ],
+ "Window_Wide_Round1": [
+  "MI_WoodTrim_Wear",
+  "MI_WindowGlass"
+ ],
+ "Window_Thin_Round1": [
+  "MI_WoodTrim_Wear",
+  "MI_WindowGlass"
+ ],
+ "Window_Wide_Flat1": [
+  "MI_WoodTrim",
+  "MI_WindowGlass"
+ ],
+ "WindowShutters_Wide_Round_Open": [
+  "MI_WoodTrim_Wear"
+ ],
+ "WindowShutters_Wide_Round_Closed": [
+  "MI_WoodTrim_Wear"
+ ],
+ "WindowShutters_Thin_Round_Open": [
+  "MI_WoodTrim_Wear"
+ ],
+ "Balcony_Simple_Straight": [
+  "MI_WoodTrim"
+ ],
+ "Balcony_Simple_Corner": [
+  "MI_WoodTrim"
+ ],
+ "Balcony_Cross_Straight": [
+  "MI_WoodTrim"
+ ],
+ "Overhang_Plaster_Long": [
+  "MI_WoodTrim",
+  "MI_Plaster"
+ ],
+ "Overhang_Plaster_Short": [
+  "MI_WoodTrim",
+  "MI_Plaster"
+ ],
+ "Overhang_Plaster_Corner": [
+  "MI_Plaster",
+  "MI_WoodTrim"
+ ],
+ "Stairs_Exterior_Straight": [
+  "MI_RockTrim",
+  "MI_Brick"
+ ],
+ "Stairs_Exterior_Platform": [
+  "MI_RockTrim",
+  "MI_Brick"
+ ],
+ "Stair_Interior_Simple": [
+  "MI_WoodTrim"
+ ],
+ "Prop_Chimney": [
+  "MI_RockTrim",
+  "MI_Brick"
+ ],
+ "Prop_Chimney2": [
+  "MI_UnevenBrick"
+ ],
+ "Prop_Crate": [
+  "MI_WoodTrim"
+ ],
+ "Prop_Wagon": [
+  "MI_WoodTrim_Wear"
+ ],
+ "Prop_WoodenFence_Single": [
+  "MI_WoodTrim"
+ ],
+ "Prop_WoodenFence_Extension1": [
+  "MI_WoodTrim"
+ ],
+ "Prop_MetalFence_Simple": [
+  "MI_MetalOrnaments"
+ ],
+ "Prop_Support": [
+  "MI_WoodTrim"
+ ],
+ "Prop_ExteriorBorder_Straight1": [
+  "MI_RockTrim"
+ ]
+}
