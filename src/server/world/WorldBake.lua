@@ -44,6 +44,36 @@ function WorldBake.BakeWorld(): (boolean, string)
     return true, string.format("Mundo gerado em %.0f s (versão %d). Salve o lugar com File > Save to Roblox.", os.clock() - startedAt, Config.WorldVersion)
 end
 
+-- Só refaz a floresta e a natureza (workspace.WorldBaked), sem mexer no Terrain. Mais rápido que BakeWorld.
+function WorldBake.BakeForest(): (boolean, string)
+    if RunService:IsRunning() then
+        return false, "Pare o jogo antes de gerar a floresta."
+    end
+    local startedAt = os.clock()
+    local function log(text: string)
+        print("[World] " .. text)
+    end
+    local old = workspace:FindFirstChild("WorldBaked")
+    if old then
+        old:Destroy()
+    end
+    local root = Instance.new("Folder")
+    root.Name = "WorldBaked"
+    SurfaceDecor.Build(root, log)
+    root.Parent = workspace
+    local parts = #root:GetDescendants()
+    return true, string.format("Floresta gerada em %.0f s: %d peças.", os.clock() - startedAt, parts)
+end
+
+-- Falha se houver qualquer script no cenário salvo ou na biblioteca de assets.
+function WorldBake.AuditAssets(): (boolean, string)
+    local count = SurfaceDecor.CountScripts()
+    if count > 0 then
+        return false, string.format("Auditoria FALHOU: %d scripts em WorldBaked ou EcosAssets. Apague-os.", count)
+    end
+    return true, "Auditoria ok: nenhum script em WorldBaked nem em EcosAssets."
+end
+
 -- Casa de teste feita com as peças do Quaternius, em um chão simples a oeste do mapa. Serve para ver as texturas e as medidas.
 function WorldBake.PreviewTestHouse(): (boolean, string)
     if RunService:IsRunning() then

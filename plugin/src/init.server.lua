@@ -131,6 +131,14 @@ addButton("Gerar mundo (terreno, demora)", function()
     runWorldBake("BakeWorld", "Gerando o terreno... leva alguns minutos; acompanhe pelo Output.")
 end)
 
+addButton("Gerar só a floresta (rápido)", function()
+    runWorldBake("BakeForest", "Gerando a floresta Synty...")
+end)
+
+addButton("Auditar assets (scripts)", function()
+    runWorldBake("AuditAssets", "Auditando scripts em WorldBaked e EcosAssets...")
+end)
+
 addButton("Limpar prévia", function()
     runWorldBake("ClearPreview", "Limpando a prévia...")
 end)

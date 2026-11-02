@@ -20,4 +20,4 @@
 ## Synty Studios : pacotes gratuitos oficiais da Roblox (Nature, Dungeon, Skeletons & Bones etc.)
 - Publicados pela conta @Roblox na Creator Store, "licenciados para qualquer jogo Roblox" (anúncio de 2021 no DevForum).
 - Uso apenas dentro do Roblox: não extrair os modelos para outros lugares.
-- Ainda não entraram no jogo (módulo R5).
+- Em uso desde o R5: Synty Nature Pack (id 6933438443) para a floresta, as pedras e a ponte. As peças são copiadas para `ServerStorage.EcosAssets.Nature`.

@@ -42,6 +42,9 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
   forma em `SurfaceShape`, escrita em `SurfaceTerrain`, árvores provisórias em `SurfaceDecor`) e salvo no lugar. Mina em X 0, Vila em X -640
   (mercado, oficina, contratos), Mercado Negro em X -1120. Mude `Config.WorldVersion` ao mudar qualquer `Config.World*`.
   O Studio guarda módulos em cache: depois de mudar o Config, reinicie o Studio antes de gerar de novo.
+- **Floresta (R5):** `NatureLibrary` copia o Synty Nature Pack (@Roblox, grátis, 200 peças, sem scripts) para `ServerStorage.EcosAssets.Nature`;
+  `SurfaceDecor` espalha cerca de 1.200 árvores e 2.400 detalhes em `workspace.WorldBaked`, mais clareiras (ruína, acampamento) e a ponte.
+  `WorldBake.BakeForest()` refaz só isso (rápido); `WorldBake.AuditAssets()` falha se houver script em WorldBaked ou EcosAssets.
 - **Próxima fase:** `docs/PLANO-REFINO.md` (mundo vivo, floresta grande, assets Synty, inventário). Nele, o cenário
   (Terrain, árvores, casas) passa a ser gerado por botão no Studio e salvo no lugar; o `MapBuilder` continua criando
   só o que é de jogo (núcleos, elevadores, marcadores, Guardião) a cada partida.

@@ -306,6 +306,8 @@ Módulo R4. Siga a seção 6. O teste de tempo manda mais do que os números aba
 
 ### R5. Floresta densa
 
+**Feito em 02/11/2026** com o Synty Nature Pack: 1.196 árvores, 2.393 detalhes, duas clareiras e uma ponte curva sobre o riacho, em 5.650 peças. Mantido: orçamento da seção 6 (ainda não medido no celular).
+
 **O que faz:** a mata de verdade, com o Synty Nature Pack. A sensação de aventura vem de trechos fechados que se abrem em clareiras.
 
 **Teste:**
