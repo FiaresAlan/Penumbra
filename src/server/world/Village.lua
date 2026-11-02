@@ -28,10 +28,11 @@ local function newPart(name: string, size: Vector3, cframe: CFrame, material: En
 end
 
 -- Placa de madeira com texto nos dois lados
-local function sign(text: string, cframe: CFrame, parent: Instance, width: number?)
+local function sign(text: string, cframe: CFrame, parent: Instance, width: number?, backText: string?)
     local board = newPart("Placa", Vector3.new(width or 9, 2.4, 0.5), cframe, Enum.Material.WoodPlanks, Color3.fromRGB(96, 64, 38), parent)
     board.CanCollide = false
     for _, face in ipairs({ Enum.NormalId.Front, Enum.NormalId.Back }) do
+        local faceText = if face == Enum.NormalId.Back and backText then backText else text
         local gui = Instance.new("SurfaceGui")
         gui.Face = face
         gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
@@ -40,7 +41,7 @@ local function sign(text: string, cframe: CFrame, parent: Instance, width: numbe
         local label = Instance.new("TextLabel")
         label.Size = UDim2.fromScale(1, 1)
         label.BackgroundTransparency = 1
-        label.Text = text
+        label.Text = faceText
         label.TextScaled = true
         label.Font = Enum.Font.GothamBold
         label.TextColor3 = Color3.fromRGB(245, 225, 180)
@@ -109,6 +110,30 @@ local function mineTower(parent: Instance)
     end
 end
 
+-- Placas ao lado da trilha principal: quem vai para a vila lê "VILA", quem volta lê "MINA".
+-- O Mercado Negro nunca aparece em placa. Precisa do Terrain já gerado para achar o chão.
+local function trailSigns(parent: Instance): number
+    local params = RaycastParams.new()
+    params.FilterType = Enum.RaycastFilterType.Include
+    params.FilterDescendantsInstances = { workspace.Terrain }
+    local points = Config.WorldTrails[1].points
+    local count = 0
+    for index = 2, #points - 1, 2 do
+        local before, here, after = points[index - 1], points[index], points[index + 1]
+        local tangent = Vector3.new(after[1] - before[1], 0, after[2] - before[2]).Unit
+        local side = Vector3.new(-tangent.Z, 0, tangent.X)
+        local x = here[1] + side.X * 8
+        local z = here[2] + side.Z * 8
+        local hit = workspace:Raycast(Vector3.new(x, 300, z), Vector3.new(0, -600, 0), params)
+        local y = if hit then hit.Position.Y else FLOOR
+        newPart("PlacaPoste", Vector3.new(0.8, 7, 0.8), CFrame.new(x, y + 3.5, z), Enum.Material.Wood, Color3.fromRGB(86, 58, 36), parent)
+        local at = Vector3.new(x, y + 6.5, z)
+        sign("▲ VILA", CFrame.lookAt(at, at - tangent), parent, 7, "▲ MINA")
+        count += 1
+    end
+    return count
+end
+
 function Village.Build(root: Folder, log: (string) -> ())
     local old = root:FindFirstChild("Village")
     if old then
@@ -164,7 +189,8 @@ function Village.Build(root: Folder, log: (string) -> ())
     VillagePieces.Place("Prop_Crate", CFrame.new(black.x - 6, FLOOR, black.z + 9) * CFrame.Angles(0, math.rad(-30), 0), folder)
     houses += 1
 
-    log(string.format("vila: %d casas, poço, placas, torre da mina e cabana do Mercado Negro", houses))
+    local posts = trailSigns(folder)
+    log(string.format("vila: %d casas, poço, placas, torre da mina, cabana do Mercado Negro e %d placas na trilha", houses, posts))
 end
 
 return Village

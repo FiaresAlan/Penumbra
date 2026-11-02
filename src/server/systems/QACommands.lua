@@ -191,6 +191,9 @@ local commands: { [string]: (player: Player) -> () } = {
             character:PivotTo(CFrame.new(cart.Position + Vector3.new(0, 2, -6)))
         end
     end,
+    CallGroup = function(_player)
+        ExpeditionSystem.QABeginDescent()
+    end,
     ForgetVillage = function(player)
         TravelSystem.QAForget(player)
     end,

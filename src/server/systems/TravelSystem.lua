@@ -12,7 +12,12 @@ local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScript)
 local MovementGuard = require(systems:WaitForChild("MovementGuard") :: ModuleScript)
 
-local TravelFade = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("TravelFade") :: RemoteEvent
+local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
+local RateLimiter = require(systems:WaitForChild("RateLimiter") :: ModuleScript)
+
+local remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
+local TravelFade = remotes:WaitForChild("TravelFade") :: RemoteEvent
+local CallCart = remotes:WaitForChild("CallCart") :: RemoteEvent
 
 local TravelSystem = {}
 
@@ -70,14 +75,17 @@ local function teleport(player: Player, arrival: BasePart)
     end
 end
 
--- `destination` é "Mina" ou "Vila"; `fromCart` é a carroça que o jogador acionou.
-local function travel(player: Player, fromCart: BasePart, destination: string)
+-- `destination` é "Mina" ou "Vila"; `fromCart` é a carroça que o jogador acionou (nil na chamada do grupo,
+-- que vale de qualquer ponto da superfície).
+local function travel(player: Player, fromCart: BasePart?, destination: string)
     if traveling[player] or PlayerState.Get(player) ~= Enums.PlayerLocation.Lobby then
         return
     end
-    local root = getRoot(player)
-    if not root or flatDistance(root.Position, fromCart.Position) > Config.CartPromptRadius + 10 then
-        return
+    if fromCart then
+        local root = getRoot(player)
+        if not root or flatDistance(root.Position, fromCart.Position) > Config.CartPromptRadius + 10 then
+            return
+        end
     end
     if destination == "Vila" and not PlayerProfile.HasDiscovered(player, "village") then
         PlayerProfile.Notify(player, "Você ainda não conhece o caminho da vila. Vá a pé uma vez.")
@@ -135,6 +143,17 @@ function TravelSystem.Init()
     end
     connect(mineCart, "Vila")
     connect(villageCart, "Mina")
+
+    -- Botão "voltar de carroça" do aviso do grupo: só vale durante a contagem da descida
+    CallCart.OnServerEvent:Connect(function(player)
+        if not RateLimiter.Allow(player, "CallCart", 1, 2) then
+            return
+        end
+        if not ExpeditionSystem.IsDescending() or ExpeditionSystem.GetPhase() ~= Enums.ExpeditionPhase.Waiting then
+            return
+        end
+        travel(player, nil, "Mina")
+    end)
 
     Players.PlayerRemoving:Connect(function(player)
         lastTravel[player] = nil

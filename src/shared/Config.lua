@@ -56,6 +56,7 @@ Config.SurfaceRunSpeed = 26 -- Shift na superfície (só em Lobby); na caverna n
 -- Viagem de carroça entre a mina e a vila
 Config.CartCooldown = 10
 Config.CartPromptRadius = 14
+Config.DescentCountdownFar = 30 -- contagem quando alguém do lobby está longe do elevador
 
 -- Enganador
 Config.DeceiverCoreInterval = 8
@@ -242,6 +243,7 @@ Config.QAButtons = {
     { id = "GoToVillage", label = "Ir à vila" },
     { id = "GoToCart", label = "Ir à carroça" },
     { id = "ForgetVillage", label = "Esquecer a vila" },
+    { id = "CallGroup", label = "Chamar o grupo" },
 }
 
 return Config

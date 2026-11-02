@@ -12,6 +12,8 @@ local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
 local MovementGuard = require(systems:WaitForChild("MovementGuard") :: ModuleScript)
 
+local groupCall = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("GroupCall") :: RemoteEvent
+
 local Location = Enums.PlayerLocation
 local Phase = Enums.ExpeditionPhase
 local Outcome = Enums.ExpeditionOutcome
@@ -237,16 +239,46 @@ function ExpeditionSystem.ForceStart(player: Player)
     end
 end
 
+function ExpeditionSystem.IsDescending(): boolean
+    return descending
+end
+
 local function beginDescent()
     descending = true
     updatePrompt()
-    print(string.format("[Expedition] Descida em %ds", Config.DescentCountdown))
 
-    task.delay(Config.DescentCountdown, function()
+    -- Quem está no lobby fora do raio do elevador (na vila, por exemplo) ganha mais tempo e recebe o aviso
+    local countdown = Config.DescentCountdown
+    local far: { Player } = {}
+    local elevator = lobbyElevator
+    for _, player in ipairs(Players:GetPlayers()) do
+        if PlayerState.Get(player) == Location.Lobby then
+            local root = getRoot(player)
+            if elevator and root and (root.Position - elevator.Position).Magnitude > Config.LobbyElevatorRadius then
+                table.insert(far, player)
+            end
+        end
+    end
+    if #far > 0 then
+        countdown = Config.DescentCountdownFar
+        for _, player in ipairs(far) do
+            groupCall:FireClient(player, countdown)
+        end
+    end
+    print(string.format("[Expedition] Descida em %ds (%d longe do elevador)", countdown, #far))
+
+    task.delay(countdown, function()
         descending = false
         startExpedition()
         updatePrompt()
     end)
+end
+
+-- Usado só pelo QA do Studio: começa a contagem sem precisar do prompt do elevador.
+function ExpeditionSystem.QABeginDescent()
+    if phase == Phase.Waiting and not descending then
+        beginDescent()
+    end
 end
 
 local function onCharacterAdded(player: Player, character: Model)

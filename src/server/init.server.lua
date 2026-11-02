@@ -42,6 +42,8 @@ getOrCreateRemote("NestUpdate", "RemoteEvent")
 getOrCreateRemote("CaptiveBang", "RemoteEvent")
 getOrCreateRemote("Run", "RemoteEvent")
 getOrCreateRemote("TravelFade", "RemoteEvent")
+getOrCreateRemote("GroupCall", "RemoteEvent")
+getOrCreateRemote("CallCart", "RemoteEvent")
 
 -- O mapa é gerado antes dos sistemas, que procuram as peças pelo nome
 require(script:WaitForChild("world"):WaitForChild("MapBuilder")).Build()

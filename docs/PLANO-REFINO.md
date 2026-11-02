@@ -350,7 +350,9 @@ Arquivos: Lobby.lua, Forest.lua, Props.lua, Assets.lua, WorldBake.lua, módulo n
 
 ### R9. Viagem e chamada do grupo
 
-**Parte A feita em 02/11/2026:** corrida (Shift, 26 studs/s só em Lobby, via `SneakSystem` + remote `Run`, botão no celular), `TravelSystem` com carroças `CartMina`/`CartVila` (prompt em `Lobby.lua`, cooldown 10 s, vila só depois de descoberta, tela escurece via `TravelFade`), campo `discovered` no perfil e botões QA "Ir à carroça" e "Esquecer a vila". Testado em Play: recusa sem descoberta, ida e volta, cooldown, Shift 26 na superfície e 16 na caverna. Falta a parte B: chamada do grupo (item 4) e bússola e placas (item 5). Nota: o prompt só aparece com a carroça à vista da câmera.
+**Parte A feita em 02/11/2026:** corrida (Shift, 26 studs/s só em Lobby, via `SneakSystem` + remote `Run`, botão no celular), `TravelSystem` com carroças `CartMina`/`CartVila` (prompt em `Lobby.lua`, cooldown 10 s, vila só depois de descoberta, tela escurece via `TravelFade`), campo `discovered` no perfil e botões QA "Ir à carroça" e "Esquecer a vila". Testado em Play: recusa sem descoberta, ida e volta, cooldown, Shift 26 na superfície e 16 na caverna. Nota: o prompt só aparece com a carroça à vista da câmera.
+
+**Parte B feita em 02/11/2026:** `ExpeditionSystem.beginDescent` usa `Config.DescentCountdownFar = 30` quando alguém do Lobby está fora do raio do elevador e avisa esses jogadores (remote `GroupCall`); `GroupCallUI` mostra o tempo e o botão "Voltar de carroça" (remote `CallCart`, validado em `TravelSystem`: só durante a contagem, com cooldown); `Compass` (HUD, só na superfície, mina e vila, nunca o Mercado Negro); 3 placas na trilha principal, gravadas pela vila (`WorldBake.BakeVillage`). QA: botão "Chamar o grupo". Testado em Play sozinho. Não testado com 2 jogadores.
 
 **O que faz:** evita que o mapa grande quebre o ritmo e separe o grupo. Sem isso, quem estiver na vila quando o grupo descer fica de fora por até 15 minutos.
 
