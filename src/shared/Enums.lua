@@ -1,3 +1,4 @@
+--!strict
 return {
     GuardianState = {
         Sleeping = "Dormindo",

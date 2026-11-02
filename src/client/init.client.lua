@@ -53,10 +53,11 @@ AmbientAudio.Init()
 -- Tudo iniciado: pede ao servidor o estado atual (perfil, pedidos, local), que pode ter chegado antes dos eventos
 ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("ClientReady"):FireServer()
 
--- Tecla V = "grito" (simula voz por enquanto)
+-- Tecla V = "grito" para teste no Studio e para quem não tem microfone. Com microfone, vale só a voz de verdade.
+local isStudio = game:GetService("RunService"):IsStudio()
 UserInputService.InputBegan:Connect(function(input, processed)
     if processed then return end
-    if input.KeyCode == Enum.KeyCode.V then
+    if input.KeyCode == Enum.KeyCode.V and (isStudio or not VoiceNoise.HasMic()) then
         VoiceSpike:FireServer(10)
         NoiseBar.ShowSpike()
     end

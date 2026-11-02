@@ -84,7 +84,7 @@ local function spawnFakeCore()
         end
     end
     fake.Name = "Core" .. (highest + 1)
-    fake:SetAttribute("DepthZone", if position.X < 580 then "A" elseif position.X < 724 then "B" else "C")
+    fake:SetAttribute("DepthZone", if position.X < Config.ZoneBoundaryB then "A" elseif position.X < Config.ZoneBoundaryC then "B" else "C")
     LootSystem.MarkFake(fake, function(_player: Player, at: Vector3)
         AudioBroadcast.Play("Laugh", at)
     end)

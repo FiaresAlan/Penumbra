@@ -10,6 +10,13 @@ local debugEnabled = Config.VoiceDebug and game:GetService("RunService"):IsStudi
 
 local VoiceNoise = {}
 
+local micReady = false
+
+-- Verdadeiro quando o microfone foi encontrado e está sendo lido. A tecla V só vale sem microfone (ou no Studio).
+function VoiceNoise.HasMic(): boolean
+    return micReady
+end
+
 -- Liga o microfone do jogador a um AudioAnalyzer e avisa o servidor quando a voz é alta.
 -- A leitura é feita no cliente porque no servidor o analisador devolve zero.
 function VoiceNoise.Init()
@@ -28,6 +35,7 @@ function VoiceNoise.Init()
         wire.SourceInstance = device
         wire.TargetInstance = analyzer
         wire.Parent = analyzer
+        micReady = true
 
         local loudSince: number? = nil
         local lastSent = 0

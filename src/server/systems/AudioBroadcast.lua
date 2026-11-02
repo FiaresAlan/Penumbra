@@ -17,4 +17,11 @@ function AudioBroadcast.Play(soundKey: string, position: Vector3?)
     end
 end
 
+-- Som sem posição para quem está no lobby (por exemplo, o rugido abafado vindo da caverna).
+function AudioBroadcast.PlayToLobby(soundKey: string)
+    for _, player in ipairs(PlayerState.GetPlayersIn(Enums.PlayerLocation.Lobby)) do
+        remote:FireClient(player, soundKey, nil)
+    end
+end
+
 return AudioBroadcast

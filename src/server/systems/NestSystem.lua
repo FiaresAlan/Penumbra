@@ -28,7 +28,8 @@ type Captive = { slot: BasePart, deadline: number }
 local captives: { [Player]: Captive } = {}
 local prompts: { [BasePart]: ProximityPrompt } = {}
 local lastBang: { [Player]: number } = {}
-local sentEmpty = true
+local shown: { [Player]: boolean } = {} -- quem está com a mensagem do Ninho na tela
+local holding: { [Player]: { slot: BasePart, startedAt: number } } = {} -- quem segura o botão de soltar
 
 local function getRoot(player: Player): BasePart?
     local character = player.Character
@@ -56,11 +57,22 @@ local function setPrompt(slot: BasePart, enabled: boolean, label: string?)
     end
 end
 
+local function stopHolding(rescuer: Player)
+    holding[rescuer] = nil
+    NoiseSystem.SetNoiseBoost(rescuer, "rescue", nil)
+end
+
 local function removeCaptive(player: Player)
     local captive = captives[player]
     if captive then
         captives[player] = nil
         setPrompt(captive.slot, false, nil)
+        -- Quem ainda segurava o botão desta vaga não pode ficar com o ruído do resgate preso
+        for rescuer, hold in pairs(holding) do
+            if hold.slot == captive.slot then
+                stopHolding(rescuer)
+            end
+        end
     end
 end
 
@@ -74,7 +86,7 @@ local function validRescuer(rescuer: Player, slot: BasePart): Player?
         return nil
     end
     local root = getRoot(rescuer)
-    if not root or (root.Position - slot.Position).Magnitude > 12 then
+    if not root or (root.Position - slot.Position).Magnitude > Config.RescueRadius then
         return nil
     end
     return captive
@@ -101,14 +113,20 @@ local function setupSlotPrompts()
             -- Soltar é barulhento: o ruído sobe enquanto o jogador segura o botão
             prompt.PromptButtonHoldBegan:Connect(function(rescuer)
                 if validRescuer(rescuer, slot) then
+                    holding[rescuer] = { slot = slot, startedAt = os.clock() }
                     NoiseSystem.SetNoiseBoost(rescuer, "rescue", Config.RescueNoise)
                 end
             end)
             prompt.PromptButtonHoldEnded:Connect(function(rescuer)
-                NoiseSystem.SetNoiseBoost(rescuer, "rescue", nil)
+                stopHolding(rescuer)
             end)
             prompt.Triggered:Connect(function(rescuer)
-                NoiseSystem.SetNoiseBoost(rescuer, "rescue", nil)
+                -- O tempo de segurar é medido no servidor: o cliente poderia disparar o resgate sem esperar
+                local hold = holding[rescuer]
+                stopHolding(rescuer)
+                if not hold or hold.slot ~= slot or os.clock() - hold.startedAt < Config.RescueHoldTime - 0.5 then
+                    return
+                end
                 local captive = validRescuer(rescuer, slot)
                 if not captive then
                     return
@@ -122,29 +140,28 @@ local function setupSlotPrompts()
     end
 end
 
+-- Cada jogador recebe a lista de presos, com o tempo de cada um. Quem deixa de ver o Ninho recebe a ordem de limpar.
 local function broadcast()
-    local first: Player? = nil
-    local firstCaptive: Captive? = nil
+    local list: { { name: string, timeLeft: number, userId: number } } = {}
     for player, captive in pairs(captives) do
-        first = player
-        firstCaptive = captive
-        break
+        table.insert(list, { name = player.Name, timeLeft = math.max(0, math.ceil(captive.deadline - os.clock())), userId = player.UserId })
     end
+    table.sort(list, function(a, b)
+        return a.timeLeft < b.timeLeft
+    end)
 
-    if not first or not firstCaptive then
-        if not sentEmpty then
-            sentEmpty = true
-            -- Todos recebem o "limpar": quem acabou de voltar ao lobby já não está na caverna
-            NestUpdate:FireAllClients({ none = true })
-        end
-        return
-    end
-
-    sentEmpty = false
-    local timeLeft = math.max(0, math.ceil(firstCaptive.deadline - os.clock()))
-    for _, location in ipairs({ Location.Cave, Location.Captive }) do
-        for _, player in ipairs(PlayerState.GetPlayersIn(location)) do
-            NestUpdate:FireClient(player, { name = first.Name, timeLeft = timeLeft, isYou = player == first })
+    for _, player in ipairs(Players:GetPlayers()) do
+        local location = PlayerState.Get(player)
+        if #list > 0 and (location == Location.Cave or location == Location.Captive) then
+            local entries = {}
+            for _, entry in ipairs(list) do
+                table.insert(entries, { name = entry.name, timeLeft = entry.timeLeft, isYou = entry.userId == player.UserId })
+            end
+            shown[player] = true
+            NestUpdate:FireClient(player, { captives = entries })
+        elseif shown[player] then
+            shown[player] = nil
+            NestUpdate:FireClient(player, { none = true })
         end
     end
 end
@@ -162,6 +179,8 @@ function NestSystem.Init()
     KidnapSystem.PlayerCaptive:Connect(function(player: Player, slot: BasePart)
         captives[player] = { slot = slot, deadline = os.clock() + Config.CaptiveTimeLimit }
         setPrompt(slot, true, player.Name)
+        -- Quem está no lobby ouve o rugido abafado do Ninho
+        AudioBroadcast.PlayToLobby("Rumble")
     end)
 
     PlayerState.Changed:Connect(function(player: Player, location: string)
@@ -172,6 +191,8 @@ function NestSystem.Init()
 
     Players.PlayerRemoving:Connect(function(player)
         removeCaptive(player)
+        holding[player] = nil
+        shown[player] = nil
         lastBang[player] = nil
     end)
 

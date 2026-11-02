@@ -1,3 +1,4 @@
+--!strict
 local Config = {}
 
 -- Movimento
@@ -173,6 +174,9 @@ Config.AmbientLayers = {
 
 -- Mapa gerado por src/server/world/MapBuilder.lua
 Config.MapSeed = 1337
+-- X onde a caverna passa da zona A para a B e da B para a C (ORIGIN_X 420 + colunas 10 e 19 de 16 studs)
+Config.ZoneBoundaryB = 580
+Config.ZoneBoundaryC = 724
 
 -- QA (botões do painel; só existem no Studio)
 Config.QAButtons = {

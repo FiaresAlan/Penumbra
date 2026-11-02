@@ -26,12 +26,19 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 5. Se a mudança quebrar compatibilidade com a Fase 0, avise antes.
 
 ## Estrutura do projeto
-- `src/shared/` — Config, Enums, tipos.
-- `src/server/systems/` — NoiseSystem, LootSystem, GuardianAI, ExtractionSystem.
-- `src/client/ui/` — NoiseBar, ExtractionUI.
-- O mapa (lobby, caverna, marcadores) é gerado por `src/server/world/MapBuilder.lua`,
-  autorizado pelo Alan em 02/11/2026. Peças novas que o código precise vão lá.
-- Decoração e assets pesados continuam sendo montados no Studio.
+- `src/shared/` — Config, Enums, Assets (IDs dos meshes), ContractRules, BlackMarketRules.
+- `src/server/systems/` — um módulo por sistema (PlayerState, ExpeditionSystem, ExtractionSystem, LootSystem,
+  NoiseSystem, GuardianAI, KidnapSystem, NestSystem, PlayerProfile, MarketSystem, WorkshopSystem, HookSystem,
+  ContractSystem, BlackMarketSystem, HighlightsSystem, ClipSystem, MovementGuard, ClientSync etc.).
+- `src/server/world/MapBuilder.lua` — gera lobby, floresta, caverna e props, autorizado pelo Alan em 02/11/2026.
+- `src/client/` — init, VoiceNoise, ZoneLighting, Flashlight, SneakInput, GuardianPresence, HookController;
+  `ui/` (NoiseBar, ExtractionUI, QAPanel, NestUI, ProfileHUD, ShopUI, ClipPrompt, TutorialHints),
+  `audio/` (WorldAudio, AmbientAudio) e `clips/` (ClipExporter).
+- `plugin/` — plugin de Studio "Ecos Tools". `tools/` — scripts e assets de origem (KayKit, sons, referências).
+- **Próxima fase:** `docs/PLANO-REFINO.md` (mundo vivo, floresta grande, assets Synty, inventário). Nele, o cenário
+  (Terrain, árvores, casas) passa a ser gerado por botão no Studio e salvo no lugar; o `MapBuilder` continua criando
+  só o que é de jogo (núcleos, elevadores, marcadores, Guardião) a cada partida.
+- Assets de terceiros só entram sem scripts e depois de auditados (regras na seção 7 do plano de refino).
 
 ## Estado atual
 - Fase 0 concluída e validada (loop de extração funcional).

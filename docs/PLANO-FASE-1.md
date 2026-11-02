@@ -41,7 +41,7 @@ Siga a ordem: cada módulo usa funções criadas pelos anteriores.
 | Morte comum | Se o personagem morrer (ou usar Reset), perde a mochila e renasce no lobby. | Fecha o exploit de fugir do Ninho |
 | Mochila no sequestro | Fica com o preso. Resgatado, ele a mantém. | Mais simples, sem risco de duplicação |
 | Arrastar | Efeito real por até 8s, depois teleporta ao Ninho. | Evita travar em paredes |
-| Perfil | ProfileStore, biblioteca recomendada pela skill de DataStores. | Evita perda e duplicação de itens |
+| Perfil | ProfileStore, biblioteca recomendada pela skill de DataStores. **Na prática:** o perfil usa código próprio (`PlayerProfile.lua`) com trava de sessão por JobId, UpdateAsync e retentativas, revisado em 02/11/2026. | Evita perda e duplicação de itens |
 | Valor após extrair | Fica travado no item guardado. | O Mercado não precisa conhecer o tempo |
 | Botas | Reduzem só o ruído de passos, nunca o da voz. | Preserva a tensão central |
 | Gancho | Só engancha em pontos marcados no mapa e faz barulho. | Resolve o exploit e a regra de mapa |

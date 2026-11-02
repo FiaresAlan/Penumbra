@@ -68,22 +68,31 @@ function NestUI.Init()
         if typeof(data) ~= "table" then
             return
         end
-        local info = data :: { none: boolean?, name: string?, timeLeft: number?, isYou: boolean? }
-        if info.none then
+        local info = data :: { none: boolean?, captives: { { name: string, timeLeft: number, isYou: boolean } }? }
+        local captives = info.captives
+        if info.none or not captives or #captives == 0 then
             isCaptive = false
             label.Visible = false
             bangButton.Visible = false
             return
         end
 
-        local timeLeft = info.timeLeft or 0
-        isCaptive = info.isYou == true
+        -- A lista já vem ordenada: o primeiro é quem tem menos tempo
+        local mine: { name: string, timeLeft: number, isYou: boolean }? = nil
+        for _, entry in ipairs(captives) do
+            if entry.isYou then
+                mine = entry
+            end
+        end
+        isCaptive = mine ~= nil
         label.Visible = true
         bangButton.Visible = isCaptive
-        if isCaptive then
-            label.Text = string.format("Você está preso no Ninho — %s", formatTime(timeLeft))
+        if mine then
+            label.Text = string.format("Você está preso no Ninho — %s", formatTime(mine.timeLeft))
         else
-            label.Text = string.format("%s está no Ninho — %s", info.name or "Alguém", formatTime(timeLeft))
+            local first = captives[1]
+            local extra = if #captives > 1 then string.format(" (+%d)", #captives - 1) else ""
+            label.Text = string.format("%s está no Ninho — %s%s", first.name, formatTime(first.timeLeft), extra)
         end
     end)
 end
