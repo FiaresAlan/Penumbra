@@ -374,6 +374,8 @@ Arquivos: ExpeditionSystem.lua, MovementGuard.lua, PlayerProfile.lua, Extraction
 
 ### R7. Vida no mundo (depois do Portão 1)
 
+**Parte R7a feita em 02/11/2026** (`src/client/WorldLife.lua`, ligado ao `ZoneLighting`): fumaça nas 6 chaminés da vila (liga a menos de 220 studs), vaga-lumes e folhas em volta do jogador, bando de 6 pássaros a cada 40–90 s e nuvens (`Clouds` do Terrain). Tudo some ao descer e volta ao subir (testado: nada resta na caverna). Falta: R7b (NPCs no servidor e balões de fala), R7c (animais na floresta, morcegos e poeira na caverna) e fogueiras. Não medi desempenho em celular.
+
 **O que faz:** coisas que se mexem. Tudo só visual e no cliente, salvo os NPCs.
 
 **Teste:** fique parado 60 s na vila: algo acontece à sua volta. Com a câmera na caverna, nada da superfície consome processamento. Em Device Emulator de celular, o jogo continua fluido.
