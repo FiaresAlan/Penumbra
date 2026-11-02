@@ -12,6 +12,7 @@ local KidnapSystem = require(systems:WaitForChild("KidnapSystem") :: ModuleScrip
 local GuardianDirector = require(systems:WaitForChild("GuardianDirector") :: ModuleScript)
 local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScript)
 local ContractSystem = require(systems:WaitForChild("ContractSystem") :: ModuleScript)
+local BlackMarketSystem = require(systems:WaitForChild("BlackMarketSystem") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 
@@ -80,6 +81,12 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     ResetProfile = function(player)
         PlayerProfile.QAReset(player)
+    end,
+    RotateOrders = function(_player)
+        BlackMarketSystem.Rotate()
+    end,
+    OpenBlackMarket = function(player)
+        goNear(player, "BlackMarketStall", "blackmarket")
     end,
     NextDay = function(player)
         ContractSystem.QAAdvanceDay()

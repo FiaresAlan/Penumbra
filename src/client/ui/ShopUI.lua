@@ -12,6 +12,8 @@ local BuyUpgrade = Remotes:WaitForChild("BuyUpgrade") :: RemoteEvent
 local DisplayRelic = Remotes:WaitForChild("DisplayRelic") :: RemoteEvent
 local RetrieveRelic = Remotes:WaitForChild("RetrieveRelic") :: RemoteEvent
 local ClaimContract = Remotes:WaitForChild("ClaimContract") :: RemoteEvent
+local OrdersUpdate = Remotes:WaitForChild("OrdersUpdate") :: RemoteEvent
+local FulfillOrder = Remotes:WaitForChild("FulfillOrder") :: RemoteEvent
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 local ProfileHUD = require((script.Parent :: Instance):WaitForChild("ProfileHUD") :: ModuleScript)
 
@@ -21,6 +23,7 @@ local window: Frame
 local titleLabel: TextLabel
 local list: ScrollingFrame
 local currentShop: string? = nil
+local lastOrders: { any } = {}
 
 local function clearList()
     for _, child in ipairs(list:GetChildren()) do
@@ -98,6 +101,30 @@ local function render()
             addRow(string.format("%s — %d 💎", itemName(item), price), "Vender", function()
                 SellItem:FireServer(item.id)
             end)
+        end
+    elseif currentShop == "blackmarket" then
+        titleLabel.Text = string.format("Mercado Negro · %d 💎", profile.money)
+        if #lastOrders == 0 then
+            addRow("Sem pedidos no momento.", nil, nil)
+        end
+        for _, order in ipairs(lastOrders) do
+            -- Só para habilitar o botão: o servidor decide de verdade
+            local have = 0
+            for _, item in ipairs(profile.stash) do
+                if item.type == order.itemType and (order.rarity == nil or item.rarity == order.rarity) then
+                    have += 1
+                end
+            end
+            local text = string.format("%dx %s — %d%%", order.quantity, order.label, math.floor(order.priceRate * 100 + 0.5))
+            if order.done then
+                addRow(text, "Entregue", nil)
+            elseif have >= order.quantity then
+                addRow(text, "Entregar", function()
+                    FulfillOrder:FireServer(order.id)
+                end)
+            else
+                addRow(string.format("%s (você tem %d)", text, have), nil, nil)
+            end
         end
     elseif currentShop == "contracts" then
         titleLabel.Text = string.format("Quadro de Contratos · %d 💎", profile.money)
@@ -208,7 +235,7 @@ function ShopUI.Init()
     layout.Parent = list
 
     OpenShop.OnClientEvent:Connect(function(shop: unknown)
-        if shop ~= "market" and shop ~= "workshop" and shop ~= "contracts" then
+        if shop ~= "market" and shop ~= "workshop" and shop ~= "contracts" and shop ~= "blackmarket" then
             return
         end
         currentShop = shop :: string
@@ -217,6 +244,13 @@ function ShopUI.Init()
     end)
 
     ProfileHUD.OnChanged(render)
+
+    OrdersUpdate.OnClientEvent:Connect(function(orders: unknown)
+        if typeof(orders) == "table" then
+            lastOrders = orders :: { any }
+            render()
+        end
+    end)
 end
 
 return ShopUI
