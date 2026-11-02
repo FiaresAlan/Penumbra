@@ -23,6 +23,7 @@ getOrCreateRemote("VoiceSpike", "RemoteEvent")
 getOrCreateRemote("ElevatorUpdate", "RemoteEvent")
 getOrCreateRemote("HUDUpdate", "RemoteEvent")
 getOrCreateRemote("WorldAudio", "RemoteEvent")
+getOrCreateRemote("Receipt", "RemoteEvent")
 
 -- O mapa é gerado antes dos sistemas, que procuram as peças pelo nome
 require(script:WaitForChild("world"):WaitForChild("MapBuilder")).Build()

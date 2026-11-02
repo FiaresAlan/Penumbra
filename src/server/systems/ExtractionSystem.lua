@@ -11,6 +11,8 @@ local ElevatorUpdate = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChil
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
 local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
+local CaveRules = require(systems:WaitForChild("CaveRules") :: ModuleScript)
+local receiptRemote = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("Receipt") :: RemoteEvent
 
 local Location = Enums.PlayerLocation
 local Phase = Enums.ExpeditionPhase
@@ -91,16 +93,19 @@ local function carryPassengers()
         end
     end
 
+    -- O multiplicador é calculado uma vez: ao sair o último passageiro a expedição pode acabar.
+    local multiplier = CaveRules.GetValueMultiplier(ExpeditionSystem.GetElapsedTime())
+
     for _, player in ipairs(passengers) do
-        local inventory = LootSystem.GetInventory(player)
-        local count = #inventory.cores
-        print(string.format("[Extraction] %s subiu com %d núcleos (%d 💎)", player.Name, count, inventory.totalValue))
-        if count > 0 then
+        local receipt = LootSystem.FinalizeExtraction(player, multiplier)
+        print(string.format("[Extraction] %s subiu com %d itens (%d 💎, x%.2f)",
+            player.Name, #receipt.items, receipt.total, receipt.multiplier))
+        if #receipt.items > 0 then
             ExpeditionSystem.RecordExtraction(player)
         end
-        extractedEvent:Fire(player, count)
+        receiptRemote:FireClient(player, receipt)
+        extractedEvent:Fire(player, receipt)
         ExpeditionSystem.ReturnToLobby(player, true)
-        LootSystem.ClearInventory(player)
     end
 end
 

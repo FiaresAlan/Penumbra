@@ -6,9 +6,49 @@ local playerGui = player:WaitForChild("PlayerGui")
 local Remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
 local ElevatorUpdate = Remotes:WaitForChild("ElevatorUpdate")
 local HUDUpdate = Remotes:WaitForChild("HUDUpdate")
+local Receipt = Remotes:WaitForChild("Receipt")
 
 local ExtractionUI = {}
-local statusLabel, inventoryLabel
+local statusLabel, inventoryLabel, noticeLabel, receiptLabel
+local noticeToken = 0
+local receiptToken = 0
+
+local function newLabel(parent, size, position)
+    local label = Instance.new("TextLabel")
+    label.Size = size
+    label.Position = position
+    label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    label.BackgroundTransparency = 0.5
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.Font = Enum.Font.GothamBold
+    label.TextScaled = true
+    label.Text = ""
+    label.Visible = false
+    label.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = label
+    return label
+end
+
+local function showTemporarily(label, text, seconds, tokenName)
+    label.Text = text
+    label.Visible = true
+    if tokenName == "notice" then
+        noticeToken = noticeToken + 1
+        local mine = noticeToken
+        task.delay(seconds, function()
+            if mine == noticeToken then label.Visible = false end
+        end)
+    else
+        receiptToken = receiptToken + 1
+        local mine = receiptToken
+        task.delay(seconds, function()
+            if mine == receiptToken then label.Visible = false end
+        end)
+    end
+end
 
 function ExtractionUI.Init()
     local gui = playerGui:WaitForChild("EcosHUD")
@@ -36,8 +76,14 @@ function ExtractionUI.Init()
     inventoryLabel.Font = Enum.Font.Gotham
     inventoryLabel.TextSize = 18
     inventoryLabel.TextXAlignment = Enum.TextXAlignment.Left
-    inventoryLabel.Text = "Mochila: 0 núcleos · 0 💎"
+    inventoryLabel.Text = "Mochila: 0 itens · 0 💎"
     inventoryLabel.Parent = gui
+
+    noticeLabel = newLabel(gui, UDim2.new(0, 300, 0, 36), UDim2.new(0.5, -150, 0.62, 0))
+    noticeLabel.TextColor3 = Color3.fromRGB(255, 120, 100)
+
+    receiptLabel = newLabel(gui, UDim2.new(0, 360, 0, 120), UDim2.new(0.5, -180, 0.25, 0))
+    receiptLabel.TextColor3 = Color3.fromRGB(180, 255, 200)
 
     ElevatorUpdate.OnClientEvent:Connect(function(data)
         if data.stage == "arriving" then
@@ -57,8 +103,18 @@ function ExtractionUI.Init()
     end)
 
     HUDUpdate.OnClientEvent:Connect(function(data)
-        inventoryLabel.Text = string.format("Mochila: %d núcleos · %d 💎",
-            data.coresCount, data.totalValue)
+        inventoryLabel.Text = string.format("Mochila: %d itens · %d 💎",
+            data.itemsCount, data.totalValue)
+        if data.notice then
+            showTemporarily(noticeLabel, data.notice, 2, "notice")
+        end
+    end)
+
+    Receipt.OnClientEvent:Connect(function(receipt)
+        if typeof(receipt) ~= "table" then return end
+        local text = string.format("Extração concluída\n%d itens · %d 💎 (x%.2f)",
+            #receipt.items, receipt.total, receipt.multiplier)
+        showTemporarily(receiptLabel, text, 6, "receipt")
     end)
 end
 

@@ -9,29 +9,51 @@ local PlayerState = require(script.Parent:WaitForChild("PlayerState"))
 
 local LootSystem = {}
 
+-- Cada item da mochila: { type = "Core" | "Relic", rarity, baseValue }
+-- baseValue já inclui o bônus de profundidade do ponto onde foi coletado.
 local playerInventory = {}
+local valueMultiplier = 1
 
 local function getOrCreateInventory(player)
     if not playerInventory[player] then
-        playerInventory[player] = { cores = {}, totalValue = 0 }
+        playerInventory[player] = { items = {} }
     end
     return playerInventory[player]
 end
 
+local function weightOf(itemType)
+    return Config.ItemWeights[itemType] or Config.CoreWeight
+end
+
+local function totalWeight(inv)
+    local weight = 0
+    for _, item in ipairs(inv.items) do
+        weight = weight + weightOf(item.type)
+    end
+    return weight
+end
+
+local function backpackValue(inv, multiplier)
+    local sum = 0
+    for _, item in ipairs(inv.items) do
+        sum = sum + item.baseValue
+    end
+    return math.floor(sum * multiplier)
+end
+
 local function updateCarryWeight(player)
-    local inv = getOrCreateInventory(player)
-    local weight = #inv.cores * Config.CoreWeight
     if player.Character then
-        player.Character:SetAttribute("CarryWeight", weight)
+        player.Character:SetAttribute("CarryWeight", totalWeight(getOrCreateInventory(player)))
     end
 end
 
-local function sendInventoryUpdate(player)
+local function sendInventoryUpdate(player, notice)
     local inv = getOrCreateInventory(player)
     HUDUpdate:FireClient(player, {
-        coresCount = #inv.cores,
-        totalValue = inv.totalValue,
-        weight = #inv.cores * Config.CoreWeight,
+        itemsCount = #inv.items,
+        totalValue = backpackValue(inv, valueMultiplier),
+        weight = totalWeight(inv),
+        notice = notice,
     })
 end
 
@@ -40,19 +62,43 @@ function LootSystem.GetInventory(player)
 end
 
 function LootSystem.ClearInventory(player)
-    playerInventory[player] = { cores = {}, totalValue = 0 }
+    playerInventory[player] = { items = {} }
     updateCarryWeight(player)
     sendInventoryUpdate(player)
 end
 
--- Coloca um núcleo na mochila. Usado pela coleta e pelos comandos de QA.
-function LootSystem.GrantCore(player, rarity)
+function LootSystem.GetBackpackValue(player, multiplier)
+    return backpackValue(getOrCreateInventory(player), multiplier)
+end
+
+function LootSystem.SetValueMultiplier(multiplier)
+    valueMultiplier = multiplier
+end
+
+function LootSystem.PushHud(player)
+    sendInventoryUpdate(player)
+end
+
+-- Coloca um item na mochila. Devolve false (e avisa o jogador) se ficaria pesado demais.
+function LootSystem.GrantItem(player, itemType, rarity, depthZone)
+    itemType = itemType or "Core"
     rarity = rarity or Enums.CoreRarity.Common
-    local value = Config.CoreValue[rarity] or 10
 
     local inv = getOrCreateInventory(player)
-    table.insert(inv.cores, { rarity = rarity, value = value })
-    inv.totalValue = inv.totalValue + value
+    if totalWeight(inv) + weightOf(itemType) > Config.MaxCarryWeight then
+        sendInventoryUpdate(player, "Mochila pesada demais")
+        return false
+    end
+
+    local base
+    if itemType == "Relic" then
+        base = Config.RelicValue
+    else
+        base = Config.CoreValue[rarity] or 10
+    end
+    local bonus = Config.DepthBonus[depthZone or "A"] or 1
+
+    table.insert(inv.items, { type = itemType, rarity = rarity, baseValue = math.floor(base * bonus) })
 
     updateCarryWeight(player)
     sendInventoryUpdate(player)
@@ -60,9 +106,33 @@ function LootSystem.GrantCore(player, rarity)
     if not workspace:GetAttribute("FirstCoreExtracted") then
         workspace:SetAttribute("FirstCoreExtracted", true)
     end
+    return true
 end
 
--- Estado original de cada núcleo, para ResetCores restaurar entre expedições
+-- Atalho usado pelos comandos de QA.
+function LootSystem.GrantCore(player, rarity)
+    return LootSystem.GrantItem(player, "Core", rarity, "A")
+end
+
+-- Fecha a mochila: devolve o recibo com o valor final já travado e esvazia a mochila.
+function LootSystem.FinalizeExtraction(player, multiplier)
+    local inv = getOrCreateInventory(player)
+    local receipt = { items = {}, total = 0, multiplier = multiplier }
+    for _, item in ipairs(inv.items) do
+        local finalValue = math.floor(item.baseValue * multiplier)
+        table.insert(receipt.items, {
+            type = item.type,
+            rarity = item.rarity,
+            baseValue = item.baseValue,
+            value = finalValue,
+        })
+        receipt.total = receipt.total + finalValue
+    end
+    LootSystem.ClearInventory(player)
+    return receipt
+end
+
+-- Estado original de cada item coletável, para ResetCores restaurar entre expedições
 local coreOriginals = setmetatable({}, { __mode = "k" })
 
 local function setCoreLights(corePart, enabled)
@@ -90,8 +160,12 @@ local function connectCore(corePart, prompt)
             return
         end
 
+        local itemType = corePart:GetAttribute("ItemType") or "Core"
         local rarity = corePart:GetAttribute("Rarity") or Enums.CoreRarity.Common
-        LootSystem.GrantCore(player, rarity)
+        local depthZone = corePart:GetAttribute("DepthZone") or "A"
+        if not LootSystem.GrantItem(player, itemType, rarity, depthZone) then
+            return
+        end
 
         corePart:SetAttribute("Collected", true)
         corePart.Transparency = 1

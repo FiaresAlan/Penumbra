@@ -1,5 +1,7 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -48,7 +50,7 @@ function NoiseBar.Init()
         local char = player.Character
         if not char then return end
         local weight = char:GetAttribute("CarryWeight") or 0
-        local normalized = math.clamp(weight / 10, 0, 1)
+        local normalized = math.clamp(weight / Config.MaxCarryWeight, 0, 1)
         barFill.Size = UDim2.new(normalized, 0, 1, 0)
         if normalized < 0.4 then
             barFill.BackgroundColor3 = Color3.fromRGB(80, 200, 80)

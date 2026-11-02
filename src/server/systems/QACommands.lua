@@ -25,6 +25,9 @@ local commands: { [string]: (player: Player) -> () } = {
     GiveCore = function(player)
         LootSystem.GrantCore(player, Enums.CoreRarity.Common)
     end,
+    GiveRelic = function(player)
+        LootSystem.GrantItem(player, "Relic", Enums.CoreRarity.Legendary, "C")
+    end,
     GoToCaveElevator = function(player)
         local elevator = workspace:FindFirstChild("Elevator")
         local character = player.Character

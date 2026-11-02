@@ -350,18 +350,20 @@ local function shuffle<T>(list: { T }, rng: Random)
     end
 end
 
-local function makeCore(name: string, position: Vector3, rarity: string, depthZone: string)
+local function makeCore(name: string, position: Vector3, rarity: string, depthZone: string, itemType: string?)
     local core = Instance.new("Part")
     core.Name = name
     core.Shape = Enum.PartType.Ball
-    core.Size = Vector3.new(2.4, 2.4, 2.4)
+    local isRelic = itemType == "Relic"
+    core.Size = if isRelic then Vector3.new(3.4, 3.4, 3.4) else Vector3.new(2.4, 2.4, 2.4)
     core.Position = position
     core.Anchored = true
     core.Material = Enum.Material.Neon
-    core.Color = RARITY_COLORS[rarity]
+    core.Color = if isRelic then Color3.fromRGB(255, 120, 210) else RARITY_COLORS[rarity]
     core:SetAttribute("IsCore", true)
     core:SetAttribute("Rarity", rarity)
     core:SetAttribute("DepthZone", depthZone)
+    core:SetAttribute("ItemType", itemType or "Core")
     addLight(core, RARITY_COLORS[rarity], 14, 1.5)
     addPrompt(core, "Pegar", 0.5, 10)
     core.Parent = mapFolder
@@ -397,6 +399,18 @@ local function placeCores(grid: Grid, rng: Random)
     spawnIn("A", { "Common", "Common", "Common", "Common", "Common", "Common" })
     spawnIn("B", { "Common", "Common", "Common", "Common", "Rare", "Rare" })
     spawnIn("C", { "Rare", "Rare" })
+
+    -- Relíquias: uma na zona B, uma na zona C e uma na câmara do núcleo
+    local relicCells = { { lists.B[7], "B" }, { lists.C[3], "C" } }
+    for _, entry in ipairs(relicCells) do
+        local cell = entry[1] :: { number }?
+        if cell then
+            counter += 1
+            makeCore("Relic" .. counter, cellCenter(cell[1], cell[2]) + Vector3.new(0, 2.4, 0), "Legendary", entry[2] :: string, "Relic")
+        end
+    end
+    counter += 1
+    makeCore("Relic" .. counter, cellCenter(21, 8) + Vector3.new(0, 2.4, 0), "Legendary", "C", "Relic")
 
     local veins = { { 22, 6, "Rare" }, { 26, 6, "Legendary" }, { 22, 10, "Rare" }, { 26, 10, "Legendary" }, { 24, 6, "Rare" }, { 24, 10, "Legendary" } }
     for _, vein in ipairs(veins) do

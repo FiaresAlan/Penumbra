@@ -46,6 +46,11 @@ Config.ExpeditionResetDelay = 5
 Config.TeleportHeight = 3
 Config.StreamTimeout = 5
 
+-- Itens e profundidade
+Config.ItemWeights = { Core = 2, Relic = 6 }
+Config.RelicValue = 500
+Config.DepthBonus = { A = 1.0, B = 1.15, C = 1.3 }
+
 -- Voz (limite em RmsLevel, 0 a 1; ajuste olhando os logs [Voice] com VoiceDebug ligado)
 Config.VoiceRmsThreshold = 0.15
 Config.VoiceSustainTime = 0.5
@@ -84,6 +89,7 @@ Config.QAButtons = {
     { id = "GoToCaveElevator", label = "Ir ao elevador" },
     { id = "CallCaveElevator", label = "Chamar elevador" },
     { id = "GuardianNear", label = "Guardião perto" },
+    { id = "GiveRelic", label = "Dar relíquia" },
     { id = "Minute3", label = "Minuto 3" },
     { id = "Minute8", label = "Minuto 8" },
 }

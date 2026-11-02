@@ -1,16 +1,21 @@
 --!strict
--- Aplica o tier de agressividade do Guardião conforme o tempo da expedição.
+-- Aplica o tier de agressividade do Guardião e o multiplicador de valor conforme o tempo da expedição.
 local systems = script.Parent :: Instance
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums") :: ModuleScript)
 local CaveRules = require(systems:WaitForChild("CaveRules") :: ModuleScript)
 local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
 local GuardianAI = require(systems:WaitForChild("GuardianAI") :: ModuleScript)
 local NoiseSystem = require(systems:WaitForChild("NoiseSystem") :: ModuleScript)
+local LootSystem = require(systems:WaitForChild("LootSystem") :: ModuleScript)
+local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local AudioBroadcast = require(systems:WaitForChild("AudioBroadcast") :: ModuleScript)
 
 local CaveClock = {}
 
 local currentTier = ""
+local ticksSinceHud = 0
 
 local function apply(tier: CaveRules.Tier, announce: boolean)
     currentTier = tier.name
@@ -29,15 +34,27 @@ function CaveClock.Init()
 
     ExpeditionSystem.Started:Connect(function()
         apply(CaveRules.GetTier(0), false)
+        LootSystem.SetValueMultiplier(1)
     end)
 
     task.spawn(function()
         while true do
             task.wait(1)
             if ExpeditionSystem.GetPhase() == "Active" then
-                local tier = CaveRules.GetTier(ExpeditionSystem.GetElapsedTime())
+                local elapsed = ExpeditionSystem.GetElapsedTime()
+
+                local tier = CaveRules.GetTier(elapsed)
                 if tier.name ~= currentTier then
                     apply(tier, true)
+                end
+
+                LootSystem.SetValueMultiplier(CaveRules.GetValueMultiplier(elapsed))
+                ticksSinceHud += 1
+                if ticksSinceHud >= 5 then
+                    ticksSinceHud = 0
+                    for _, player in ipairs(PlayerState.GetPlayersIn(Enums.PlayerLocation.Cave)) do
+                        LootSystem.PushHud(player)
+                    end
                 end
             end
         end

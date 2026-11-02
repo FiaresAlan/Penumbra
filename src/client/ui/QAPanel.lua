@@ -22,9 +22,9 @@ function QAPanel.Init()
     gui.Parent = playerGui
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 184, 0, 0)
+    frame.Size = UDim2.new(0, 196, 0, 0)
     frame.AutomaticSize = Enum.AutomaticSize.Y
-    frame.Position = UDim2.new(1, -194, 0, 80)
+    frame.Position = UDim2.new(1, -206, 0, 80)
     frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     frame.BackgroundTransparency = 0.5
     frame.BorderSizePixel = 0
