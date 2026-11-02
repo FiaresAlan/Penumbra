@@ -35,4 +35,13 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 
 ## Estado atual
 - Fase 0 concluída e validada (loop de extração funcional).
-- Fase 1 em andamento: seguir docs/PLANO-FASE-1.md.
+- Fase 1: módulos M1 a M20 de docs/PLANO-FASE-1.md implementados e testados sozinhos no Studio
+  (02/11/2026), exceto: teste com 2 jogadores, voz real com microfone, sons definitivos
+  (hoje sons provisórios do Studio em `Config.Audio`) e persistência em servidor publicado.
+- Faltam os testes com pessoas (Portões 1, 2 e 3 do plano) antes da Fase 2.
+
+## Como testar sem andar (painel QA, só no Studio)
+- `QAPanel` (canto da tela) tem botões para descer, dar itens, forçar sequestro, pular o tempo etc.
+  Cada botão é um comando em `QACommands.lua` e uma linha em `Config.QAButtons`.
+- Com `rojo serve` ligado, o plugin do Rojo precisa estar conectado e o jogo parado para sincronizar.
+  O Rojo 7.7.1 às vezes cai com arquivo sumindo; reiniciar `rojo serve` e clicar em Connect no plugin.
