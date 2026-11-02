@@ -23,7 +23,20 @@ def write(name, samples, peak=0.85):
         f.setsampwidth(2)
         f.setframerate(SR)
         f.writeframes(frames)
-    print(f"{name}.wav  {len(samples) / SR:.2f}s")
+    mp3_note = ""
+    try:
+        import lameenc  # pip install lameenc
+
+        encoder = lameenc.Encoder()
+        encoder.set_bit_rate(128)
+        encoder.set_in_sample_rate(SR)
+        encoder.set_channels(1)
+        encoder.set_quality(2)
+        (OUT / f"{name}.mp3").write_bytes(encoder.encode(frames) + encoder.flush())
+        mp3_note = " + mp3"
+    except ImportError:
+        pass
+    print(f"{name}.wav{mp3_note}  {len(samples) / SR:.2f}s")
 
 
 def noise(n):
