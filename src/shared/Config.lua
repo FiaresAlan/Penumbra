@@ -46,6 +46,11 @@ Config.ExpeditionResetDelay = 5
 Config.TeleportHeight = 3
 Config.StreamTimeout = 5
 
+-- Movimento
+Config.NormalWalkSpeed = 16
+Config.SneakSpeed = 8
+Config.MovementMaxSpeed = 60
+
 -- Enganador
 Config.DeceiverCoreInterval = 8
 Config.DeceiverMaxFakeCores = 3

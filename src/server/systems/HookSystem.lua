@@ -11,6 +11,7 @@ local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScript)
 local NoiseSystem = require(systems:WaitForChild("NoiseSystem") :: ModuleScript)
 local RateLimiter = require(systems:WaitForChild("RateLimiter") :: ModuleScript)
+local MovementGuard = require(systems:WaitForChild("MovementGuard") :: ModuleScript)
 
 local UseHook = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("UseHook") :: RemoteEvent
 
@@ -110,6 +111,7 @@ function HookSystem.Init()
         print(string.format("[Hook] %s usou o gancho (%s)", player.Name, point.Name))
         local land = point:GetAttribute("Land")
         local offset = if typeof(land) == "Vector3" then land else Vector3.new(0, 3, 0)
+        MovementGuard.Exempt(player, Config.HookPullTime + 1.5)
         task.spawn(pull, player, point.Position + offset)
     end)
 

@@ -14,6 +14,7 @@ local PlayerProfile = require(systems:WaitForChild("PlayerProfile") :: ModuleScr
 local ContractSystem = require(systems:WaitForChild("ContractSystem") :: ModuleScript)
 local BlackMarketSystem = require(systems:WaitForChild("BlackMarketSystem") :: ModuleScript)
 local HighlightsSystem = require(systems:WaitForChild("HighlightsSystem") :: ModuleScript)
+local MovementGuard = require(systems:WaitForChild("MovementGuard") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 
@@ -51,6 +52,7 @@ local commands: { [string]: (player: Player) -> () } = {
         local elevator = workspace:FindFirstChild("Elevator")
         local character = player.Character
         if elevator and elevator:IsA("BasePart") and character then
+            MovementGuard.Exempt(player, 3)
             character:PivotTo(CFrame.new(elevator.Position + Vector3.new(-9, 4 - elevator.Size.Y / 2, 0)))
         end
     end,
@@ -124,6 +126,7 @@ local commands: { [string]: (player: Player) -> () } = {
         local point = folder and folder:FindFirstChild("Hook1")
         local character = player.Character
         if point and point:IsA("BasePart") and character and PlayerState.Get(player) == Enums.PlayerLocation.Cave then
+            MovementGuard.Exempt(player, 3)
             character:PivotTo(CFrame.new(point.Position.X, 4, point.Position.Z + 8))
         end
     end,

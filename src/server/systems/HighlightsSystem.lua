@@ -20,6 +20,7 @@ local stories: { string } = {}
 local nameCache: { [number]: string } = {}
 local lastTop: { { userId: number, value: number } } = {}
 local topFailed = false
+local inFlight = 0 -- gravações em andamento (o desligamento espera por elas)
 
 local function weekStore(): OrderedDataStore?
     local ok, store = pcall(function()
@@ -112,18 +113,34 @@ function HighlightsSystem.Flush()
         return
     end
     for userId, value in pairs(toSave) do
+        inFlight += 1
         task.spawn(function()
-            local ok, err = pcall(function()
-                store:UpdateAsync(tostring(userId), function(old: number?)
-                    if old and old >= value then
-                        return nil
-                    end
-                    return value
+            local saved = false
+            local wait = 1
+            for attempt = 1, 3 do
+                local ok, err = pcall(function()
+                    store:UpdateAsync(tostring(userId), function(old: number?)
+                        if old and old >= value then
+                            return nil
+                        end
+                        return value
+                    end)
                 end)
-            end)
-            if not ok then
-                warn("[Highlights] gravação falhou: " .. tostring(err))
+                if ok then
+                    saved = true
+                    break
+                end
+                warn(string.format("[Highlights] gravação falhou (%d/3): %s", attempt, tostring(err)))
+                if attempt < 3 then
+                    task.wait(wait)
+                    wait *= 2
+                end
             end
+            if not saved then
+                -- Não perde o saque: volta para a fila e tenta de novo no próximo fim de expedição
+                pending[userId] = math.max(pending[userId] or 0, value)
+            end
+            inFlight -= 1
         end)
     end
     task.delay(3, HighlightsSystem.Refresh)
@@ -157,6 +174,18 @@ function HighlightsSystem.Init()
 
     ExpeditionSystem.Ended:Connect(function()
         HighlightsSystem.Flush()
+    end)
+
+    -- No desligamento do servidor, grava o que ficou pendente e espera as gravações terminarem
+    game:BindToClose(function()
+        if game:GetService("RunService"):IsStudio() then
+            return
+        end
+        HighlightsSystem.Flush()
+        local deadline = os.clock() + 20
+        while inFlight > 0 and os.clock() < deadline do
+            task.wait(0.2)
+        end
     end)
 
     task.spawn(function()
