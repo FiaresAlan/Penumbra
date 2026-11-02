@@ -19,6 +19,7 @@ local MovementGuard = require(systems:WaitForChild("MovementGuard") :: ModuleScr
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local PathAudit = require(systems:WaitForChild("PathAudit") :: ModuleScript)
+local TravelSystem = require(systems:WaitForChild("TravelSystem") :: ModuleScript)
 
 local QACommands = {}
 
@@ -181,6 +182,17 @@ local commands: { [string]: (player: Player) -> () } = {
             MovementGuard.Exempt(player, 3)
             character:PivotTo(CFrame.new(pad.x + 20, 4, pad.z))
         end
+    end,
+    GoToCart = function(player)
+        local character = player.Character
+        local cart = workspace:FindFirstChild("CartMina")
+        if character and cart and cart:IsA("BasePart") and PlayerState.Get(player) == Enums.PlayerLocation.Lobby then
+            MovementGuard.Exempt(player, 3)
+            character:PivotTo(CFrame.new(cart.Position + Vector3.new(0, 2, -6)))
+        end
+    end,
+    ForgetVillage = function(player)
+        TravelSystem.QAForget(player)
     end,
     GuardianNear = function(player)
         local character = player.Character

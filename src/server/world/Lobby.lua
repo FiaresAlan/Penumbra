@@ -108,6 +108,17 @@ local function buildLobby()
     local board = newPart("LobbyBoard", Vector3.new(14, 8, 1), CFrame.new(VX + 22, 5, VZ - 44), { Material = Enum.Material.Wood, Color = Color3.fromRGB(110, 80, 50) }, workspace)
     board:SetAttribute("Generated", true)
 
+    -- Carroças de viagem: uma na mina e uma na vila (a aparência da carroça vem da vila gravada em WorldBaked).
+    -- O prompt fica na peça CartMina/CartVila; a chegada é uma marca ao lado da outra carroça.
+    local function cart(name: string, x: number, z: number, arrivalName: string, arrivalX: number, arrivalZ: number)
+        local pad = newPart(name, Vector3.new(8, 4, 8), CFrame.new(x, 3, z), { Transparency = 1, CanCollide = false }, workspace)
+        pad:SetAttribute("Generated", true)
+        addPrompt(pad, "Viajar de carroça", 0.5, Config.CartPromptRadius)
+        marker(arrivalName, Vector3.new(4, 1, 4), CFrame.new(arrivalX, 2, arrivalZ), workspace):SetAttribute("Generated", true)
+    end
+    cart("CartMina", 20, 34, "CartArrivalMina", 20, 27)
+    cart("CartVila", VX + 12, VZ + 36, "CartArrivalVila", VX + 12, VZ + 29)
+
     for _, point in ipairs({ { -55, -55 }, { 55, -55 }, { -55, 55 }, { 55, 55 }, { 0, 40 }, { 0, -40 }, { 30, -16 }, { -30, 0 }, { VX - 60, VZ - 40 }, { VX + 30, VZ - 40 }, { VX - 60, VZ + 40 }, { VX + 30, VZ + 40 }, { VX - 10, VZ } }) do
         lampPost(point[1], point[2])
     end

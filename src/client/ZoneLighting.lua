@@ -175,6 +175,15 @@ function ZoneLighting.Init(onZoneChange: ((boolean) -> ())?)
     applyInstant(LOBBY)
     applyEffects(false)
 
+    -- Viagem de carroça: a tela escurece enquanto o servidor move o jogador e volta depois
+    local travelFade = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("TravelFade") :: RemoteEvent
+    travelFade.OnClientEvent:Connect(function()
+        TweenService:Create(frame, TweenInfo.new(0.3), { BackgroundTransparency = 0 }):Play()
+        task.delay(0.9, function()
+            TweenService:Create(frame, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
+        end)
+    end)
+
     remote.OnClientEvent:Connect(function(location: unknown)
         if typeof(location) ~= "string" then
             return

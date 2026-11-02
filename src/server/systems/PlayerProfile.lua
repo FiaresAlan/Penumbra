@@ -20,6 +20,7 @@ export type Profile = {
     upgrades: { [string]: boolean },
     relicDisplay: { StashItem },
     contracts: { [string]: any },
+    discovered: { [string]: boolean }, -- lugares já visitados (ex.: village), liberam a carroça
 }
 
 local PlayerProfile = {}
@@ -48,6 +49,7 @@ local function defaultProfile(): Profile
         upgrades = {},
         relicDisplay = {},
         contracts = {},
+        discovered = {},
     }
 end
 
@@ -70,6 +72,7 @@ local function migrate(data: any): any
     data.upgrades = data.upgrades or {}
     data.relicDisplay = data.relicDisplay or {}
     data.contracts = data.contracts or {}
+    data.discovered = data.discovered or {} -- perfis antigos não tinham
     return data
 end
 
@@ -305,6 +308,23 @@ function PlayerProfile.SetUpgrade(player: Player, upgradeId: string)
         profile.upgrades[upgradeId] = true
         sendUpdate(player)
     end
+end
+
+function PlayerProfile.HasDiscovered(player: Player, place: string): boolean
+    local profile = profiles[player]
+    return profile ~= nil and profile.discovered[place] == true
+end
+
+function PlayerProfile.SetDiscovered(player: Player, place: string, discovered: boolean)
+    local profile = profiles[player]
+    if profile then
+        profile.discovered[place] = if discovered then true else nil
+    end
+end
+
+-- Mostra um aviso curto ao dono do perfil (o cliente já exibe `notice`).
+function PlayerProfile.Notify(player: Player, text: string)
+    sendUpdate(player, text)
 end
 
 -- Usado só pelos comandos de QA do Studio.

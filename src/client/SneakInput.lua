@@ -10,7 +10,10 @@ local Sneak = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("Sneak"
 
 local SneakInput = {}
 
+local Run = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("Run") :: RemoteEvent
+
 local sneaking = false
+local running = false
 
 local function set(value: boolean)
     if sneaking == value then
@@ -20,15 +23,30 @@ local function set(value: boolean)
     Sneak:FireServer(value)
 end
 
+local function setRun(value: boolean)
+    if running == value then
+        return
+    end
+    running = value
+    Run:FireServer(value)
+end
+
 function SneakInput.Init()
     UserInputService.InputBegan:Connect(function(input, processed)
-        if not processed and input.KeyCode == Enum.KeyCode.LeftControl then
+        if processed then
+            return
+        end
+        if input.KeyCode == Enum.KeyCode.LeftControl then
             set(true)
+        elseif input.KeyCode == Enum.KeyCode.LeftShift then
+            setRun(true)
         end
     end)
     UserInputService.InputEnded:Connect(function(input)
         if input.KeyCode == Enum.KeyCode.LeftControl then
             set(false)
+        elseif input.KeyCode == Enum.KeyCode.LeftShift then
+            setRun(false)
         end
     end)
 
@@ -50,6 +68,18 @@ function SneakInput.Init()
             set(not sneaking)
             button.Text = if sneaking then "Devagar: sim" else "Devagar: não"
             button.BackgroundColor3 = if sneaking then Color3.fromRGB(60, 110, 70) else Color3.fromRGB(50, 50, 60)
+        end)
+
+        -- Correr só tem efeito na superfície; o servidor ignora o pedido na caverna
+        local runButton = button:Clone()
+        runButton.Position = UDim2.new(1, -140, 0.64, 0)
+        runButton.Text = "Correr: não"
+        runButton.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+        runButton.Parent = gui
+        runButton.Activated:Connect(function()
+            setRun(not running)
+            runButton.Text = if running then "Correr: sim" else "Correr: não"
+            runButton.BackgroundColor3 = if running then Color3.fromRGB(60, 110, 70) else Color3.fromRGB(50, 50, 60)
         end)
     end
 end

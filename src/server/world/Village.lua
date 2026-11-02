@@ -154,6 +154,8 @@ function Village.Build(root: Folder, log: (string) -> ())
     VillagePieces.Place("Prop_Crate", CFrame.new(VX - 14, FLOOR, VZ + 42) * CFrame.Angles(0, math.rad(35), 0), folder)
 
     mineTower(folder)
+    -- Carroça de viagem da mina (a da vila é a carroça da praça, acima); os prompts ficam em Lobby.lua
+    VillagePieces.Place("Prop_Wagon", CFrame.new(20, FLOOR, 34) * CFrame.Angles(0, math.rad(70), 0), folder)
 
     -- Cabana do Mercado Negro, atrás da barraca, com a porta virada para ela
     local black = Config.WorldPads.MercadoNegro

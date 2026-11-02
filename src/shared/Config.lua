@@ -51,6 +51,11 @@ Config.StreamTimeout = 5
 Config.NormalWalkSpeed = 16
 Config.SneakSpeed = 8
 Config.MovementMaxSpeed = 60
+Config.SurfaceRunSpeed = 26 -- Shift na superfície (só em Lobby); na caverna não muda nada
+
+-- Viagem de carroça entre a mina e a vila
+Config.CartCooldown = 10
+Config.CartPromptRadius = 14
 
 -- Enganador
 Config.DeceiverCoreInterval = 8
@@ -235,6 +240,8 @@ Config.QAButtons = {
     { id = "GoToWall", label = "Ir ao mural" },
     { id = "AuditPaths", label = "Auditar caminhos" },
     { id = "GoToVillage", label = "Ir à vila" },
+    { id = "GoToCart", label = "Ir à carroça" },
+    { id = "ForgetVillage", label = "Esquecer a vila" },
 }
 
 return Config
