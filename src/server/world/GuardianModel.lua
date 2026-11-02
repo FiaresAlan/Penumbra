@@ -36,7 +36,10 @@ local function buildGuardian()
         model.Parent = workspace
         local root = model:FindFirstChild("HumanoidRootPart")
         if root and root:IsA("BasePart") then
-            root:SetNetworkOwner(nil)
+            -- Na prévia do Studio (sem jogo rodando) a API de rede não existe
+            if game:GetService("RunService"):IsRunning() then
+                root:SetNetworkOwner(nil)
+            end
             local eyes = Instance.new("PointLight")
             eyes.Color = Color3.fromRGB(255, 60, 60)
             eyes.Range = 18
