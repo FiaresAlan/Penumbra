@@ -31,6 +31,8 @@ local function goNear(player: Player, partName: string, shop: string)
     end
 end
 
+local propIndex = 0
+
 -- Para criar um botão novo: adicione o id aqui e em Config.QAButtons.
 local commands: { [string]: (player: Player) -> () } = {
     EndFailure = function(_player)
@@ -84,6 +86,21 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     ResetProfile = function(player)
         PlayerProfile.QAReset(player)
+    end,
+    NextProp = function(player)
+        local map = workspace:FindFirstChild("Map")
+        local props = map and map:FindFirstChild("Props")
+        local character = player.Character
+        if props and character and PlayerState.Get(player) == Enums.PlayerLocation.Cave then
+            local children = props:GetChildren()
+            propIndex = propIndex % math.max(#children, 1) + 1
+            local prop = children[propIndex]
+            if prop and prop:IsA("BasePart") then
+                MovementGuard.Exempt(player, 3)
+                character:PivotTo(CFrame.lookAt(prop.Position + Vector3.new(0, 3, 9), prop.Position))
+                print("[QA] prop " .. prop.Name .. " (" .. propIndex .. "/" .. #children .. ")")
+            end
+        end
     end,
     RefreshWall = function(_player)
         HighlightsSystem.Flush()

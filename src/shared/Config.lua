@@ -178,6 +178,7 @@ Config.QAButtons = {
     { id = "GiveItemsQA", label = "Simular extração" },
     { id = "RotateOrders", label = "Girar pedidos" },
     { id = "OpenBlackMarket", label = "Ir ao mercado negro" },
+    { id = "NextProp", label = "Ir a um prop" },
     { id = "RefreshWall", label = "Atualizar mural" },
     { id = "GoToWall", label = "Ir ao mural" },
 }
