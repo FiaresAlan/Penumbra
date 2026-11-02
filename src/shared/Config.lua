@@ -29,6 +29,9 @@ Config.GuardianHearThreshold = 0.5
 Config.GuardianRestTime = 10
 Config.GuardianCatchRadius = 6
 Config.GuardianMoveInterval = 0.25
+Config.GuardianRepathInterval = 0.5
+Config.GuardianAgentRadius = 3
+Config.GuardianAgentHeight = 9
 
 -- Extração
 Config.ElevatorArrivalTime = 20

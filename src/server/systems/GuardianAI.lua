@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local PathfindingService = game:GetService("PathfindingService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
@@ -44,13 +45,82 @@ local function speedMultiplier()
 end
 
 -- Chama MoveTo no máximo a cada Config.GuardianMoveInterval, e só se o destino mudou.
-local function moveTo(target)
+local function directMoveTo(target)
     local now = os.clock()
     if now - lastMoveAt < Config.GuardianMoveInterval then return end
     if lastMoveTarget and (lastMoveTarget - target).Magnitude < 1 then return end
     lastMoveAt = now
     lastMoveTarget = target
     guardianHumanoid:MoveTo(target)
+end
+
+-- Caminho calculado de forma assíncrona; só um cálculo por vez.
+local pathState = {
+    waypoints = nil,
+    index = 1,
+    target = nil,
+    computing = false,
+    lastCompute = 0,
+    warned = false,
+}
+
+local function computePath(target)
+    pathState.computing = true
+    task.spawn(function()
+        local path = PathfindingService:CreatePath({
+            AgentRadius = Config.GuardianAgentRadius,
+            AgentHeight = Config.GuardianAgentHeight,
+            AgentCanJump = false,
+            WaypointSpacing = 6,
+        })
+        local origin = guardianRoot.Position
+        local ok, err = pcall(function()
+            path:ComputeAsync(origin, target)
+        end)
+        if ok and path.Status == Enum.PathStatus.Success then
+            pathState.waypoints = path:GetWaypoints()
+            pathState.index = 2
+            pathState.target = target
+        else
+            pathState.waypoints = nil
+            pathState.target = nil
+            if not pathState.warned then
+                pathState.warned = true
+                warn("[Guardian] Sem caminho até o alvo; usando movimento direto. " .. tostring(err))
+            end
+        end
+        pathState.computing = false
+    end)
+end
+
+local function moveTo(target)
+    local now = os.clock()
+    local stale = pathState.waypoints == nil or pathState.target == nil
+        or (pathState.target - target).Magnitude > 4
+    if stale and not pathState.computing and now - pathState.lastCompute >= Config.GuardianRepathInterval then
+        pathState.lastCompute = now
+        computePath(target)
+    end
+
+    local waypoints = pathState.waypoints
+    local waypoint = waypoints and waypoints[pathState.index]
+    if waypoint then
+        local offset = guardianRoot.Position - waypoint.Position
+        if Vector3.new(offset.X, 0, offset.Z).Magnitude < 4 then
+            pathState.index = pathState.index + 1
+            waypoint = waypoints[pathState.index]
+        end
+    end
+    if waypoint then
+        directMoveTo(waypoint.Position)
+    else
+        directMoveTo(target)
+    end
+end
+
+local function clearPath()
+    pathState.waypoints = nil
+    pathState.target = nil
 end
 
 local function findGuardian()
@@ -92,6 +162,7 @@ end
 function GuardianAI.Reset()
     lastKnownPosition = nil
     lastMoveTarget = nil
+    clearPath()
     setState(Enums.GuardianState.Sleeping)
     if guardianModel and guardianRoot and homeCFrame then
         guardianModel:PivotTo(homeCFrame)
