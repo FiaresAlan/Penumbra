@@ -44,7 +44,18 @@ function LootSystem.ClearInventory(player)
     sendInventoryUpdate(player)
 end
 
+-- Estado original de cada núcleo, para ResetCores restaurar entre expedições
+local coreOriginals = setmetatable({}, { __mode = "k" })
+
 local function connectCore(corePart, prompt)
+    coreOriginals[corePart] = {
+        collected = corePart:GetAttribute("Collected"),
+        transparency = corePart.Transparency,
+        canCollide = corePart.CanCollide,
+        prompt = prompt,
+        promptEnabled = prompt.Enabled,
+    }
+
     prompt.Triggered:Connect(function(player)
         if corePart:GetAttribute("Collected") then return end
         if corePart:GetAttribute("IsFake") then
@@ -71,6 +82,19 @@ local function connectCore(corePart, prompt)
             workspace:SetAttribute("FirstCoreExtracted", true)
         end
     end)
+end
+
+function LootSystem.ResetCores()
+    for corePart, original in pairs(coreOriginals) do
+        if corePart.Parent then
+            corePart:SetAttribute("Collected", original.collected)
+            corePart.Transparency = original.transparency
+            corePart.CanCollide = original.canCollide
+            original.prompt.Enabled = original.promptEnabled
+        else
+            coreOriginals[corePart] = nil
+        end
+    end
 end
 
 function LootSystem.Init()

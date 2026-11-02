@@ -60,7 +60,6 @@ local function startExtraction()
 
     task.wait(5)
     isCalled = false
-    workspace:SetAttribute("FirstCoreExtracted", false)
 end
 
 function ExtractionSystem.Init()

@@ -30,4 +30,18 @@ Config.GuardianInvestigateTime = 5.0
 Config.ElevatorArrivalTime = 20
 Config.ElevatorCloseTime = 30
 
+-- Expedição
+Config.DescentCountdown = 10
+Config.LobbyElevatorRadius = 15
+Config.ExpeditionMaxTime = 900
+Config.ExpeditionResetDelay = 5
+Config.TeleportHeight = 3
+Config.StreamTimeout = 5
+
+-- QA (botões do painel; só existem no Studio)
+Config.QAButtons = {
+    { id = "EndFailure", label = "Encerrar: falha" },
+    { id = "EndSuccess", label = "Encerrar: sucesso" },
+}
+
 return Config

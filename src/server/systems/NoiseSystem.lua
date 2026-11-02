@@ -4,6 +4,8 @@ local Players = game:GetService("Players")
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
 local VoiceSpike = Remotes:WaitForChild("VoiceSpike")
+local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
+local PlayerState = require(script.Parent:WaitForChild("PlayerState"))
 
 local NoiseSystem = {}
 
@@ -11,6 +13,7 @@ local playerNoise = {}
 local voiceSpikes = {}
 
 local function calculateNoise(player)
+    if PlayerState.Get(player) ~= Enums.PlayerLocation.Cave then return 0 end
     local char = player.Character
     if not char then return 0 end
     local humanoid = char:FindFirstChildOfClass("Humanoid")
@@ -40,7 +43,8 @@ function NoiseSystem.GetLoudestPlayer()
     local maxNoise = -1
     for p, n in pairs(playerNoise) do
         local char = p.Character
-        if char and char:FindFirstChildOfClass("Humanoid") and char.Humanoid.Health > 0 then
+        if PlayerState.Get(p) == Enums.PlayerLocation.Cave
+            and char and char:FindFirstChildOfClass("Humanoid") and char.Humanoid.Health > 0 then
             if n > maxNoise then
                 maxNoise = n
                 loudest = p

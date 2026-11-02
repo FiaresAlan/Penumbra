@@ -8,9 +8,11 @@ local VoiceSpike = Remotes:WaitForChild("VoiceSpike")
 
 local NoiseBar = require(script:WaitForChild("ui"):WaitForChild("NoiseBar"))
 local ExtractionUI = require(script:WaitForChild("ui"):WaitForChild("ExtractionUI"))
+local QAPanel = require(script:WaitForChild("ui"):WaitForChild("QAPanel"))
 
 NoiseBar.Init()
 ExtractionUI.Init()
+QAPanel.Init()
 
 -- Tecla V = "grito" (simula voz por enquanto)
 UserInputService.InputBegan:Connect(function(input, processed)

@@ -10,6 +10,7 @@ local GuardianAI = {}
 
 local guardianModel, guardianHumanoid, guardianRoot
 local homePosition
+local homeCFrame
 local currentState = Enums.GuardianState.Sleeping
 local lastKnownPosition
 local stateTimer = 0
@@ -30,6 +31,7 @@ local function findGuardian()
             guardianHumanoid = hum
             guardianRoot = root
             homePosition = root.Position
+            homeCFrame = g:GetPivot()
             return true
         end
     end
@@ -39,6 +41,15 @@ end
 function GuardianAI.WakeUp()
     if currentState == Enums.GuardianState.Sleeping then
         setState(Enums.GuardianState.Alert)
+    end
+end
+
+function GuardianAI.Reset()
+    lastKnownPosition = nil
+    setState(Enums.GuardianState.Sleeping)
+    if guardianModel and guardianRoot and homeCFrame then
+        guardianModel:PivotTo(homeCFrame)
+        guardianRoot.AssemblyLinearVelocity = Vector3.zero
     end
 end
 
