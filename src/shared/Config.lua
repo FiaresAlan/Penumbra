@@ -46,6 +46,32 @@ Config.ExpeditionResetDelay = 5
 Config.TeleportHeight = 3
 Config.StreamTimeout = 5
 
+-- Voz (limite em RmsLevel, 0 a 1; ajuste olhando os logs [Voice] com VoiceDebug ligado)
+Config.VoiceRmsThreshold = 0.15
+Config.VoiceSustainTime = 0.5
+Config.VoiceDebug = true
+
+-- Agressividade do Guardião por tempo de expedição (segundos)
+Config.GuardianTiers = {
+    { name = "Slow", from = 0, speed = 0.8, hear = 0.7 },
+    { name = "Normal", from = 180, speed = 1.0, hear = 0.5 },
+    { name = "Fury", from = 480, speed = 1.2, hear = 0.2 },
+}
+Config.FuryZoneNoise = 1.0
+Config.ValueMaxMinute = 10
+
+-- Sons de mundo. Valores provisórios do próprio Studio; troque pelos IDs da Creator Store.
+Config.Audio = {
+    Rumble = "rbxasset://sounds/impact_explosion_03.mp3",
+    Bang = "rbxasset://sounds/impact_water.mp3",
+    RockDrop = "rbxasset://sounds/impact_water.mp3",
+    Laugh = "rbxasset://sounds/action_get_up.mp3",
+    MimicVoice = "rbxasset://sounds/ouch.ogg",
+}
+Config.AudioSpeed = {
+    MimicVoice = { 0.85, 0.95 },
+}
+
 -- Mapa gerado por src/server/world/MapBuilder.lua
 Config.MapSeed = 1337
 
@@ -58,6 +84,8 @@ Config.QAButtons = {
     { id = "GoToCaveElevator", label = "Ir ao elevador" },
     { id = "CallCaveElevator", label = "Chamar elevador" },
     { id = "GuardianNear", label = "Guardião perto" },
+    { id = "Minute3", label = "Minuto 3" },
+    { id = "Minute8", label = "Minuto 8" },
 }
 
 return Config

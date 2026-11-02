@@ -92,6 +92,13 @@ function ExpeditionSystem.GetElapsedTime(): number
     return os.clock() - startTime
 end
 
+-- Usado só pelos comandos de QA do Studio: finge que a expedição já dura `seconds`.
+function ExpeditionSystem.SetElapsedForQA(seconds: number)
+    if phase == Phase.Active then
+        startTime = os.clock() - seconds
+    end
+end
+
 function ExpeditionSystem.RecordExtraction(player: Player)
     if phase ~= Phase.Active then
         return

@@ -22,16 +22,18 @@ function QAPanel.Init()
     gui.Parent = playerGui
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 180, 0, 0)
+    frame.Size = UDim2.new(0, 184, 0, 0)
     frame.AutomaticSize = Enum.AutomaticSize.Y
-    frame.Position = UDim2.new(1, -190, 0, 80)
+    frame.Position = UDim2.new(1, -194, 0, 80)
     frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     frame.BackgroundTransparency = 0.5
     frame.BorderSizePixel = 0
     frame.Parent = gui
 
-    local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 6)
+    -- Duas colunas, para a lista de botões caber na tela
+    local layout = Instance.new("UIGridLayout")
+    layout.CellSize = UDim2.new(0, 84, 0, 34)
+    layout.CellPadding = UDim2.new(0, 6, 0, 6)
     layout.Parent = frame
 
     local padding = Instance.new("UIPadding")
@@ -43,11 +45,11 @@ function QAPanel.Init()
 
     for _, definition in ipairs(Config.QAButtons) do
         local button = Instance.new("TextButton")
-        button.Size = UDim2.new(1, 0, 0, 36)
         button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         button.TextColor3 = Color3.fromRGB(255, 255, 255)
         button.Font = Enum.Font.GothamBold
-        button.TextSize = 14
+        button.TextSize = 11
+        button.TextWrapped = true
         button.Text = definition.label
         button.Parent = frame
 

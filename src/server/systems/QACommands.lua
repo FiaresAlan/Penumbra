@@ -35,6 +35,12 @@ local commands: { [string]: (player: Player) -> () } = {
     CallCaveElevator = function(player)
         ExtractionSystem.QACall(player)
     end,
+    Minute3 = function(_player)
+        ExpeditionSystem.SetElapsedForQA(180)
+    end,
+    Minute8 = function(_player)
+        ExpeditionSystem.SetElapsedForQA(480)
+    end,
     GuardianNear = function(player)
         local character = player.Character
         local root = character and character:FindFirstChild("HumanoidRootPart")

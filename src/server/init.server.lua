@@ -22,6 +22,7 @@ end
 getOrCreateRemote("VoiceSpike", "RemoteEvent")
 getOrCreateRemote("ElevatorUpdate", "RemoteEvent")
 getOrCreateRemote("HUDUpdate", "RemoteEvent")
+getOrCreateRemote("WorldAudio", "RemoteEvent")
 
 -- O mapa é gerado antes dos sistemas, que procuram as peças pelo nome
 require(script:WaitForChild("world"):WaitForChild("MapBuilder")).Build()
@@ -34,6 +35,7 @@ local LootSystem = require(systems:WaitForChild("LootSystem"))
 local GuardianAI = require(systems:WaitForChild("GuardianAI"))
 local ExtractionSystem = require(systems:WaitForChild("ExtractionSystem"))
 local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem"))
+local CaveClock = require(systems:WaitForChild("CaveClock"))
 local QACommands = require(systems:WaitForChild("QACommands"))
 
 PlayerState.Init()
@@ -42,6 +44,7 @@ LootSystem.Init()
 GuardianAI.Init()
 ExtractionSystem.Init()
 ExpeditionSystem.Init()
+CaveClock.Init()
 QACommands.Init()
 
 print("[Ecos] Servidor inicializado. Aguardando jogadores.")
