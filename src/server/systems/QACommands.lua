@@ -17,6 +17,7 @@ local HighlightsSystem = require(systems:WaitForChild("HighlightsSystem") :: Mod
 local MovementGuard = require(systems:WaitForChild("MovementGuard") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
+local PathAudit = require(systems:WaitForChild("PathAudit") :: ModuleScript)
 
 local QACommands = {}
 
@@ -168,6 +169,9 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     Minute8 = function(_player)
         ExpeditionSystem.SetElapsedForQA(480)
+    end,
+    AuditPaths = function(_player)
+        PathAudit.Run()
     end,
     GuardianNear = function(player)
         local character = player.Character

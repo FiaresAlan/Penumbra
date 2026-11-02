@@ -212,6 +212,7 @@ Config.QAButtons = {
     { id = "NextProp", label = "Ir a um prop" },
     { id = "RefreshWall", label = "Atualizar mural" },
     { id = "GoToWall", label = "Ir ao mural" },
+    { id = "AuditPaths", label = "Auditar caminhos" },
 }
 
 return Config

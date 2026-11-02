@@ -30,7 +30,10 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 - `src/server/systems/` — um módulo por sistema (PlayerState, ExpeditionSystem, ExtractionSystem, LootSystem,
   NoiseSystem, GuardianAI, KidnapSystem, NestSystem, PlayerProfile, MarketSystem, WorkshopSystem, HookSystem,
   ContractSystem, BlackMarketSystem, HighlightsSystem, ClipSystem, MovementGuard, ClientSync etc.).
-- `src/server/world/MapBuilder.lua` — gera lobby, floresta, caverna e props, autorizado pelo Alan em 02/11/2026.
+- `src/server/world/` — MapBuilder (só chama os módulos, na ordem), CaveLayout (grade e zonas, funções puras), WorldUtil,
+  Lobby, Forest, CaveGeometry, CaveDecor, Cores, CaveMarkers, Props, GuardianModel e WorldBake (prévia no modo de edição).
+  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=1218 hash=226980241 nucleos=26`:
+  se mudar sem querer, o gerador mudou o mapa. O QA tem "Auditar caminhos" (esperado: 28 ok, 0 falhas, 3 só pelo gancho).
 - `src/client/` — init, VoiceNoise, ZoneLighting, Flashlight, SneakInput, GuardianPresence, HookController;
   `ui/` (NoiseBar, ExtractionUI, QAPanel, NestUI, ProfileHUD, ShopUI, ClipPrompt, TutorialHints),
   `audio/` (WorldAudio, AmbientAudio) e `clips/` (ClipExporter).

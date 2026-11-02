@@ -81,62 +81,54 @@ local function addButton(text, callback)
     end)
 end
 
-local function findMapBuilder()
+local function findWorldFolder()
     local server = ServerScriptService:FindFirstChild("EcosServer")
-    local world = server and server:FindFirstChild("world")
-    return world and world:FindFirstChild("MapBuilder")
+    return server and server:FindFirstChild("world")
 end
 
-local function clearGenerated()
-    local removed = 0
-    for _, child in ipairs(workspace:GetChildren()) do
-        if child:GetAttribute("Generated") then
-            child:Destroy()
-            removed += 1
-        end
-    end
-    local template = ServerStorage:FindFirstChild("CoreTemplate")
-    if template then
-        template:Destroy()
-    end
-    return removed
-end
-
-addButton("Gerar mapa (modo edição)", function()
-    local module = findMapBuilder()
-    if not module then
-        say("MapBuilder não encontrado. Conecte o Rojo e sincronize o projeto.")
+-- Roda uma ação do módulo WorldBake em uma cópia nova da pasta world: assim mudanças recentes no código
+-- valem sem reiniciar o Studio, e nada fica em cache entre uma geração e outra.
+local function runWorldBake(action, working)
+    local world = findWorldFolder()
+    if not world then
+        say("Pasta world não encontrada. Conecte o Rojo e sincronize o projeto.")
         return
     end
     if game:GetService("RunService"):IsRunning() then
-        say("Pare o jogo antes de gerar o mapa.")
+        say("Pare o jogo antes de usar a prévia.")
         return
     end
-    ChangeHistoryService:SetWaypoint("Antes de gerar o mapa")
-    -- Uma cópia nova do módulo: assim mudanças recentes no código valem sem reiniciar o Studio
-    local fresh = module:Clone()
-    fresh.Parent = module.Parent
-    local ok, result = pcall(require, fresh)
-    fresh:Destroy()
-    if not ok then
-        say("Falha ao carregar o MapBuilder: " .. tostring(result))
-        return
-    end
-    say("Gerando o mapa... (props e Guardião aparecem alguns segundos depois)")
+    say(working)
+    ChangeHistoryService:SetWaypoint("Antes de: " .. action)
+    local copy = world:Clone()
+    copy.Name = "World_Run"
+    copy.Parent = ServerStorage
     task.spawn(function()
-        local built, err = pcall(function()
-            result.Build()
+        local ok, loaded = pcall(require, copy:WaitForChild("WorldBake"))
+        if not ok then
+            copy:Destroy()
+            say("Falha ao carregar o WorldBake: " .. tostring(loaded))
+            return
+        end
+        local built, success, message = pcall(function()
+            return loaded[action]()
         end)
-        ChangeHistoryService:SetWaypoint("Mapa gerado")
-        say(built and "Mapa gerado. Ao dar Play ele é recriado do zero." or ("Erro ao gerar: " .. tostring(err)))
+        copy:Destroy()
+        ChangeHistoryService:SetWaypoint("Depois de: " .. action)
+        if not built then
+            say("Erro: " .. tostring(success))
+        else
+            say(message)
+        end
     end)
+end
+
+addButton("Prévia do mapa (sem Play)", function()
+    runWorldBake("Preview", "Gerando a prévia... (props e Guardião aparecem alguns segundos depois)")
 end)
 
-addButton("Limpar mapa gerado", function()
-    ChangeHistoryService:SetWaypoint("Antes de limpar o mapa")
-    local removed = clearGenerated()
-    ChangeHistoryService:SetWaypoint("Mapa limpo")
-    say(string.format("%d itens gerados removidos.", removed))
+addButton("Limpar prévia", function()
+    runWorldBake("ClearPreview", "Limpando a prévia...")
 end)
 
 addButton("Contar peças do mapa", function()
