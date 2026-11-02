@@ -1,5 +1,5 @@
 --!strict
--- Troca a iluminação conforme o lugar: lobby claro e seguro, caverna escura e fechada.
+-- Troca a iluminação e os efeitos de tela conforme o lugar: lobby claro e seguro, caverna escura e fechada.
 -- A mudança é só local ao jogador. A transição escurece a tela por um instante.
 local Lighting = game:GetService("Lighting")
 local Players = game:GetService("Players")
@@ -24,22 +24,99 @@ local LOBBY: { [string]: any } = {
 
 local CAVE: { [string]: any } = {
     Brightness = 0,
-    Ambient = Color3.fromRGB(28, 28, 36),
-    OutdoorAmbient = Color3.fromRGB(18, 18, 24),
+    Ambient = Color3.fromRGB(34, 34, 46),
+    OutdoorAmbient = Color3.fromRGB(24, 24, 34),
     ClockTime = 0,
-    FogColor = Color3.fromRGB(8, 8, 12),
-    FogStart = 20,
-    FogEnd = 190,
-    ExposureCompensation = 0,
+    FogColor = Color3.fromRGB(8, 8, 14),
+    FogStart = 14,
+    FogEnd = 170,
+    ExposureCompensation = 0.3,
 }
 
 local fadeFrame: Frame? = nil
 local currentIsCave: boolean? = nil
 local onChange: ((boolean) -> ())? = nil
 
+-- Efeitos de tela: guarda como estavam no lobby para restaurar depois
+local colorEffect: ColorCorrectionEffect? = nil
+local atmosphere: Atmosphere? = nil
+local bloom: BloomEffect? = nil
+local depth: DepthOfFieldEffect? = nil
+local sunRays: SunRaysEffect? = nil
+local lobbyAtmosphere: { [string]: any } = {}
+local lobbyBloom = 1
+local lobbySunRays = true
+
 local function applyInstant(settings: { [string]: any })
     for property, value in pairs(settings) do
         (Lighting :: any)[property] = value
+    end
+end
+
+local function applyEffects(isCave: boolean)
+    if colorEffect then
+        colorEffect.Brightness = if isCave then -0.03 else 0
+        colorEffect.Contrast = if isCave then 0.18 else 0
+        colorEffect.Saturation = if isCave then -0.2 else 0
+        colorEffect.TintColor = if isCave then Color3.fromRGB(205, 218, 255) else Color3.new(1, 1, 1)
+    end
+    if atmosphere then
+        if isCave then
+            atmosphere.Density = 0.42
+            atmosphere.Offset = 0
+            atmosphere.Color = Color3.fromRGB(18, 20, 28)
+            atmosphere.Decay = Color3.fromRGB(8, 8, 12)
+            atmosphere.Haze = 2.2
+            atmosphere.Glare = 0
+        else
+            for property, value in pairs(lobbyAtmosphere) do
+                (atmosphere :: any)[property] = value
+            end
+        end
+    end
+    if bloom then
+        bloom.Intensity = if isCave then lobbyBloom * 0.7 else lobbyBloom
+    end
+    if depth then
+        depth.Enabled = isCave
+        depth.FarIntensity = 0.35
+        depth.FocusDistance = 45
+        depth.InFocusRadius = 30
+        depth.NearIntensity = 0
+    end
+    if sunRays then
+        sunRays.Enabled = if isCave then false else lobbySunRays
+    end
+end
+
+local function setupEffects()
+    colorEffect = Lighting:FindFirstChild("EcosColor") :: ColorCorrectionEffect?
+    if not colorEffect then
+        local created = Instance.new("ColorCorrectionEffect")
+        created.Name = "EcosColor"
+        created.Parent = Lighting
+        colorEffect = created
+    end
+    atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+    if atmosphere then
+        for _, property in ipairs({ "Density", "Offset", "Color", "Decay", "Haze", "Glare" }) do
+            lobbyAtmosphere[property] = (atmosphere :: any)[property]
+        end
+    end
+    bloom = Lighting:FindFirstChildOfClass("BloomEffect")
+    if bloom then
+        lobbyBloom = bloom.Intensity
+    end
+    depth = Lighting:FindFirstChildOfClass("DepthOfFieldEffect")
+    if not depth then
+        local created = Instance.new("DepthOfFieldEffect")
+        created.Enabled = false
+        created.Parent = Lighting
+        depth = created
+    end
+    sunRays = Lighting:FindFirstChildOfClass("SunRaysEffect")
+    if sunRays then
+        lobbySunRays = sunRays.Enabled
     end
 end
 
@@ -56,6 +133,7 @@ local function transitionTo(isCave: boolean)
     local frame = fadeFrame
     if not frame then
         applyInstant(settings)
+        applyEffects(isCave)
         return
     end
 
@@ -63,16 +141,19 @@ local function transitionTo(isCave: boolean)
     TweenService:Create(frame, TweenInfo.new(0.25), { BackgroundTransparency = 0 }):Play()
     task.delay(0.3, function()
         applyInstant(settings)
+        applyEffects(isCave)
         TweenService:Create(frame, TweenInfo.new(0.9), { BackgroundTransparency = 1 }):Play()
     end)
 end
 
--- onZoneChange(isCave) avisa outros módulos de UI quando o jogador entra ou sai da caverna.
+-- onZoneChange(isCave) avisa outros módulos quando o jogador entra ou sai da caverna.
 function ZoneLighting.Init(onZoneChange: ((boolean) -> ())?)
     onChange = onZoneChange
     if onChange then
         onChange(false)
     end
+    setupEffects()
+
     local gui = Instance.new("ScreenGui")
     gui.Name = "EcosFade"
     gui.ResetOnSpawn = false
@@ -92,6 +173,7 @@ function ZoneLighting.Init(onZoneChange: ((boolean) -> ())?)
     -- Começa no lobby
     currentIsCave = false
     applyInstant(LOBBY)
+    applyEffects(false)
 
     remote.OnClientEvent:Connect(function(location: unknown)
         if typeof(location) ~= "string" then
