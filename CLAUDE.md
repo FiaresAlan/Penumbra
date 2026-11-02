@@ -39,6 +39,12 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
   (02/11/2026), exceto: teste com 2 jogadores, voz real com microfone, sons definitivos
   (hoje sons provisórios do Studio em `Config.Audio`) e persistência em servidor publicado.
 - Faltam os testes com pessoas (Portões 1, 2 e 3 do plano) antes da Fase 2.
+- Depois dos módulos: andar devagar (Ctrl), presença do Guardião, dicas de tutorial, anti-teleporte
+  (`MovementGuard`), lanterna (L), atmosfera por zona e decoração procedural da caverna.
+- Assets: 16 props do KayKit Dungeon (CC0) importados; IDs em `src/shared/Assets.lua`, originais em
+  `tools/assets/kaykit`, créditos em `docs/CREDITOS.md`.
+- Plugin de Studio "Ecos Tools" em `plugin/` (build: `rojo build plugin.project.json --plugin EcosTools.rbxm`);
+  o botão aparece na aba Plugins depois de reiniciar o Studio.
 
 ## Como testar sem andar (painel QA, só no Studio)
 - `QAPanel` (canto da tela) tem botões para descer, dar itens, forçar sequestro, pular o tempo etc.
