@@ -20,6 +20,8 @@ local ticksSinceHud = 0
 
 local function apply(tier: CaveRules.Tier, announce: boolean)
     currentTier = tier.name
+    -- O cliente usa o tier só para a intensidade do drone de fundo
+    workspace:SetAttribute("GuardianTier", tier.name)
     GuardianAI.SetSpeedMultiplier("tier", tier.speed)
     GuardianAI.SetHearThreshold(tier.hear)
     NoiseSystem.SetFury(tier.name == "Fury")

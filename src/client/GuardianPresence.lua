@@ -16,6 +16,11 @@ local active = false
 local intensity = 0
 local vignette: Frame? = nil
 
+-- 0 (longe) a 1 (colado). Outros módulos usam para o batimento cardíaco.
+function GuardianPresence.GetIntensity(): number
+    return intensity
+end
+
 function GuardianPresence.SetActive(isActive: boolean)
     active = isActive
     if not isActive then

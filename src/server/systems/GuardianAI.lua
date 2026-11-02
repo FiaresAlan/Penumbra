@@ -6,6 +6,7 @@ local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Co
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
 local NoiseSystem = require(script.Parent:WaitForChild("NoiseSystem"))
 local PlayerState = require(script.Parent:WaitForChild("PlayerState"))
+local AudioBroadcast = require(script.Parent:WaitForChild("AudioBroadcast"))
 
 local GuardianAI = {}
 
@@ -28,6 +29,10 @@ local lastCatchCheck = 0
 local dragTarget
 
 local function setState(newState)
+    -- Rosnado no instante em que a caçada começa, vindo do Guardião
+    if newState == Enums.GuardianState.Hunting and currentState ~= Enums.GuardianState.Hunting and guardianRoot then
+        AudioBroadcast.Play("Growl", guardianRoot.Position)
+    end
     currentState = newState
     stateTimer = 0
     silenceTimer = 0

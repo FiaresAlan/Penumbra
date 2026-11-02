@@ -6,3 +6,6 @@
 /*.rbxl.lock
 
 sourcemap.json
+
+# Sons sintetizados (gerados por tools/make_sounds.py)
+tools/assets/sounds/

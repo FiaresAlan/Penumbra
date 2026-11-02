@@ -60,6 +60,8 @@ local function playSound(soundKey: string, position: Vector3?)
     local audioPlayer = Instance.new("AudioPlayer")
     audioPlayer.Asset = assetId
     audioPlayer.Looping = false
+    local volumes = Config.AudioVolume
+    audioPlayer.Volume = if volumes and volumes[soundKey] then volumes[soundKey] else 1
     local speeds = Config.AudioSpeed and Config.AudioSpeed[soundKey]
     if speeds then
         audioPlayer.PlaybackSpeed = speeds[1] + math.random() * (speeds[2] - speeds[1])
@@ -114,6 +116,11 @@ local function playSound(soundKey: string, position: Vector3?)
             end
         end)
     end
+end
+
+-- Toca um som de evento agora, sem passar pelo servidor (usado pelo ambiente local).
+function WorldAudio.Play(soundKey: string, position: Vector3?)
+    playSound(soundKey, position)
 end
 
 function WorldAudio.Init()

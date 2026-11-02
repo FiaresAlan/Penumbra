@@ -4,7 +4,7 @@ import http.server
 import pathlib
 import sys
 
-OUT = pathlib.Path(__file__).parent / "assets" / "imported_ids.json"
+OUT = pathlib.Path(__file__).parent / "assets" / (sys.argv[2] if len(sys.argv) > 2 else "imported_ids.json")
 
 
 class Handler(http.server.BaseHTTPRequestHandler):

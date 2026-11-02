@@ -133,15 +133,41 @@ Config.FuryZoneNoise = 1.0
 Config.ValueMaxMinute = 10
 
 -- Sons de mundo. Valores provisórios do próprio Studio; troque pelos IDs da Creator Store.
+-- Os IDs rbxassetid vêm da biblioteca de sons gratuita do Creator Store (lista em tools/assets/toolbox_sounds.json).
+-- Para trocar um som, basta mudar o ID aqui.
 Config.Audio = {
     Rumble = "rbxasset://sounds/impact_explosion_03.mp3",
-    Bang = "rbxasset://sounds/impact_water.mp3",
-    RockDrop = "rbxasset://sounds/impact_water.mp3",
-    Laugh = "rbxasset://sounds/action_get_up.mp3",
-    MimicVoice = "rbxasset://sounds/ouch.ogg",
+    Bang = "rbxassetid://9125819208", -- batida de metal nas grades
+    RockDrop = "rbxassetid://102757491685632", -- entulho caindo
+    Laugh = "rbxassetid://17836221379", -- risada do núcleo falso
+    MimicVoice = "rbxassetid://128699976960071", -- sussurro do Corista
+    Growl = "rbxassetid://9114630281", -- rosnado ao começar a caçada
+    Drip = "rbxassetid://9126190492", -- gota d'água na caverna
+    Footstep = "rbxassetid://113663232024295", -- passo pesado do Guardião
+    Chime = "rbxassetid://91728968749666", -- sino do elevador
+    Heartbeat = "rbxassetid://71395510617597", -- batimento quando o Guardião está perto
+    CaveAmbience = "rbxassetid://273398061",
+    CaveDrone = "rbxassetid://9114353261",
+    CaveWind = "rbxassetid://9113286969",
+    LobbyBirds = "rbxassetid://9114892930",
+    ForestInsects = "rbxassetid://9114894498",
+}
+-- Volume de cada som de evento (0 a 1) e variação de velocidade aleatória
+Config.AudioVolume = {
+    Bang = 0.9, RockDrop = 0.9, Laugh = 0.8, MimicVoice = 0.9, Growl = 1, Drip = 0.7, Footstep = 1, Chime = 0.7, Rumble = 1,
 }
 Config.AudioSpeed = {
     MimicVoice = { 0.85, 0.95 },
+    Drip = { 0.9, 1.15 },
+    Footstep = { 0.92, 1.05 },
+}
+-- Camadas de ambiente em loop: a zona define qual toca. volume é o máximo da camada.
+Config.AmbientLayers = {
+    { asset = "LobbyBirds", zone = "lobby", volume = 0.3 },
+    { asset = "ForestInsects", zone = "forest", volume = 0.45 },
+    { asset = "CaveAmbience", zone = "cave", volume = 0.4 },
+    { asset = "CaveDrone", zone = "cave", volume = 0.28 },
+    { asset = "CaveWind", zone = "cave", volume = 0.15 },
 }
 
 -- Mapa gerado por src/server/world/MapBuilder.lua

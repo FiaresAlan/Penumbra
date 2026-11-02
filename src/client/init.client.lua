@@ -22,6 +22,7 @@ local ClipPrompt = require(script:WaitForChild("ui"):WaitForChild("ClipPrompt"))
 local ClipExporter = require(script:WaitForChild("clips"):WaitForChild("ClipExporter"))
 local VoiceNoise = require(script:WaitForChild("VoiceNoise"))
 local WorldAudio = require(script:WaitForChild("audio"):WaitForChild("WorldAudio"))
+local AmbientAudio = require(script:WaitForChild("audio"):WaitForChild("AmbientAudio"))
 
 NoiseBar.Init()
 ExtractionUI.Init()
@@ -40,12 +41,14 @@ ZoneLighting.Init(function(isCave)
     NoiseBar.SetVisible(isCave)
     GuardianPresence.SetActive(isCave)
     Flashlight.SetActive(isCave)
+    AmbientAudio.SetCave(isCave)
     if isCave then
         TutorialHints.OnEnterCave()
     end
 end)
 VoiceNoise.Init()
 WorldAudio.Init()
+AmbientAudio.Init()
 
 -- Tecla V = "grito" (simula voz por enquanto)
 UserInputService.InputBegan:Connect(function(input, processed)
