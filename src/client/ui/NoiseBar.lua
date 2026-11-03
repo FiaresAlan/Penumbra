@@ -3,6 +3,8 @@ local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 
+local Theme = require(script.Parent:WaitForChild("Theme"))
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
@@ -16,35 +18,55 @@ function NoiseBar.Init()
     gui.Parent = playerGui
 
     barFrame = Instance.new("Frame")
-    barFrame.Size = UDim2.new(0, 300, 0, 20)
-    barFrame.Position = UDim2.new(0.5, -150, 1, -60)
-    barFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    barFrame.Size = UDim2.new(0, 320, 0, 26)
+    barFrame.Position = UDim2.new(0.5, -160, 1, -64)
+    barFrame.BackgroundColor3 = Theme.Color.PanelDark
     barFrame.BorderSizePixel = 0
     barFrame.Parent = gui
 
     local barCorner = Instance.new("UICorner")
-    barCorner.CornerRadius = UDim.new(0, 10)
+    barCorner.CornerRadius = UDim.new(0, 13)
     barCorner.Parent = barFrame
+
+    local barStroke = Instance.new("UIStroke")
+    barStroke.Color = Theme.Color.Cyan
+    barStroke.Thickness = 2
+    barStroke.Parent = barFrame
+
+    local barTitle = Instance.new("TextLabel")
+    barTitle.Size = UDim2.new(0, 200, 0, 16)
+    barTitle.Position = UDim2.new(0, 6, 0, -18)
+    barTitle.BackgroundTransparency = 1
+    barTitle.Text = "PESO CARREGADO"
+    barTitle.TextColor3 = Theme.Color.Cyan
+    barTitle.Font = Theme.Font.Strong
+    barTitle.TextSize = 13
+    barTitle.TextXAlignment = Enum.TextXAlignment.Left
+    barTitle.Parent = barFrame
 
     barFill = Instance.new("Frame")
     barFill.Size = UDim2.new(0, 0, 1, 0)
-    barFill.BackgroundColor3 = Color3.fromRGB(80, 200, 80)
+    barFill.BackgroundColor3 = Theme.Color.Success
     barFill.BorderSizePixel = 0
     barFill.Parent = barFrame
 
     local fillCorner = Instance.new("UICorner")
-    fillCorner.CornerRadius = UDim.new(0, 10)
+    fillCorner.CornerRadius = UDim.new(0, 13)
     fillCorner.Parent = barFill
 
     spikeIndicator = Instance.new("TextLabel")
     spikeIndicator.Size = UDim2.new(0, 200, 0, 24)
     spikeIndicator.Position = UDim2.new(0.5, -100, 1, -95)
     spikeIndicator.BackgroundTransparency = 1
-    spikeIndicator.TextColor3 = Color3.fromRGB(255, 80, 80)
+    spikeIndicator.TextColor3 = Theme.Color.Danger
     spikeIndicator.Text = ""
-    spikeIndicator.Font = Enum.Font.GothamBold
-    spikeIndicator.TextSize = 20
+    spikeIndicator.Font = Theme.Font.Strong
+    spikeIndicator.TextSize = 24
     spikeIndicator.Parent = gui
+    local spikeStroke = Instance.new("UIStroke")
+    spikeStroke.Color = Color3.new(0, 0, 0)
+    spikeStroke.Thickness = 2
+    spikeStroke.Parent = spikeIndicator
 
     RunService.RenderStepped:Connect(function()
         local char = player.Character
@@ -53,11 +75,11 @@ function NoiseBar.Init()
         local normalized = math.clamp(weight / Config.MaxCarryWeight, 0, 1)
         barFill.Size = UDim2.new(normalized, 0, 1, 0)
         if normalized < 0.4 then
-            barFill.BackgroundColor3 = Color3.fromRGB(80, 200, 80)
+            barFill.BackgroundColor3 = Theme.Color.Success
         elseif normalized < 0.7 then
-            barFill.BackgroundColor3 = Color3.fromRGB(220, 200, 60)
+            barFill.BackgroundColor3 = Theme.Color.Amber
         else
-            barFill.BackgroundColor3 = Color3.fromRGB(220, 80, 60)
+            barFill.BackgroundColor3 = Theme.Color.Danger
         end
     end)
 end

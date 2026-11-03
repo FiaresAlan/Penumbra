@@ -7,6 +7,7 @@ local Remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
 local ElevatorUpdate = Remotes:WaitForChild("ElevatorUpdate")
 local HUDUpdate = Remotes:WaitForChild("HUDUpdate")
 local Receipt = Remotes:WaitForChild("Receipt")
+local Theme = require(script.Parent:WaitForChild("Theme"))
 
 local ExtractionUI = {}
 local statusLabel, inventoryLabel, noticeLabel, receiptLabel
@@ -30,9 +31,13 @@ local function newLabel(parent, size, position)
     local label = Instance.new("TextLabel")
     label.Size = size
     label.Position = position
-    label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    label.BackgroundTransparency = 0.5
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.BackgroundColor3 = Theme.Color.PanelBg
+    label.BackgroundTransparency = 0.1
+    label.TextColor3 = Theme.Color.Text
+    local labelStroke = Instance.new("UIStroke")
+    labelStroke.Color = Theme.Color.Line
+    labelStroke.Thickness = 2
+    labelStroke.Parent = label
     label.Font = Enum.Font.GothamBold
     label.TextScaled = true
     label.Text = ""
@@ -69,9 +74,13 @@ function ExtractionUI.Init()
     statusLabel = Instance.new("TextLabel")
     statusLabel.Size = UDim2.new(0, 400, 0, 50)
     statusLabel.Position = UDim2.new(0.5, -200, 0, 20)
-    statusLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    statusLabel.BackgroundTransparency = 0.5
-    statusLabel.TextColor3 = Color3.fromRGB(255, 220, 80)
+    statusLabel.BackgroundColor3 = Theme.Color.PanelBg
+    statusLabel.BackgroundTransparency = 0.05
+    statusLabel.TextColor3 = Theme.Color.Gold
+    local statusStroke = Instance.new("UIStroke")
+    statusStroke.Color = Theme.Color.Amber
+    statusStroke.Thickness = 2
+    statusStroke.Parent = statusLabel
     statusLabel.Font = Enum.Font.GothamBold
     statusLabel.TextSize = 24
     statusLabel.Text = ""
@@ -94,10 +103,10 @@ function ExtractionUI.Init()
     inventoryLabel.Parent = gui
 
     noticeLabel = newLabel(gui, UDim2.new(0, 300, 0, 36), UDim2.new(0.5, -150, 0.62, 0))
-    noticeLabel.TextColor3 = Color3.fromRGB(255, 120, 100)
+    noticeLabel.TextColor3 = Theme.Color.Danger
 
     receiptLabel = newLabel(gui, UDim2.new(0, 360, 0, 120), UDim2.new(0.5, -180, 0.25, 0))
-    receiptLabel.TextColor3 = Color3.fromRGB(180, 255, 200)
+    receiptLabel.TextColor3 = Theme.Color.Success
 
     ElevatorUpdate.OnClientEvent:Connect(function(data)
         if data.stage == "arriving" then

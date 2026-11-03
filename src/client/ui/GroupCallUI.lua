@@ -4,6 +4,8 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local Theme = require(script.Parent:WaitForChild("Theme") :: ModuleScript) :: any
+
 local player = Players.LocalPlayer
 local remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
 local GroupCall = remotes:WaitForChild("GroupCall") :: RemoteEvent
@@ -17,19 +19,23 @@ function GroupCallUI.Init()
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, 340, 0, 92)
     frame.Position = UDim2.new(0.5, -170, 0.12, 0)
-    frame.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
-    frame.BackgroundTransparency = 0.15
+    frame.BackgroundColor3 = Theme.Color.PanelBg
+    frame.BackgroundTransparency = 0.05
     frame.Visible = false
     frame.Parent = gui
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
+    corner.CornerRadius = UDim.new(0, 12)
     corner.Parent = frame
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Theme.Color.Amber
+    stroke.Thickness = 2
+    stroke.Parent = frame
 
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(1, -16, 0, 40)
     label.Position = UDim2.new(0, 8, 0, 6)
     label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.fromRGB(255, 210, 130)
+    label.TextColor3 = Theme.Color.Gold
     label.Font = Enum.Font.GothamBold
     label.TextSize = 18
     label.TextWrapped = true
@@ -38,8 +44,8 @@ function GroupCallUI.Init()
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(1, -32, 0, 34)
     button.Position = UDim2.new(0, 16, 0, 50)
-    button.BackgroundColor3 = Color3.fromRGB(60, 110, 70)
-    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = Theme.Accent.market[1]
+    button.TextColor3 = Theme.Color.Text
     button.Font = Enum.Font.GothamBold
     button.TextSize = 16
     button.Text = "Voltar de carroça"
