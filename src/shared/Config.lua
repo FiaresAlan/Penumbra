@@ -47,6 +47,7 @@ Config.Features = {
     DropItems = false, -- I2
     ThrowItems = false, -- I3
     VisibleBackpack = false, -- I4
+    ElevatorWindow = true, -- P8 (ligado em 03/11: portas abertas de 30 a 40 s, nunca menos que a Fase 1)
     NightVisitor = true, -- P10 (ligado em 03/11; testado: vulto apareceu na zona B; inofensivo)
     ChainBonus = true, -- P13 (ligado em 03/11; testado: cadeia 3 e 4 deram +20 XP; só XP)
     VillageEndings = true, -- P12 (ligado em 03/11; testado: marcos de extração e relíquia; só texto)
@@ -74,6 +75,8 @@ Config.DescentConditions = {
     { id = "clear", name = "Ar limpo", text = "Ar limpo: você vê longe, mas o Guardião escuta mais", fog = -0.18, hearBias = 0.9 },
     { id = "embers", name = "Brasas", text = "Brasas no ar: tudo fica avermelhado, sem outro efeito", fog = 0, hearBias = 1, tint = { 255, 200, 170 } },
 }
+-- P8: janela do elevador sortuda (só com Features.ElevatorWindow). Min nunca fica abaixo de ElevatorCloseTime (Fase 1).
+Config.ElevatorWindow = { Min = 30, Max = 40 }
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",

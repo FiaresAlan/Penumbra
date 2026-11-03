@@ -128,7 +128,13 @@ local function runCycle()
     end
 
     state = State.Open
-    if not countdown(gen, "open", Config.ElevatorCloseTime) then
+    -- P8: com o flag ligado, as portas ficam abertas por um tempo sorteado numa faixa que nunca é menor que o da Fase 1
+    local openSeconds = Config.ElevatorCloseTime
+    if Config.Features.ElevatorWindow then
+        openSeconds = math.random(Config.ElevatorWindow.Min, Config.ElevatorWindow.Max)
+    end
+    workspace:SetAttribute("ElevatorWindow", openSeconds)
+    if not countdown(gen, "open", openSeconds) then
         return
     end
 

@@ -193,7 +193,7 @@ function AmbientAudio.Init()
 
     -- Sino quando as portas do elevador abrem
     ElevatorUpdate.OnClientEvent:Connect(function(data: unknown)
-        if typeof(data) == "table" and (data :: any).stage == "open" and (data :: any).timeLeft == Config.ElevatorCloseTime then
+        if typeof(data) == "table" and (data :: any).stage == "open" and (data :: any).timeLeft == (workspace:GetAttribute("ElevatorWindow") or Config.ElevatorCloseTime) then
             WorldAudio.Play("Chime", nil)
         end
     end)
