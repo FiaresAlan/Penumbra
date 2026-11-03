@@ -10,6 +10,7 @@ local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 local Theme = require((script.Parent :: Instance):WaitForChild("Theme") :: ModuleScript)
+local ItemViewport = require((script.Parent :: Instance):WaitForChild("ItemViewport") :: ModuleScript)
 local Widgets = require((script.Parent :: Instance):WaitForChild("Widgets") :: ModuleScript)
 local PanelManager = require((script.Parent :: Instance):WaitForChild("PanelManager") :: ModuleScript)
 local LobbyHUD = require((script.Parent :: Instance):WaitForChild("LobbyHUD") :: ModuleScript)
@@ -89,7 +90,12 @@ end
 -- Carta de um item: emoji, nome e valor. Tocar ou passar o mouse mostra o detalhe.
 local function itemCard(parent: Instance, size: UDim2, itemType: string, rarity: string, valueText: string, detail: string): Frame
     local card = Widgets.Card(parent, size, rarity)
-    Widgets.Label(card, { text = itemEmoji(itemType), size = UDim2.new(1, 0, 0.5, 0), position = UDim2.new(0, 0, 0, 4), textSize = 34, alignX = Enum.TextXAlignment.Center })
+    local shown = pcall(function()
+        ItemViewport.Create(card, itemType, rarity, UDim2.new(1, 0, 0.5, 0), UDim2.new(0, 0, 0, 2))
+    end)
+    if not shown then
+        Widgets.Label(card, { text = itemEmoji(itemType), size = UDim2.new(1, 0, 0.5, 0), position = UDim2.new(0, 0, 0, 4), textSize = 34, alignX = Enum.TextXAlignment.Center })
+    end
     Widgets.Label(card, {
         text = itemName(itemType, rarity),
         size = UDim2.new(1, -8, 0, 20),

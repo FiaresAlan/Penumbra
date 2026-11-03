@@ -85,6 +85,15 @@ local function render()
     label.Text = table.concat(lines, "\n")
 end
 
+-- Ranking semanal já lido (para o pedestal do campeão) e nome por UserId
+function HighlightsSystem.GetTop(): { { userId: number, value: number } }
+    return lastTop
+end
+
+function HighlightsSystem.NameOf(userId: number): string
+    return nameOf(userId)
+end
+
 function HighlightsSystem.Refresh()
     local store = weekStore()
     if not store then

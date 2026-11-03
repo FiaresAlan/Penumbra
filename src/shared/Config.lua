@@ -251,6 +251,8 @@ Config.ZoneBoundaryC = 724
 -- QA (botões do painel; só existem no Studio)
 -- X0: pontos de foto da superfície (x, z, alvo tx/tz, altura do olho e do alvo acima do chão). A caverna usa os marcadores.
 Config.PhotoSpots = {
+    { name = "Pedestal do campeão", x = 22, z = -22, tx = 48, tz = -22, eye = 4, ty = 6 },
+    { name = "Vila: sino e quadro de recados", x = -598, z = 0, tx = -624, tz = 0, eye = 4, ty = 6 },
     { name = "Mina: praça e elevador", x = 55, z = 25, tx = 0, tz = 0, eye = 4, ty = 6 },
     { name = "Mina: de perto, no chão", x = 14, z = -6, tx = -2, tz = 6, eye = 2.5, ty = 5 },
     { name = "Trilha para a vila", x = -150, z = 48, tx = -250, tz = -20, eye = 3, ty = 3 },
