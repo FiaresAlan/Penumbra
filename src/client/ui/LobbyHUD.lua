@@ -9,6 +9,8 @@ local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Co
 local Theme = require((script.Parent :: Instance):WaitForChild("Theme") :: ModuleScript)
 local Widgets = require((script.Parent :: Instance):WaitForChild("Widgets") :: ModuleScript)
 local ProfileHUD = require((script.Parent :: Instance):WaitForChild("ProfileHUD") :: ModuleScript)
+local GuideState = require((script.Parent :: Instance):WaitForChild("GuideState") :: ModuleScript)
+local GuideSteps = require((script.Parent :: Instance):WaitForChild("GuideSteps") :: ModuleScript)
 
 local player = Players.LocalPlayer
 local RequestDescent = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("RequestDescent") :: RemoteEvent
@@ -103,7 +105,13 @@ local function refreshDescend()
     else
         enabled = true
         button.Text = "DESCER"
-        hint.Text = if near then "Pressione DESCER para começar a expedição" else "Você está longe: te levamos de carroça até o elevador"
+        -- Com o guia ligado, a frase mostra o próximo passo útil (vender, receber, comprar); senão, o de sempre
+        local step = if GuideState.IsEnabled() then GuideSteps.Compute(ProfileHUD.GetProfile() :: any) else nil
+        if step and step.id ~= "elevator" then
+            hint.Text = step.hint
+        else
+            hint.Text = if near then "Pressione DESCER para começar a expedição" else "Você está longe: te levamos de carroça até o elevador"
+        end
     end
     button.Active = enabled
     button.BackgroundTransparency = if enabled then 0 else 0.45
