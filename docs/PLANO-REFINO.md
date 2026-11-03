@@ -698,7 +698,7 @@ Arquivos: ExpeditionSystem.lua, MovementGuard.lua, PlayerProfile.lua, Extraction
 
 **Mudança da versão 3:** os NPCs passam para antes do Portão 1, porque não mudam regra e deixam a vila viva. **R7b** é o item 2 do prompt abaixo, com fogueiras. **R7c** são os itens 3 e 4.
 
-**Parte R7a feita em 02/11/2026** (`src/client/WorldLife.lua`, ligado ao `ZoneLighting`): fumaça nas 6 chaminés da vila (liga a menos de 220 studs), vaga-lumes e folhas em volta do jogador, bando de 6 pássaros a cada 40–90 s e nuvens (`Clouds` do Terrain). Tudo some ao descer e volta ao subir (testado: nada resta na caverna). Falta: R7b (NPCs no servidor e balões de fala), R7c (animais na floresta, morcegos e poeira na caverna) e fogueiras. Não medi desempenho em celular.
+**Parte R7a feita em 02/11/2026** (`src/client/WorldLife.lua`, ligado ao `ZoneLighting`): fumaça nas 6 chaminés da vila (liga a menos de 220 studs), vaga-lumes e folhas em volta do jogador, bando de 6 pássaros a cada 40–90 s e nuvens (`Clouds` do Terrain). Tudo some ao descer e volta ao subir (testado: nada resta na caverna). R7b feito (NpcSystem). **R7c feito em 02/11/2026**: `Critters.lua` (14 coelhos que fogem a menos de 22 studs) e `CaveLife.lua` (7 morcegos que fogem e poeira quando o Guardião está a menos de 38 studs). Falta: fogueiras vivas. Não medi desempenho em celular.
 
 **O que faz:** coisas que se mexem. Tudo só visual e no cliente, salvo os NPCs.
 
