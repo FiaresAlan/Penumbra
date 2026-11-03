@@ -90,7 +90,6 @@ local TD3_DUNGEON: { Rule } = {
     { words = { "TD3_CaveRubble" }, chance = 0.25, height = { 1.5, 3.5 } },
     { words = { "TD3_Stalagtite" }, chance = 0.2, height = { 3, 6 }, hang = true },
 }
-local TD3_FERN: Rule = { words = { "TD3_caveFern" }, chance = 0.2, height = { 2, 4 } }
 
 local THEME_RULES: { [string]: { [string]: { Rule } } } = { mine = MINE_RULES, dungeon = DUNGEON_RULES, grotto = GROTTO_RULES }
 
@@ -222,9 +221,7 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
                             place(rule, cell, rule.solid == true)
                         end
                     end
-                    if Layout.zoneOf(c) == "C" and Layout.Site.theme ~= "dungeon" and rng:NextNumber() < TD3_FERN.chance * density then
-                        place(TD3_FERN, cell, true)
-                    end
+                    -- samambaia do 3TD removida: sem textura ela sai como espinhos pretos
                 end
             end
         end
