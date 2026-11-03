@@ -86,14 +86,33 @@ local function buildCaveGeometry(grid: Grid)
         end)
     end
 
-    -- Luzes de teto, quase sempre fracas
+    -- Luzes de teto, quase sempre fracas. Cada zona tem a sua forma: lampião pendurado (A), cristal azul (B), cacho de fungos (C)
+    local ceilingY = FLOOR_Y + WALL_H
     for r = 1, ROWS - 2 do
         for c = 1, COLS - 2 do
             if grid[r][c] and (c * 3 + r * 5) % 6 == 0 then
-                local style = STYLES[zoneOf(c)]
+                local zone = zoneOf(c)
+                local style = STYLES[zone]
                 local center = cellCenter(c, r)
-                local lamp = newPart("CaveLamp", Vector3.new(1.5, 1.5, 1.5), CFrame.new(center.X, FLOOR_Y + WALL_H - 1, center.Z), { Material = Enum.Material.Neon, Color = style.light, CanCollide = false }, cave)
-                addLight(lamp, style.light, 24, 1.0)
+                local glow: Part
+                if zone == "A" then
+                    local chain = newPart("CaveLampChain", Vector3.new(0.15, 2.2, 0.15), CFrame.new(center.X, ceilingY - 1.1, center.Z), { Material = Enum.Material.Metal, Color = Color3.fromRGB(40, 36, 34), CanCollide = false }, cave)
+                    chain.CastShadow = false
+                    local cap = newPart("CaveLampCap", Vector3.new(1.3, 0.5, 1.3), CFrame.new(center.X, ceilingY - 2.3, center.Z), { Material = Enum.Material.Wood, Color = Color3.fromRGB(92, 62, 38), CanCollide = false }, cave)
+                    cap.CastShadow = false
+                    glow = newPart("CaveLamp", Vector3.new(0.9, 1.1, 0.9), CFrame.new(center.X, ceilingY - 3.1, center.Z), { Material = Enum.Material.Neon, Color = style.light, CanCollide = false, Shape = Enum.PartType.Ball }, cave)
+                elseif zone == "B" then
+                    glow = newPart("CaveLamp", Vector3.new(0.8, 2.6, 0.8), CFrame.new(center.X, ceilingY - 1.5, center.Z) * CFrame.Angles(math.rad(12), math.rad((c * 37 + r * 11) % 90), math.rad(45)), { Material = Enum.Material.Neon, Color = style.light, CanCollide = false }, cave)
+                else
+                    glow = newPart("CaveLamp", Vector3.new(0.9, 0.9, 0.9), CFrame.new(center.X, ceilingY - 1.2, center.Z), { Material = Enum.Material.Neon, Color = style.light, CanCollide = false, Shape = Enum.PartType.Ball }, cave)
+                    for k = 1, 2 do
+                        local angle = (c * 5 + r * 3 + k * 2.1) % 6.28
+                        local small = newPart("CaveLampSpore", Vector3.new(0.5, 0.5, 0.5), CFrame.new(center.X + math.cos(angle) * 0.9, ceilingY - 0.8 - k * 0.4, center.Z + math.sin(angle) * 0.9), { Material = Enum.Material.Neon, Color = style.light:Lerp(Color3.new(1, 1, 1), 0.3), CanCollide = false, Shape = Enum.PartType.Ball }, cave)
+                        small.CastShadow = false
+                    end
+                end
+                glow.CastShadow = false
+                addLight(glow, style.light, 24, 1.0)
             end
         end
     end
