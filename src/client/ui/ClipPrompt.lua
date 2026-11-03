@@ -3,6 +3,8 @@
 local CaptureService = game:GetService("CaptureService")
 local Players = game:GetService("Players")
 
+local Theme = require(script.Parent:WaitForChild("Theme") :: ModuleScript) :: any
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
@@ -22,8 +24,8 @@ local function makeButton(parent: Instance, text: string, x: number, onClick: ()
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 120, 0, 36)
     button.Position = UDim2.new(0, x, 0, 44)
-    button.BackgroundColor3 = Color3.fromRGB(60, 110, 70)
-    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = Theme.Accent.market[1]
+    button.TextColor3 = Theme.Color.Text
     button.Font = Enum.Font.GothamBold
     button.TextSize = 14
     button.Text = text
@@ -44,22 +46,26 @@ function ClipPrompt.Init()
     local panel = Instance.new("Frame")
     panel.Size = UDim2.new(0, 280, 0, 120)
     panel.Position = UDim2.new(0.5, -140, 0.72, 0)
-    panel.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
-    panel.BackgroundTransparency = 0.1
+    panel.BackgroundColor3 = Theme.Color.PanelBg
+    panel.BackgroundTransparency = 0.05
     panel.BorderSizePixel = 0
     panel.Visible = false
     panel.Parent = gui
     frame = panel
 
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
+    corner.CornerRadius = UDim.new(0, 12)
     corner.Parent = panel
+    local panelStroke = Instance.new("UIStroke")
+    panelStroke.Color = Theme.Color.Magenta
+    panelStroke.Thickness = 2
+    panelStroke.Parent = panel
 
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, -16, 0, 30)
     title.Position = UDim2.new(0, 8, 0, 6)
     title.BackgroundTransparency = 1
-    title.TextColor3 = Color3.fromRGB(255, 225, 140)
+    title.TextColor3 = Theme.Color.Gold
     title.Font = Enum.Font.GothamBold
     title.TextSize = 16
     title.Text = "Seu clipe está pronto"
@@ -69,7 +75,7 @@ function ClipPrompt.Init()
     status.Size = UDim2.new(1, -16, 0, 24)
     status.Position = UDim2.new(0, 8, 0, 88)
     status.BackgroundTransparency = 1
-    status.TextColor3 = Color3.fromRGB(200, 200, 210)
+    status.TextColor3 = Theme.Color.TextDim
     status.Font = Enum.Font.Gotham
     status.TextSize = 13
     status.Text = ""
@@ -114,8 +120,8 @@ function ClipPrompt.Init()
     local close = Instance.new("TextButton")
     close.Size = UDim2.new(0, 26, 0, 26)
     close.Position = UDim2.new(1, -32, 0, 6)
-    close.BackgroundColor3 = Color3.fromRGB(110, 40, 40)
-    close.TextColor3 = Color3.new(1, 1, 1)
+    close.BackgroundColor3 = Theme.Color.Danger
+    close.TextColor3 = Theme.Color.Text
     close.Font = Enum.Font.GothamBold
     close.TextSize = 14
     close.Text = "X"

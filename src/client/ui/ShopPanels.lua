@@ -477,7 +477,7 @@ local function renderBlackMarket(content: Frame, profile: Profile)
             end
         end
         local row = newRow(list, 70)
-        row.BackgroundColor3 = Color3.fromRGB(20, 14, 18)
+        row.BackgroundColor3 = Theme.Color.PanelDark
         Widgets.Label(row, { text = string.format("%dx %s", order.quantity, order.label), position = UDim2.new(0, 14, 0, 8), size = UDim2.new(1, -170, 0, 26), font = Theme.Font.Strong, textSize = Theme.TextSize.Heading })
         Widgets.Label(row, {
             text = string.format("Paga %d%% do valor · você tem %d", math.floor(order.priceRate * 100 + 0.5), have),

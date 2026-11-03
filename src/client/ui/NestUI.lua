@@ -3,6 +3,8 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 
+local Theme = require(script.Parent:WaitForChild("Theme") :: ModuleScript) :: any
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local Remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
@@ -22,9 +24,13 @@ function NestUI.Init()
     local label = Instance.new("TextLabel")
     label.Size = UDim2.new(0, 420, 0, 44)
     label.Position = UDim2.new(0.5, -210, 0, 80)
-    label.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    label.BackgroundTransparency = 0.45
-    label.TextColor3 = Color3.fromRGB(255, 130, 110)
+    label.BackgroundColor3 = Theme.Color.PanelBg
+    label.BackgroundTransparency = 0.05
+    label.TextColor3 = Theme.Color.Orange
+    local labelStroke = Instance.new("UIStroke")
+    labelStroke.Color = Theme.Color.Danger
+    labelStroke.Thickness = 2
+    labelStroke.Parent = label
     label.Font = Enum.Font.GothamBold
     label.TextSize = 20
     label.Text = ""
@@ -39,8 +45,8 @@ function NestUI.Init()
     local bangButton = Instance.new("TextButton")
     bangButton.Size = UDim2.new(0, 220, 0, 48)
     bangButton.Position = UDim2.new(0.5, -110, 0.7, 0)
-    bangButton.BackgroundColor3 = Color3.fromRGB(120, 30, 30)
-    bangButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    bangButton.BackgroundColor3 = Theme.Color.Danger
+    bangButton.TextColor3 = Theme.Color.Text
     bangButton.Font = Enum.Font.GothamBold
     bangButton.TextSize = 18
     bangButton.Text = "Bater nas grades (F)"

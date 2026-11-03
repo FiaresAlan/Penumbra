@@ -90,7 +90,7 @@ end
 
 -- V4: tablados de madeira com os 3 melhores do saque (foto, nome, valor) e coroa de MVP no primeiro.
 -- Quem não extraiu não entra. Sozinho, aparece só o seu tablado.
-local PODIUM_COLORS = { Color3.fromRGB(226, 178, 62), Color3.fromRGB(176, 176, 186), Color3.fromRGB(176, 112, 64) }
+local PODIUM_COLORS = { Color3.fromRGB(255, 214, 40), Color3.fromRGB(120, 220, 255), Color3.fromRGB(255, 130, 70) }
 
 local function podium(parent: Instance, entries: { { [string]: any } })
     local ranked: { { [string]: any } } = {}
@@ -132,7 +132,7 @@ local function podium(parent: Instance, entries: { { [string]: any } })
             stand.AnchorPoint = Vector2.new(0, 1)
             stand.Position = UDim2.fromScale(0, 1)
             stand.Size = UDim2.new(1, 0, 0, heights[rank])
-            stand.BackgroundColor3 = Color3.fromRGB(96, 66, 40)
+            stand.BackgroundColor3 = Color3.fromRGB(70, 48, 140)
             stand.Parent = column
             Widgets.AddCorner(stand, UDim.new(0, 6))
             Widgets.AddStroke(stand, PODIUM_COLORS[rank], 2)
