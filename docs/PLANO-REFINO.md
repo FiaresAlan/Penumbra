@@ -373,6 +373,29 @@ Depois da tela atual: três melhores em tablados de madeira, com avatar real e s
 
 Tela como a da referência: barra, recompensa, botão Reivindicar. `MissionRules` puro em `src/shared/`, servidor valida. Quem falta não perde nada. Só moedas pequenas e XP em `Config`, sem mudar preço existente. Anote o valor escolhido como sugestão para o Alan.
 
+## 4B. Rodada "Skyrim e Baldur's Gate" (03/11/2026, decisões do Alan)
+
+**Pedido:** caverna orgânica (túneis irregulares, teto alto, formações naturais), sem kits modulares retos para paredes ou teto; props pequenos (baús, barris, tochas) podem vir dos kits. Luz colorida e névoa.
+
+**O que já está feito (não refazer):** a caverna é Terrain orgânico desde o C1 (ruído com deformação, relevo, poças, teto com folga mínima de 13 studs). As peças Synty Dungeon só entram como props sem colisão (`CaveScatter`). Mina, Masmorra (piso de tijolo e madeira) e Gruta existem, com auditoria de caminhos 28 ok, 0 falhas, 3 só pelo gancho. Fila 4A: OK X0, C1, C3, V6; PARCIAL C2, C4, C5, V1, V2, V4, V5, T1; BLOQUEADO V3.
+
+**Pesquisa (03/11):** o "Stalactites Cave Kit" só aparece no Fab (Unreal/Unity), sem versão Roblox confirmada nem preço; o "MarchingCubesService" não existe nas buscas. Decisão: nada disso é necessário. O Terrain já é voxel e já temos ruído. Se o Alan achar um pacote em formato Roblox ou FBX, importar pela seção 7 (assets, sem scripts).
+
+**Decisões do Alan:** ordem luz e névoa, depois formações, depois salões grandes; formações esculpidas no Terrain por código (passo 1) e, no passo 2, pacotes de rochas do Creator Store só para dar vida; alternar um passo visual com um passo das ideias P, com commit em cada.
+
+| # | Módulo | Esforço | O que entrega |
+|---|---|---|---|
+| 1 | **S1 Luz e névoa** | Baixo | `Atmosphere` denso por zona (cor e densidade em `ZoneLighting`), PointLights violeta, ciano e âmbar em cristais e fungos, raios de luz (`LightShafts`) onde o teto abre |
+| 2 | **S2 Formações no Terrain** | Médio | Estalactites e estalagmites esculpidas por código (cones de voxel do teto ao chão, em `CaveTerrain`), colunas onde se encontram, poças rasas de água no chão. Mexe no Terrain: rodar Auditar caminhos (esperado 28/0/3) e conferir a assinatura do mapa |
+| 3 | **S3 Vida da caverna (Creator Store)** | Médio | Pacotes gratuitos de rocha e cogumelos, auditados sem script (regra da seção 7), só como detalhe sobre o Terrain |
+| 4 | **S4 Salões grandes** | Alto | Câmaras amplas ligadas por túneis (a grade hoje é a mesma nos três locais). Sai da grade 2D única: Gruta primeiro; Auditar caminhos obrigatório, com plano B de voltar à tag |
+| 5 | **P ideias** | Médio | Alternando com os passos acima: P6 condição da descida, P12 finais da vila, P13 saque em cadeia, depois P1, P2, P4, P5, P8, P9, P11 (todas desligadas em `Config.Features`) |
+| 6 | **Fechar PARCIAIS** | Médio | V1 (portas, bicho, carrinho, taverna), V2 (placares gigantes, altar, estátua), V4 e V5 (lojas), T1 (galeria separada), C2 a C5 |
+
+**Mais ambições (depois):** água rasa com reflexo e som de gotejar por zona; teia e musgo por Terrain Decoration; salão central "catedral" com lago e ponte de pedra no Ninho; rios subterrâneos; luz que o Guardião apaga ao passar; trilha sonora por zona com eco calculado pelo tamanho do salão; tela de carregamento com a caverna sorteada; o mesmo gerador em três tamanhos (pequena, média, grande) por dificuldade; foto comparativa antes e depois no `docs/portao-visual` a cada módulo.
+
+**Regras que continuam:** um módulo por vez, commit e push a cada etapa, sem `push -f`, Auditar caminhos depois de qualquer mexida no Terrain, mostrar prints de antes e depois, registrar o que não foi testado.
+
 ## 5. Cabeçalho comum dos prompts
 
 Vale para os módulos da fila. Fora da noite, abra uma sessão com o Sonnet e cole este texto, seguido do prompt do módulo:
