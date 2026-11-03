@@ -69,3 +69,7 @@ Feita (seção 10B do plano): 7 melhorias com fonte, pilar, risco e teste, todas
 ## Para o Alan decidir de manhã
 
 Nenhum ainda.
+
+## Fechamento (03/11/2026)
+
+FILA PARADA: todos os módulos da 4A foram tentados; ficaram OK: X0, C1, C3, V6 (já coberto). PARCIAL: C2, C4, C5, V1, V2, V4, V5, T1. BLOQUEADO: V3 (votação). Restam P1, P2, P4, P5, P6, P8, P9, P11, P12, P13 e os testes com 2 jogadores, celular e extração real, que dependem de pessoas ou de mais sessões. Tudo no GitHub (último commit ff8c9f5) e o lugar salvo no Roblox.
