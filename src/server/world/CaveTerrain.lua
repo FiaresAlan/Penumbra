@@ -39,6 +39,20 @@ local MATERIAL_COLORS: { [Enum.Material]: Color3 } = {
     [Enum.Material.Limestone] = Color3.fromRGB(52, 74, 72),
 }
 
+-- Zonas de fúria (entrada e câmara do núcleo): rachaduras de lava no chão, em manchas por ruído
+local function isFuryFloor(x: number, z: number): boolean
+    for _, rect in ipairs({ Layout.ENTRANCE, Layout.CHAMBER }) do
+        local x0 = Layout.ORIGIN_X + rect.c0 * Layout.CELL
+        local x1 = Layout.ORIGIN_X + (rect.c1 + 1) * Layout.CELL
+        local z0 = Layout.ORIGIN_Z + rect.r0 * Layout.CELL
+        local z1 = Layout.ORIGIN_Z + (rect.r1 + 1) * Layout.CELL
+        if x >= x0 and x <= x1 and z >= z0 and z <= z1 then
+            return math.noise(x / 7, z / 7, 11.3) + math.noise(x / 3, z / 3, 5.7) * 0.4 > 0.12
+        end
+    end
+    return false
+end
+
 local function zoneAtX(x: number): string
     local c = math.clamp(math.floor((x - Layout.ORIGIN_X) / Layout.CELL), 0, Layout.COLS - 1)
     return Layout.zoneOf(c)
@@ -89,7 +103,11 @@ function CaveTerrain.Build(log: (string) -> ())
                 local occ = math.max(wallOcc, floorOcc, ceilingOcc)
                 local material = Enum.Material.Air
                 if occ > 0 then
-                    material = if floorOcc >= wallOcc and floorOcc >= ceilingOcc then zone.floor else zone.wall
+                    if floorOcc >= wallOcc and floorOcc >= ceilingOcc then
+                        material = if isFuryFloor(x, z) then Enum.Material.CrackedLava else zone.floor
+                    else
+                        material = zone.wall
+                    end
                 end
                 materials[xi][yi][zi] = material
                 occupancy[xi][yi][zi] = occ

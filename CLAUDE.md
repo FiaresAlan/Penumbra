@@ -32,7 +32,7 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
   ContractSystem, BlackMarketSystem, HighlightsSystem, ClipSystem, MovementGuard, ClientSync etc.).
 - `src/server/world/` — MapBuilder (só chama os módulos, na ordem), CaveLayout (grade e zonas, funções puras), WorldUtil,
   Lobby, Forest, CaveGeometry, CaveDecor, Cores, CaveMarkers, Props, GuardianModel e WorldBake (prévia no modo de edição).
-  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=891 hash=164906899 nucleos=26` (mudou no R6 e no L5: casas, lampiões de madeira e elevador novo; e no R3-lite: lâmpadas da caverna por zona; e no C1: a caverna passou para Terrain, sem Parts de piso, teto e parede):
+  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=1036 hash=194706260 nucleos=26` (mudou no R6 e no L5: casas, lampiões de madeira e elevador novo; e no R3-lite: lâmpadas da caverna por zona; e no C1/C2: a caverna passou para Terrain e ganhou peças por zona; o chão não tem mais Parts):
   se mudar sem querer, o gerador mudou o mapa. O QA tem "Auditar caminhos" (esperado: 28 ok, 0 falhas, 3 só pelo gancho).
 - `src/client/` — init, VoiceNoise, ZoneLighting, Flashlight, SneakInput, GuardianPresence, HookController;
   `ui/` (NoiseBar, ExtractionUI, QAPanel, NestUI, ProfileHUD, ShopUI, ClipPrompt, TutorialHints),
@@ -56,6 +56,7 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 
 ## Missão noturna
 - `plano-refino.md` é `docs/PLANO-REFINO.md`. A fila, as regras e o que fazer ao chegar por tarefa agendada estão na seção 4. Andamento em `docs/NOITE-STATUS.md`.
+- **Caverna em Terrain (C1, 03/11/2026):** `CaveShape` (funções puras: IsOpen, FloorAt, CeilingAt) e `CaveTerrain` (escrita dos voxels, só por botão/Command Bar: `WorldBake.BakeCave`, salvo no lugar). O Terrain desenha o sólido 2 studs maior que o pedido (`BIAS = 2` em CaveTerrain); `Layout.cellCenter` já devolve a altura do chão. `CaveLibrary`/`CaveScatter` põem as peças Synty Dungeon. Foto de QA: botões "Foto" e "Foto + luz" (tecla N avança, P sai).
 - **Fila atual: seção 4A do plano** (caverna com relevo, várias cavernas, vila interativa). Não encerre o turno entre módulos.
 - Filtro de novas ideias: `design_psicologico.md`.
 

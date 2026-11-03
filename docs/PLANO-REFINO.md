@@ -321,6 +321,8 @@ Termina o L8. Placares grandes em madeira e dourado com top 10 (`SurfaceGui`), e
 
 **Aceite:** print comparado lado a lado com os prints de placar e altar da referência.
 
+**Resultado do C2 (03/11/2026): PARCIAL.** Importação, peças por zona, lava de fúria e limite de luzes feitos e provados por auditoria e prints; ver a lista do que falta em `docs/NOITE-STATUS.md`. Os pacotes Synty usados saíram de `CaveLibrary.Find` por palavras no nome (Barrel, Crate, Minecart, Bone, Cage, Coffin, Stalagmite, RockPile, Tech_Crystal).
+
 ### C3. Locais de caverna
 
 **A ideia que barateia tudo:** cada caverna é o mesmo gerador em outro lugar do mapa, com o **mesmo X** e outro Z. Assim `Config.ZoneBoundaryB/C` e as zonas por coluna seguem valendo sem mudança.

@@ -262,6 +262,8 @@ Config.PhotoSpots = {
 }
 -- C1: forma da caverna em Terrain. Parede com reentrâncias (no máximo 4 studs, para o corredor de 16 nunca fechar) e relevo do chão.
 Config.CaveWarp = 4
+Config.CaveMaxLights = 60
+Config.CaveScatterDensity = 1 -- C2: multiplica a chance das peças de zona (0 desliga)
 Config.CaveVersion = 1 -- mude ao mudar CaveWarp, CaveFloorRelief ou a grade; e rode "Gerar caverna" (WorldBake.BakeCave)
 Config.CaveFloorRelief = 2.4
 Config.QAButtons = {

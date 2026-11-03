@@ -16,6 +16,7 @@ local CaveDecor = require(script.Parent:WaitForChild("CaveDecor") :: ModuleScrip
 local Cores = require(script.Parent:WaitForChild("Cores") :: ModuleScript)
 local CaveMarkers = require(script.Parent:WaitForChild("CaveMarkers") :: ModuleScript)
 local Props = require(script.Parent:WaitForChild("Props") :: ModuleScript)
+local CaveScatter = require(script.Parent:WaitForChild("CaveScatter") :: ModuleScript)
 local GuardianModel = require(script.Parent:WaitForChild("GuardianModel") :: ModuleScript)
 
 local MapBuilder = {}
@@ -92,6 +93,7 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
     CaveMarkers.Build(grid, rng)
     CaveMarkers.BuildLedges()
     GuardianModel.Build()
+    CaveScatter.Build(grid, Random.new(Config.MapSeed + 4))
 
     local propsRng = Random.new(Config.MapSeed + 3)
     if opts and opts.waitForProps then
@@ -100,6 +102,43 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
         task.spawn(Props.Build, grid, propsRng)
     end
 
+    -- Limite de luzes (Config.CaveMaxLights): as de enfeite (lâmpadas, cristais, velas) são apagadas além do limite;
+    -- as de jogo (núcleos, tochas dos props) ficam sempre
+    local lights: { Instance } = {}
+    local decorative: { Instance } = {}
+    local byName: { [string]: number } = {}
+    for _, descendant in ipairs(mapFolder:GetDescendants()) do
+        if descendant:IsA("PointLight") or descendant:IsA("SpotLight") then
+            table.insert(lights, descendant)
+            local owner = if descendant.Parent then descendant.Parent.Name else "?"
+            byName[owner] = (byName[owner] or 0) + 1
+            if owner == "CaveLamp" or owner == "Crystal" or string.find(owner, "Candle", 1, true) then
+                table.insert(decorative, descendant)
+            end
+        end
+    end
+    -- Apaga de duas em duas (para não deixar uma área inteira escura) até chegar ao limite
+    local order: { Instance } = {}
+    for index = 2, #decorative, 2 do
+        table.insert(order, decorative[index])
+    end
+    for index = 1, #decorative, 2 do
+        table.insert(order, decorative[index])
+    end
+    local removed = 0
+    for _, light in ipairs(order) do
+        if #lights - removed <= Config.CaveMaxLights then
+            break
+        end
+        light:Destroy()
+        removed += 1
+    end
+    local detail = {}
+    for name, count in pairs(byName) do
+        table.insert(detail, string.format("%s=%d", name, count))
+    end
+    table.sort(detail)
+    print(string.format("[Map] %d luzes na caverna antes do corte, %d apagadas (limite %d): %s", #lights, removed, Config.CaveMaxLights, table.concat(detail, " ")))
     print(string.format("[Map] Mapa gerado (seed %d, %d partes)", Config.MapSeed, #mapFolder:GetDescendants()))
     local count, hash, cores = signature(mapFolder)
     print(string.format("[Map] assinatura partes=%d hash=%d nucleos=%d", count, hash, cores))

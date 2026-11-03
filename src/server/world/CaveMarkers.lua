@@ -48,11 +48,7 @@ local function buildCaveMarkers(grid: Grid, rng: Random)
         local center = (a + b) / 2
         local size = Vector3.new(b.X - a.X + CELL, WALL_H + 12, b.Z - a.Z + CELL)
         marker("FuryZone" .. index, size, CFrame.new(center.X, FLOOR_Y + (WALL_H + 12) / 2 - 6, center.Z), fury)
-        -- Rachaduras vermelhas no chão marcam a zona para o jogador
-        for step = 0, 3 do
-            local cx = a.X - CELL / 2 + (size.X) * (step + 0.5) / 4
-            newPart("FuryCrack", Vector3.new(size.X / 6, 0.1, 0.8), CFrame.new(cx, floorAt(cx, a.Z - CELL / 2 + 1) + 0.08, a.Z - CELL / 2 + 1), { Material = Enum.Material.Neon, Color = Color3.fromRGB(255, 40, 40), CanCollide = false, Transparency = 0.35 }, mapFolder)
-        end
+        -- O chão de lava (CrackedLava, em CaveTerrain) marca a zona para o jogador
     end
 
     -- Ninho: vagas dos presos
