@@ -11,6 +11,10 @@ Config.WeightNoiseMultiplier = 0.5
 Config.MaxCarryWeight = 10
 
 -- Variação entre partidas. Desligue (false) para o teste com pessoas medir sempre o mesmo mapa.
+-- Nível e XP (só mostram progresso: não dão poder). Recompensa diária: 7 dias, nunca zera por faltar um dia.
+Config.Xp = { Extraction = 30, PerItem = 8, PerRelic = 40, Rescue = 50, Participation = 10 }
+Config.DailyRewards = { 40, 60, 80, 100, 140, 180, 300 }
+
 Config.Variation = {
     ShuffleItems = true, -- núcleos e relíquias normais mudam de lugar a cada expedição
 }

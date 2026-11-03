@@ -10,6 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
+local LevelRules = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LevelRules") :: ModuleScript)
 local ProfileUpdate = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("ProfileUpdate") :: RemoteEvent
 
 export type StashItem = { id: string, type: string, rarity: string, value: number }
@@ -21,6 +22,9 @@ export type Profile = {
     relicDisplay: { StashItem },
     contracts: { [string]: any },
     discovered: { [string]: boolean }, -- lugares já visitados (ex.: village), liberam a carroça
+    xp: number,
+    dailyClaims: number, -- quantas recompensas diárias já foram recebidas (o dia da sequência é dailyClaims % 7)
+    dailyLastDay: number, -- dia UTC (os.time() // 86400) da última recompensa
 }
 
 local PlayerProfile = {}
@@ -50,6 +54,9 @@ local function defaultProfile(): Profile
         relicDisplay = {},
         contracts = {},
         discovered = {},
+        xp = 0,
+        dailyClaims = 0,
+        dailyLastDay = 0,
     }
 end
 
@@ -73,6 +80,9 @@ local function migrate(data: any): any
     data.relicDisplay = data.relicDisplay or {}
     data.contracts = data.contracts or {}
     data.discovered = data.discovered or {} -- perfis antigos não tinham
+    data.xp = data.xp or 0
+    data.dailyClaims = data.dailyClaims or 0
+    data.dailyLastDay = data.dailyLastDay or 0
     return data
 end
 
@@ -160,12 +170,26 @@ local function saveProfile(player: Player, release: boolean)
     end)
 end
 
+local dayOffset = 0 -- só o QA mexe nisso, para simular a virada do dia
+
+local function currentDay(): number
+    return (os.time() + dayOffset * 86400) // 86400
+end
+
+-- Recompensa diária: uma por dia UTC; faltar um dia não apaga nada, só não avança a sequência
+local function dailyInfo(profile: Profile): { index: number, amount: number, available: boolean }
+    local index = (profile.dailyClaims % #Config.DailyRewards) + 1
+    return { index = index, amount = Config.DailyRewards[index], available = profile.dailyLastDay ~= currentDay() }
+end
+
 local function sendUpdate(player: Player, notice: string?)
     local profile = profiles[player]
     if not profile then
         return
     end
     ProfileUpdate:FireClient(player, {
+        xp = profile.xp,
+        daily = dailyInfo(profile),
         money = profile.money,
         stash = profile.stash,
         upgrades = profile.upgrades,
@@ -325,6 +349,48 @@ end
 -- Mostra um aviso curto ao dono do perfil (o cliente já exibe `notice`).
 function PlayerProfile.Notify(player: Player, text: string)
     sendUpdate(player, text)
+end
+
+-- XP só mostra progresso. Avisa o jogador quando sobe de nível.
+function PlayerProfile.AddXp(player: Player, amount: number)
+    local profile = profiles[player]
+    if not profile or not isWholeNumber(amount) or amount <= 0 then
+        return
+    end
+    local before = LevelRules.FromXp(profile.xp)
+    profile.xp += amount
+    local after = LevelRules.FromXp(profile.xp)
+    sendUpdate(player, if after > before then string.format("Nível %d! %s", after, LevelRules.Title(after)) else nil)
+end
+
+function PlayerProfile.GetLevel(player: Player): number
+    local profile = profiles[player]
+    if not profile then
+        return 1
+    end
+    local level = LevelRules.FromXp(profile.xp)
+    return level
+end
+
+-- Recompensa do dia. Devolve verdadeiro se pagou.
+function PlayerProfile.ClaimDaily(player: Player): boolean
+    local profile = profiles[player]
+    if not profile then
+        return false
+    end
+    local info = dailyInfo(profile)
+    if not info.available then
+        return false
+    end
+    profile.dailyLastDay = currentDay()
+    profile.dailyClaims += 1
+    profile.money += info.amount
+    sendUpdate(player, string.format("Recompensa do dia %d: +%d 💎", info.index, info.amount))
+    return true
+end
+
+function PlayerProfile.QAAdvanceDay()
+    dayOffset += 1
 end
 
 -- Usado só pelos comandos de QA do Studio.

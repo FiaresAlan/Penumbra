@@ -124,6 +124,7 @@ local commands: { [string]: (player: Player) -> () } = {
     end,
     NextDay = function(player)
         ContractSystem.QAAdvanceDay()
+        PlayerProfile.QAAdvanceDay()
         ContractSystem.Open(player)
     end,
     OpenContracts = function(player)

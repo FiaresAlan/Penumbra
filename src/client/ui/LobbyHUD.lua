@@ -6,6 +6,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
+local LevelRules = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("LevelRules") :: ModuleScript)
 local Theme = require((script.Parent :: Instance):WaitForChild("Theme") :: ModuleScript)
 local Widgets = require((script.Parent :: Instance):WaitForChild("Widgets") :: ModuleScript)
 local ProfileHUD = require((script.Parent :: Instance):WaitForChild("ProfileHUD") :: ModuleScript)
@@ -19,13 +20,21 @@ local C = Theme.Color
 
 local LobbyHUD = {}
 
-type Profile = { money: number, stash: { any }, upgrades: { [string]: boolean }, contracts: { [string]: any }? }
+type Profile = {
+    money: number,
+    stash: { any },
+    upgrades: { [string]: boolean },
+    contracts: { [string]: any }?,
+    xp: number?,
+    daily: { index: number, amount: number, available: boolean }?,
+}
 
 local root: Frame? = nil
 local descendButton: TextButton? = nil
 local hintLabel: TextLabel? = nil
 local moneyLabel: TextLabel? = nil
 local objective: Widgets.ProgressBar? = nil
+local xpBar: Widgets.ProgressBar? = nil
 local toastLabel: TextLabel? = nil
 local badges: { [string]: Widgets.Badge } = {}
 local openers: { [string]: () -> () } = {}
@@ -41,6 +50,7 @@ local SIDE_BUTTONS = {
     { id = "profile", emoji = "👤", label = "Perfil" },
     { id = "board", emoji = "🏆", label = "Placar" },
     { id = "settings", emoji = "⚙️", label = "Ajustes" },
+    { id = "daily", emoji = "🎁", label = "Diária" },
 }
 
 -- Registra o que o botão lateral abre. Sem registro, o botão só mostra "em breve".
@@ -178,7 +188,14 @@ local function refreshProfile()
         end
     end
     refreshObjective(profile)
+    local xp = xpBar
+    if xp and profile then
+        local level, into, needed = LevelRules.FromXp(profile.xp or 0)
+        xp.Set(into / math.max(needed, 1), string.format("Nível %d · %s · %d / %d XP", level, LevelRules.Title(level), into, needed))
+    end
     if profile then
+        local daily = profile.daily
+        LobbyHUD.SetBadge("daily", if daily and daily.available then "!" else nil)
         local count = claimableContracts(profile)
         LobbyHUD.SetBadge("contracts", if count > 0 then tostring(count) else nil)
     end
@@ -302,6 +319,13 @@ function LobbyHUD.Init()
     local bar = objective
     if bar then
         bar.frame.Position = UDim2.new(0, 0, 0, 96)
+    end
+
+    xpBar = Widgets.ProgressBar(frame, UDim2.new(0, 360, 0, 22))
+    local xpFrame = xpBar
+    if xpFrame then
+        xpFrame.frame.AnchorPoint = Vector2.new(0.5, 1)
+        xpFrame.frame.Position = UDim2.new(0.5, 0, 1, -22)
     end
 
     toastLabel = Widgets.Label(frame, {
