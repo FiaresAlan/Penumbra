@@ -108,6 +108,7 @@ Config.MonsterSkin = true
 Config.MonsterHeight = 9.5
 Config.MonsterYaw = 0
 Config.MonsterYOffset = 0
+Config.MonsterColor = { 78, 74, 88 }
 Config.MonsterPoseMin = 0.14 -- segundos por pose na caça (stop-motion mais rápido)
 Config.RumorChance = 0.4
 Config.VillageRumors = {

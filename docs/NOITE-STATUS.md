@@ -132,3 +132,14 @@ Pendências reais: nenhum teste em jogo, nenhum teste com 2 jogadores nem no cel
 ## Estado final da fila 4A (03/11/2026)
 
 OK: X0, C1, C3, V6. BLOQUEADO por falta de validação no Studio (o código existe e a sintaxe passa, mas nada foi visto rodando): C2, C4, C5, S1, S2, S3, S4, V1, V2, V3, V4, V5, T1. Desbloqueio: o Alan devolve o uso do computador, ou roda `docs/TESTES-PARA-O-ALAN.md` e me conta o resultado. Nenhum módulo foi marcado OK sem prints e números.
+
+## MVP: andamento (03/11/2026, com o Studio de volta)
+
+| Tarefa | Estado | Evidência | Pendente |
+|---|---|---|---|
+| Verificação de carga das rodadas escritas às cegas | OK | Servidor e cliente sobem sem erro (LogService: só o aviso antigo de um ContentId); [Vila] interior da taverna, carrinho e cachorro criados; praça e estátua vistas na vila | Posições finas de cada peça; teste de cada módulo |
+| Erro achado e corrigido | OK | `CollisionFidelity` não pode ser escrita em jogo: derrubava o `MapBuilder` e, com ele, todo o servidor. Removido; as 15 peças `TD3_` receberam `Hull` pelo modo de edição | Auditar caminhos com as pedras sólidas |
+| F1.1 a F1.3 monstro | PARCIAL | `Poses_Single.fbx` (HorrorGameMaker, CC0) importado: 6 poses → `ServerStorage.EcosAssets.Monstros.GuardianPoses`; `GuardianModel.attachSkin` solda as poses ao Guardião; `GuardianAnimator` faz o stop-motion; monstro visto na caverna | Textura (as imagens PNG não apareceram no Asset Manager), sons, IA nova, vídeo da caça; `Config.MonsterYaw` (frente do modelo) ainda não conferida de perto |
+| F1.4 animações | MUDANÇA DE PLANO | O `Walk.fbx` importa como malha com 61 Bones e sem Animation; o Clip Editor recusa por nomes de ossos repetidos ("joint13"...). Por isso o monstro usa poses em stop-motion | Se quisermos animação de ossos, renomear ossos e reimportar a animação |
+
+Nota: o pacote "Animated Monster Pack" (Quaternius, CC0) só tem Bat, Dragon, Skeleton e Slime; o "Ultimate Monsters Pack" de 50 monstros está em quaternius.com (link do Google Drive, não usado).

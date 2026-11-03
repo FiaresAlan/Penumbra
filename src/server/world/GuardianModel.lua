@@ -53,6 +53,9 @@ local function attachSkin(model: Model, root: BasePart, humanoid: Humanoid?)
         pose.CanTouch = false
         pose.CanQuery = false
         pose.Massless = true
+        -- sem textura (as imagens do pacote ainda não foram enviadas), a pele ganha uma cor fria e fosca
+        pose.Color = Color3.fromRGB(Config.MonsterColor[1], Config.MonsterColor[2], Config.MonsterColor[3])
+        pose.Material = Enum.Material.Slate
         pose.Transparency = if index == 1 then 0 else 1
         pose.CFrame = root.CFrame * CFrame.new(0, feetY + pose.Size.Y / 2 + Config.MonsterYOffset, 0) * CFrame.Angles(0, math.rad(Config.MonsterYaw), 0)
         pose.Parent = folder
