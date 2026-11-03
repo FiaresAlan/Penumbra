@@ -22,6 +22,8 @@ local stateTimer = 0
 local silenceTimer = 0
 local sleptAt = os.clock()
 local hearThreshold = Config.GuardianHearThreshold
+-- P5: onde o Guardião ouviu barulho nesta expedição. Na volta para casa ele passa por esses pontos. Esquece em Reset().
+local memory: { Vector3 } = {}
 local hearScale = 1 -- P1: o diretor de tensão muda o quanto o Guardião escuta (1 = normal)
 local speedMultipliers = {}
 local lastMoveAt = 0
@@ -191,6 +193,7 @@ function GuardianAI.EndDrag()
 end
 
 function GuardianAI.Reset()
+    memory = {}
     lastKnownPosition = nil
     lastMoveTarget = nil
     dragTarget = nil
@@ -208,6 +211,22 @@ function GuardianAI.TeleportTo(position)
         guardianModel:PivotTo(CFrame.new(position))
         guardianRoot.AssemblyLinearVelocity = Vector3.zero
     end
+end
+
+local function remember(position: Vector3)
+    if not Config.Features.LearningGuardian then
+        return
+    end
+    for _, saved in ipairs(memory) do
+        if (saved - position).Magnitude < Config.Learning.MinSeparation then
+            return
+        end
+    end
+    if #memory >= Config.Learning.MaxMemory then
+        table.remove(memory, 1)
+    end
+    table.insert(memory, position)
+    print("[Learning] lembrou um ponto (" .. #memory .. ")")
 end
 
 local function checkCatch()
@@ -259,6 +278,7 @@ local function update(dt)
         if hears then
             lastKnownPosition = loudestRoot.Position
             silenceTimer = 0
+            remember(loudestRoot.Position)
         else
             silenceTimer = silenceTimer + dt
         end
@@ -293,6 +313,15 @@ local function update(dt)
         guardianHumanoid.WalkSpeed = Config.GuardianWalkSpeed * multiplier
         if hears then
             setState(Enums.GuardianState.Alert)
+        elseif Config.Features.LearningGuardian and #memory > 0 then
+            -- P5: antes de dormir, passa pelos lugares onde já ouviu barulho, do mais antigo ao mais novo
+            local target = memory[1]
+            moveTo(target)
+            if (guardianRoot.Position - target).Magnitude < Config.Learning.VisitRadius or stateTimer > Config.Learning.MaxVisitSeconds then
+                table.remove(memory, 1)
+                stateTimer = 0
+                print("[Learning] visitou um ponto lembrado (" .. #memory .. " restam)")
+            end
         elseif homePosition then
             moveTo(homePosition)
             if (guardianRoot.Position - homePosition).Magnitude < 5 then

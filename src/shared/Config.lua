@@ -41,7 +41,7 @@ Config.Features = {
     SilenceMoment = true, -- P2 / J13 (ligado em 03/11; testado: aviso, apagão e fim no Output; texto e escuridão no cliente não vistos)
     DenseCore = false, -- P3 / J14 (testado ligado em 02/11: 2 núcleos densos por descida)
     ShiftingRoute = true, -- P4 (ligado em 03/11; testado: corredor (15, 4) fechado e Auditar caminhos deu 28 ok, 0 falhas, 3 so pelo gancho com a rocha no lugar)
-    LearningGuardian = false, -- P5
+    LearningGuardian = false, -- P5 (codigo pronto e carrega sem erro; NAO testado em jogo: nao consegui provocar uma caca pelo QA; ligar so depois de testar)
     DescentCondition = false, -- P6
     VillageRumors = true, -- P7 (ligado a pedido do Alan em 03/11: só texto)
     DropItems = false, -- I2
@@ -64,6 +64,8 @@ Config.Tension = {
 Config.Silence = { WarnSeconds = 3, Seconds = 12, Boost = 0.4, MoveSpeed = 3, MinDelay = 90, MaxDelay = 240, ElevatorSafeRadius = 24 }
 -- P4: desabamento que fecha um corredor por um tempo (só com Features.ShiftingRoute)
 Config.RouteShift = { MinDelay = 120, MaxDelay = 300, WarnSeconds = 4, Seconds = 60 }
+-- P5: o Guardião lembra de onde ouviu barulho (só com Features.LearningGuardian) e passa por lá na volta para casa
+Config.Learning = { MinSeparation = 25, MaxMemory = 5, VisitRadius = 7, MaxVisitSeconds = 25 }
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
