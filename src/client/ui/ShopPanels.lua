@@ -11,6 +11,7 @@ local Theme = require((script.Parent :: Instance):WaitForChild("Theme") :: Modul
 local Widgets = require((script.Parent :: Instance):WaitForChild("Widgets") :: ModuleScript)
 local PanelManager = require((script.Parent :: Instance):WaitForChild("PanelManager") :: ModuleScript)
 local ItemInfo = require((script.Parent :: Instance):WaitForChild("ItemInfo") :: ModuleScript)
+local ItemViewport = require((script.Parent :: Instance):WaitForChild("ItemViewport") :: ModuleScript)
 local LobbyHUD = require((script.Parent :: Instance):WaitForChild("LobbyHUD") :: ModuleScript)
 local ProfileHUD = require((script.Parent :: Instance):WaitForChild("ProfileHUD") :: ModuleScript)
 
@@ -172,7 +173,13 @@ local function itemCard(parent: Instance, item: any, shop: string, isSelected: b
     if isSelected then
         card.BackgroundColor3 = C.Wood
     end
-    Widgets.Label(card, { text = ItemInfo.Emoji(item.type), size = UDim2.new(1, 0, 0.5, 0), position = UDim2.new(0, 0, 0, 4), textSize = 32, alignX = Enum.TextXAlignment.Center })
+    -- V5: o item girando (ViewportFrame); sem modelo, volta para o emoji
+    local shown = pcall(function()
+        ItemViewport.Create(card, item.type, item.rarity, UDim2.new(1, 0, 0.5, 0), UDim2.new(0, 0, 0, 2))
+    end)
+    if not shown then
+        Widgets.Label(card, { text = ItemInfo.Emoji(item.type), size = UDim2.new(1, 0, 0.5, 0), position = UDim2.new(0, 0, 0, 4), textSize = 32, alignX = Enum.TextXAlignment.Center })
+    end
     Widgets.Label(card, {
         text = ItemInfo.Name(item.type, item.rarity),
         size = UDim2.new(1, -8, 0, 18),

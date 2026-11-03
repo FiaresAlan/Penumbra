@@ -128,7 +128,10 @@ function ExtractionUI.Init()
         if typeof(receipt) ~= "table" then return end
         local text = string.format("Extração concluída\n%d itens · %d 💎 (x%.2f)",
             #receipt.items, receipt.total, receipt.multiplier)
-        showTemporarily(receiptLabel, text, 6, "receipt")
+        -- V5: o recibo visual (ReceiptUI) mostra os itens girando; o texto só aparece se ele não existir
+        if not ReplicatedStorage:GetAttribute("ReceiptUI") then
+            showTemporarily(receiptLabel, text, 6, "receipt")
+        end
     end)
 end
 

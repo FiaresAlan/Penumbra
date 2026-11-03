@@ -85,4 +85,60 @@ function ItemViewport.Create(parent: Instance, itemType: string, rarity: string,
     return frame
 end
 
+-- V4: baú 3D com tampa que abre e um brilho dourado dentro. Devolve o ViewportFrame e a função que abre a tampa.
+function ItemViewport.CreateChest(parent: Instance, size: UDim2, position: UDim2): (ViewportFrame, () -> ())
+    local frame = Instance.new("ViewportFrame")
+    frame.BackgroundTransparency = 1
+    frame.Size = size
+    frame.Position = position
+    frame.Ambient = Color3.fromRGB(150, 150, 160)
+    frame.LightColor = Color3.fromRGB(255, 244, 220)
+    frame.LightDirection = Vector3.new(-1, -1, -1)
+    frame.Parent = parent
+
+    local model = Instance.new("Model")
+    model.Name = "Bau"
+    local wood = Color3.fromRGB(112, 74, 44)
+    local gold = Color3.fromRGB(226, 178, 62)
+    local function block(name: string, blockSize: Vector3, cframe: CFrame, color: Color3, material: Enum.Material): Part
+        local p = Instance.new("Part")
+        p.Name = name
+        p.Size = blockSize
+        p.CFrame = cframe
+        p.Color = color
+        p.Material = material
+        p.Anchored = true
+        p.CanCollide = false
+        p.Parent = model
+        return p
+    end
+    block("Corpo", Vector3.new(3, 1.6, 2), CFrame.new(0, 0.8, 0), wood, Enum.Material.Wood)
+    block("FaixaE", Vector3.new(0.3, 1.7, 2.1), CFrame.new(-1.1, 0.8, 0), gold, Enum.Material.Metal)
+    block("FaixaD", Vector3.new(0.3, 1.7, 2.1), CFrame.new(1.1, 0.8, 0), gold, Enum.Material.Metal)
+    local glow = block("Brilho", Vector3.new(2.4, 0.2, 1.4), CFrame.new(0, 1.62, 0), Color3.fromRGB(255, 220, 120), Enum.Material.Neon)
+    glow.Transparency = 1
+    local lid = block("Tampa", Vector3.new(3.1, 0.7, 2.1), CFrame.new(0, 1.95, 0), wood, Enum.Material.Wood)
+    local hinge = CFrame.new(0, 1.6, -1)
+    local opened = 0
+    model.Parent = frame
+
+    local camera = Instance.new("Camera")
+    camera.FieldOfView = 40
+    camera.CFrame = CFrame.lookAt(Vector3.new(0, 4.2, 7), Vector3.new(0, 1.2, 0))
+    camera.Parent = frame
+    frame.CurrentCamera = camera
+
+    local function open()
+        task.spawn(function()
+            for step = 1, 20 do
+                opened = step / 20
+                lid.CFrame = hinge * CFrame.Angles(-math.rad(75) * opened, 0, 0) * CFrame.new(0, 0.35 + 0.0, 1) * CFrame.new(0, 0, 0)
+                glow.Transparency = 1 - opened * 0.7
+                task.wait(0.03)
+            end
+        end)
+    end
+    return frame, open
+end
+
 return ItemViewport

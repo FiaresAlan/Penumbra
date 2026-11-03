@@ -7,6 +7,7 @@ local TweenService = game:GetService("TweenService")
 
 local Theme = require((script.Parent :: Instance):WaitForChild("Theme") :: ModuleScript)
 local Widgets = require((script.Parent :: Instance):WaitForChild("Widgets") :: ModuleScript)
+local ItemViewport = require((script.Parent :: Instance):WaitForChild("ItemViewport") :: ModuleScript)
 
 local player = Players.LocalPlayer
 local SummaryRemote = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("ExpeditionSummary") :: RemoteEvent
@@ -212,8 +213,16 @@ local function chest(parent: Instance)
         ray.BorderSizePixel = 0
         ray.Parent = rays
     end
+    -- V4: baú 3D com a tampa abrindo; sem ViewportFrame, volta para o emoji
+    local chestFrame: ViewportFrame? = nil
+    local openChest: (() -> ())? = nil
+    local okChest = pcall(function()
+        local frame, open = ItemViewport.CreateChest(holder, UDim2.fromScale(1.2, 1.6), UDim2.fromScale(-0.1, -0.3))
+        chestFrame = frame
+        openChest = open
+    end)
     local icon = Widgets.Label(holder, {
-        text = "📦",
+        text = if okChest and chestFrame then "" else "📦",
         position = UDim2.fromScale(0, 0),
         size = UDim2.fromScale(1, 1),
         textSize = 44,
@@ -221,7 +230,11 @@ local function chest(parent: Instance)
     })
     task.delay(0.5, function()
         if icon.Parent then
-            icon.Text = "🎁"
+            if openChest then
+                openChest()
+            else
+                icon.Text = "🎁"
+            end
             local spin = TweenService:Create(rays, TweenInfo.new(6, Enum.EasingStyle.Linear), { Rotation = 180 })
             spin:Play()
             for _, ray in ipairs(rays:GetChildren()) do
