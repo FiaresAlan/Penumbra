@@ -21,3 +21,11 @@
 - Publicados pela conta @Roblox na Creator Store, "licenciados para qualquer jogo Roblox" (anúncio de 2021 no DevForum).
 - Uso apenas dentro do Roblox: não extrair os modelos para outros lugares.
 - Em uso desde o R5: Synty Nature Pack (id 6933438443) para a floresta, as pedras e a ponte. As peças são copiadas para `ServerStorage.EcosAssets.Nature`.
+
+## Músicas e sons da superfície (A2, 02/11/2026)
+- Fonte: busca pública da Creator Store (áudio, categoria Música/SFX). Os arquivos carregam no lugar (testado: IsReady e duração no Output). Nenhum áudio foi enviado por nós.
+- `MineMusic` 109148793011225 "Fading Sunlight" (DistrokidOfficial, 167 s): música da mina.
+- `VillageMusic` 74917475529683 "A Medieval Village" (DistrokidOfficial, 215 s): música da vila.
+- `Tavern` 80388954716054 "Medieval Tavern Ambience" (DistrokidOfficial, 397 s): burburinho baixo na vila.
+- `Campfire` 134379431802298 "campfire wood crackling" (FormalCircuit_dev, 3 s em laço): fogueiras das praças.
+- Licença exata de cada faixa não foi conferida (só aparecem como "verificado" na Creator Store). Se o Alan preferir só áudio da própria Roblox, troque os IDs em `Config.Audio`.

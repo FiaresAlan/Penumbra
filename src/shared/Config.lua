@@ -193,6 +193,11 @@ Config.Audio = {
     CaveWind = "rbxassetid://9113286969",
     LobbyBirds = "rbxassetid://9114892930",
     ForestInsects = "rbxassetid://9114894498",
+    -- A2: música e ambiente da superfície (Creator Store, DistrokidOfficial e outros; ver docs/CREDITOS.md)
+    MineMusic = "rbxassetid://109148793011225", -- "Fading Sunlight"
+    VillageMusic = "rbxassetid://74917475529683", -- "A Medieval Village"
+    Campfire = "rbxassetid://134379431802298", -- fogo crepitando
+    Tavern = "rbxassetid://80388954716054", -- burburinho de taverna, só na vila
 }
 -- Volume de cada som de evento (0 a 1) e variação de velocidade aleatória
 Config.AudioVolume = {
@@ -206,6 +211,10 @@ Config.AudioSpeed = {
 -- Camadas de ambiente em loop: a zona define qual toca. volume é o máximo da camada.
 Config.AmbientLayers = {
     { asset = "LobbyBirds", zone = "lobby", volume = 0.3 },
+    { asset = "MineMusic", zone = "mine", volume = 0.35, music = true },
+    { asset = "VillageMusic", zone = "village", volume = 0.35, music = true },
+    { asset = "Campfire", zone = "lobby", volume = 0.12 },
+    { asset = "Tavern", zone = "village", volume = 0.1 },
     { asset = "ForestInsects", zone = "forest", volume = 0.45 },
     { asset = "CaveAmbience", zone = "cave", volume = 0.4 },
     { asset = "CaveDrone", zone = "cave", volume = 0.28 },

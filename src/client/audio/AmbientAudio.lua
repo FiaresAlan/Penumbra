@@ -16,13 +16,16 @@ local GuardianPresence = require(clientRoot:WaitForChild("GuardianPresence") :: 
 
 local AmbientAudio = {}
 
-type Layer = { player: AudioPlayer, zone: string, base: number, current: number, name: string }
+type Layer = { player: AudioPlayer, zone: string, base: number, current: number, name: string, music: boolean }
 
 local layers: { Layer } = {}
 local heartbeat: AudioPlayer? = nil
 local heartbeatVolume = 0
 local inCave = false
 local forestFactor = 0
+local mineFactor = 0
+local villageFactor = 0
+local musicScale = 1 -- Ajustes: 1, 0.5 ou 0
 local debugEnabled = RunService:IsStudio()
 
 local holder = Instance.new("Folder")
@@ -77,11 +80,32 @@ local function targetVolume(layer: Layer): number
             end
         end
     elseif layer.zone == "lobby" then
-        volume = if inCave then 0 else layer.base * (1 - forestFactor)
+        volume = if inCave then 0 else layer.base * math.max(mineFactor, villageFactor)
+    elseif layer.zone == "mine" then
+        volume = if inCave then 0 else layer.base * mineFactor
+    elseif layer.zone == "village" then
+        volume = if inCave then 0 else layer.base * villageFactor
     elseif layer.zone == "forest" then
         volume = if inCave then 0 else layer.base * forestFactor
     end
+    if layer.music then
+        volume *= musicScale
+    end
     return volume
+end
+
+-- 1 = música alta, 0.5 = baixa, 0 = desligada (só a música; o ambiente continua)
+function AmbientAudio.SetMusicScale(scale: number)
+    musicScale = math.clamp(scale, 0, 1)
+end
+
+function AmbientAudio.GetMusicScale(): number
+    return musicScale
+end
+
+local function nearPad(position: Vector3, pad: { x: number, z: number, r: number }): number
+    local distance = (Vector3.new(position.X, 0, position.Z) - Vector3.new(pad.x, 0, pad.z)).Magnitude
+    return math.clamp((pad.r + 40 - distance) / 40, 0, 1)
 end
 
 function AmbientAudio.SetCave(isCave: boolean)
@@ -94,7 +118,7 @@ function AmbientAudio.Init()
     for _, definition in ipairs(Config.AmbientLayers) do
         local audioPlayer = makeLoop(definition.asset)
         if audioPlayer then
-            table.insert(layers, { player = audioPlayer, zone = definition.zone, base = definition.volume, current = 0, name = definition.asset })
+            table.insert(layers, { player = audioPlayer, zone = definition.zone, base = definition.volume, current = 0, name = definition.asset, music = definition.music == true })
         end
     end
     heartbeat = makeLoop("Heartbeat")
@@ -112,8 +136,10 @@ function AmbientAudio.Init()
         local character = player.Character
         local root = character and character:FindFirstChild("HumanoidRootPart")
         if root and root:IsA("BasePart") then
-            -- A floresta começa a oeste do lobby (x menor que -70)
-            forestFactor = math.clamp((-60 - root.Position.X) / 40, 0, 1)
+            -- Mina e vila têm as suas camadas; fora das duas áreas planas é floresta
+            mineFactor = nearPad(root.Position, Config.WorldPads.Mina)
+            villageFactor = nearPad(root.Position, Config.WorldPads.Vila)
+            forestFactor = 1 - math.max(mineFactor, villageFactor)
         end
 
         for _, layer in ipairs(layers) do

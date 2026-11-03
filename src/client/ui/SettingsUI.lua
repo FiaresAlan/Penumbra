@@ -6,6 +6,7 @@ local Widgets = require((script.Parent :: Instance):WaitForChild("Widgets") :: M
 local PanelManager = require((script.Parent :: Instance):WaitForChild("PanelManager") :: ModuleScript)
 local LobbyHUD = require((script.Parent :: Instance):WaitForChild("LobbyHUD") :: ModuleScript)
 local GuideState = require((script.Parent :: Instance):WaitForChild("GuideState") :: ModuleScript)
+local AmbientAudio = require(((script.Parent :: Instance).Parent :: Instance):WaitForChild("audio"):WaitForChild("AmbientAudio") :: ModuleScript)
 
 local SettingsUI = {}
 
@@ -20,6 +21,7 @@ local function draw(content: Frame)
     list.Parent = content
 
     local row = Instance.new("Frame")
+    row.LayoutOrder = 1
     row.Size = UDim2.new(1, 0, 0, 70)
     row.BackgroundColor3 = C.PanelDark
     row.Parent = content
@@ -35,6 +37,31 @@ local function draw(content: Frame)
         position = UDim2.new(1, -164, 0.5, -20),
         onClick = function()
             GuideState.Set(not GuideState.IsEnabled())
+            local active = panel
+            if active then
+                active.Refresh()
+            end
+        end,
+    })
+
+    local musicRow = Instance.new("Frame")
+    musicRow.Size = UDim2.new(1, 0, 0, 70)
+    musicRow.BackgroundColor3 = C.PanelDark
+    musicRow.LayoutOrder = 2
+    musicRow.Parent = content
+    Widgets.AddCorner(musicRow, UDim.new(0, 8))
+    Widgets.AddStroke(musicRow, C.Line, 1)
+    Widgets.Label(musicRow, { text = "Música", position = UDim2.new(0, 14, 0, 8), size = UDim2.new(1, -200, 0, 26), font = Theme.Font.Strong, textSize = Theme.TextSize.Heading, color = C.Gold })
+    Widgets.Label(musicRow, { text = "Música da mina e da vila. O som da caverna não muda.", position = UDim2.new(0, 14, 0, 36), size = UDim2.new(1, -200, 0, 24), color = C.TextDim, textSize = Theme.TextSize.Small })
+    local scale = AmbientAudio.GetMusicScale()
+    Widgets.Button(musicRow, {
+        text = if scale >= 1 then "Alta" elseif scale > 0 then "Baixa" else "Desligada",
+        variant = if scale > 0 then "primary" else "normal",
+        size = UDim2.new(0, 150, 0, 40),
+        position = UDim2.new(1, -164, 0.5, -20),
+        onClick = function()
+            local current = AmbientAudio.GetMusicScale()
+            AmbientAudio.SetMusicScale(if current >= 1 then 0.5 elseif current > 0 then 0 else 1)
             local active = panel
             if active then
                 active.Refresh()
