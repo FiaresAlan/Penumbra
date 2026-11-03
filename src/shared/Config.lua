@@ -80,6 +80,14 @@ Config.DescentConditions = {
 Config.ElevatorWindow = { Min = 30, Max = 40 }
 -- P11: eco distante da voz de um colega (só com Features.EchoOthers e 2 ou mais jogadores na caverna)
 Config.EchoOthers = { Chance = 0.35, Cooldown = 20, SoundKey = "Footstep" }
+-- V1: falas do carrinho de mercador
+Config.CartLines = {
+    "Tenho de tudo, menos o que você está procurando.",
+    "Ouvi dizer que o Guardião não gosta de botas barulhentas.",
+    "Hoje não vendo nada. Só estou descansando as rodas.",
+    "Já viu o placar da praça? Tem gente corajosa por aí.",
+    "Se for descer, leve algo para comer. Eu sempre levo.",
+}
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
