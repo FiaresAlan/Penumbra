@@ -60,12 +60,15 @@ local function attachSkin(model: Model, root: BasePart, humanoid: Humanoid?)
         pose.Transparency = if index == 1 then 0 else 1
         pose.CFrame = root.CFrame * CFrame.new(0, feetY + pose.Size.Y / 2 + Config.MonsterYOffset, 0) * CFrame.Angles(0, math.rad(Config.MonsterYaw), 0)
         pose.Parent = folder
-        local weld = Instance.new("WeldConstraint")
+        local weld = Instance.new("Weld")
+        weld.Name = "Corpo"
         weld.Part0 = root
         weld.Part1 = pose
+        weld.C0 = root.CFrame:ToObjectSpace(pose.CFrame)
         weld.Parent = pose
     end
-    -- Cor e brilho: olhos que brilham (sempre virados para a câmera), luz magenta, névoa de esporos e um aro de luz
+    model:SetAttribute("FeetY", feetY)
+    -- Brilho: olhos que brilham (sempre virados para a câmera), luz de brasa e fagulhas subindo do corpo
     local head = Vector3.new(0, feetY + Config.MonsterHeight * 0.86, 0)
     local anchorPart = Instance.new("Part")
     anchorPart.Name = "Rosto"
@@ -77,9 +80,11 @@ local function attachSkin(model: Model, root: BasePart, humanoid: Humanoid?)
     anchorPart.Massless = true
     anchorPart.CFrame = root.CFrame * CFrame.new(head)
     anchorPart.Parent = folder
-    local anchorWeld = Instance.new("WeldConstraint")
+    local anchorWeld = Instance.new("Weld")
+    anchorWeld.Name = "Corpo"
     anchorWeld.Part0 = root
     anchorWeld.Part1 = anchorPart
+    anchorWeld.C0 = root.CFrame:ToObjectSpace(anchorPart.CFrame)
     anchorWeld.Parent = anchorPart
     local eyes = Instance.new("BillboardGui")
     eyes.Size = UDim2.fromOffset(46, 16)
@@ -98,50 +103,21 @@ local function attachSkin(model: Model, root: BasePart, humanoid: Humanoid?)
         corner.CornerRadius = UDim.new(1, 0)
         corner.Parent = eye
     end
-    -- chifres e espinhos: peças empilhadas e inclinadas, soldadas ao rosto (o modelo base é só um humanoide alto)
-    local function spike(offset: Vector3, tilt: number, length: number, color: Color3)
-        local previous = 0
-        for step = 1, 3 do
-            local thick = 0.62 - step * 0.16
-            local piece = Instance.new("Part")
-            piece.Name = "Chifre"
-            piece.Shape = Enum.PartType.Cylinder
-            piece.Size = Vector3.new(length / 3, thick, thick)
-            piece.Material = Enum.Material.SmoothPlastic
-            piece.Color = color
-            piece.CanCollide = false
-            piece.CanTouch = false
-            piece.CanQuery = false
-            piece.Massless = true
-            local along = previous + length / 6
-            piece.CFrame = anchorPart.CFrame * CFrame.new(offset) * CFrame.Angles(0, 0, math.rad(90 - tilt)) * CFrame.new(along, 0, 0)
-            piece.Parent = folder
-            local weld = Instance.new("WeldConstraint")
-            weld.Part0 = anchorPart
-            weld.Part1 = piece
-            weld.Parent = piece
-            previous += length / 3
-        end
-    end
-    local bone = Color3.fromRGB(255, 244, 214)
-    spike(Vector3.new(-0.55, 0.9, 0), -28, 2.2, bone)
-    spike(Vector3.new(0.55, 0.9, 0), 28, 2.2, bone)
-    spike(Vector3.new(-1.1, 0.1, 0), -70, 1.4, Color3.fromRGB(255, 120, 60))
-    spike(Vector3.new(1.1, 0.1, 0), 70, 1.4, Color3.fromRGB(255, 120, 60))
     local glow = Instance.new("PointLight")
     glow.Color = Color3.fromRGB(Config.MonsterGlow[1], Config.MonsterGlow[2], Config.MonsterGlow[3])
-    glow.Range = 18
-    glow.Brightness = 0.8
+    glow.Range = 16
+    glow.Brightness = 0.6
     glow.Parent = anchorPart
     local spores = Instance.new("ParticleEmitter")
-    spores.Color = ColorSequence.new(Color3.fromRGB(255, 90, 220), Color3.fromRGB(110, 60, 255))
+    spores.Color = ColorSequence.new(Color3.fromRGB(255, 190, 60), Color3.fromRGB(255, 70, 20))
     spores.LightEmission = 0.8
     spores.Rate = 18
     spores.Lifetime = NumberRange.new(2, 4)
-    spores.Speed = NumberRange.new(0.5, 2)
+    spores.Speed = NumberRange.new(1, 3)
+    spores.Acceleration = Vector3.new(0, 2, 0)
     spores.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
     spores.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
-    spores.SpreadAngle = Vector2.new(180, 180)
+    spores.SpreadAngle = Vector2.new(60, 60)
     spores.Parent = anchorPart
     model:SetAttribute("Skinned", true)
 end

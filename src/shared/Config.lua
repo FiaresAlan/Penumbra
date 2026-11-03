@@ -110,8 +110,8 @@ Config.MonsterTexture = true -- pele em escamas gerada por código no cliente (E
 Config.MonsterHeight = 9.5
 Config.MonsterYaw = 0
 Config.MonsterYOffset = 0
-Config.MonsterColor = { 168, 42, 196 } -- violeta vivo
-Config.MonsterGlow = { 255, 70, 200 }
+Config.MonsterColor = { 62, 34, 58 } -- carvão arroxeado; a pele de escamas (MonsterTexture) cobre isso
+Config.MonsterGlow = { 255, 110, 40 }
 Config.MonsterPoseMin = 0.14 -- segundos por pose na caça (stop-motion mais rápido)
 -- F1: visão curta em cone do Guardião (só com Features.GuardianSight): alcance em studs e meio ângulo em graus
 Config.GuardianSight = { Range = 22, Angle = 50 }

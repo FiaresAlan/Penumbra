@@ -1,5 +1,5 @@
 --!strict
--- F1: pele do monstro. As poses do Guardião são MeshParts sem textura; aqui o cliente desenha uma pele de escamas violeta
+-- F1: pele do monstro. As poses do Guardião são MeshParts sem textura; aqui o cliente desenha uma pele de escamas escura
 -- com rachaduras de brasa (EditableImage, gerada por código) e aplica em TextureContent. Só aparência, só neste cliente.
 -- Se a API não estiver liberada (jogo publicado sem "Allow Mesh & Image APIs"), nada acontece e fica a cor lisa do servidor.
 local AssetService = game:GetService("AssetService")
@@ -55,13 +55,14 @@ local function build(): any?
             local edge = second - best
             local tone = hash(bestId, 3, 5)
             local lit = math.clamp(edge * 2.2, 0, 1)
-            -- escama: violeta escuro no miolo variando para magenta; borda mais escura
-            local r = mix(70, 190, tone) * mix(0.35, 1, lit)
-            local g = mix(14, 46, tone) * mix(0.35, 1, lit)
-            local b = mix(110, 210, tone) * mix(0.4, 1, lit)
-            -- brasa laranja só em algumas bordas
-            if edge < 0.09 and hash(bestId, 7, 9) > 0.78 then
-                r, g, b = 255, 120, 30
+            -- escama: carvão arroxeado com pouca variação; borda mais escura
+            local r = mix(46, 92, tone) * mix(0.3, 1, lit)
+            local g = mix(24, 46, tone) * mix(0.3, 1, lit)
+            local b = mix(52, 98, tone) * mix(0.35, 1, lit)
+            -- rachaduras de brasa em boa parte das bordas
+            if edge < 0.1 and hash(bestId, 7, 9) > 0.5 then
+                local heat = hash(bestId, 11, 3)
+                r, g, b = 255, mix(70, 170, heat), 24
             end
             local offset = (py * SIZE + px) * 4
             buffer.writeu8(pixels, offset, math.clamp(r, 0, 255))
