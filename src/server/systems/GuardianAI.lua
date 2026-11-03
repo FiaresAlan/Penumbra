@@ -247,6 +247,38 @@ local function checkCatch()
     end
 end
 
+-- F1: visão curta em cone. Quem está à vista (distância, ângulo e sem parede no meio) é percebido mesmo sem fazer barulho.
+-- Só vale com o Guardião acordado. Devolve a raiz do jogador visto mais perto.
+local sightParams = RaycastParams.new()
+sightParams.FilterType = Enum.RaycastFilterType.Exclude
+
+local function seenPlayerRoot()
+    if not Config.Features.GuardianSight or not guardianRoot or not guardianModel then
+        return nil
+    end
+    local sight = Config.GuardianSight
+    sightParams.FilterDescendantsInstances = { guardianModel }
+    local best, bestDistance = nil, sight.Range
+    local origin = guardianRoot.Position + Vector3.new(0, 3, 0)
+    local look = guardianRoot.CFrame.LookVector
+    for _, player in ipairs(PlayerState.GetPlayersIn(Enums.PlayerLocation.Cave)) do
+        local char = player.Character
+        local root = char and char:FindFirstChild("HumanoidRootPart")
+        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
+        if root and humanoid and humanoid.Health > 0 then
+            local toPlayer = root.Position - origin
+            local distance = toPlayer.Magnitude
+            if distance < bestDistance and toPlayer.Unit:Dot(look) > math.cos(math.rad(sight.Angle)) then
+                local hit = workspace:Raycast(origin, toPlayer, sightParams)
+                if not hit or hit.Instance:IsDescendantOf(char) then
+                    best, bestDistance = root, distance
+                end
+            end
+        end
+    end
+    return best
+end
+
 local function update(dt)
     if not guardianModel or not guardianHumanoid or guardianHumanoid.Health <= 0 then
         return
@@ -257,6 +289,13 @@ local function update(dt)
     local loudest, noise = NoiseSystem.GetLoudestPlayer()
     local loudestRoot = loudest and loudest.Character and loudest.Character:FindFirstChild("HumanoidRootPart")
     local hears = loudestRoot ~= nil and noise > hearThreshold * hearScale * hearBias
+    if not hears and currentState ~= Enums.GuardianState.Sleeping then
+        local seen = seenPlayerRoot()
+        if seen then
+            loudestRoot = seen
+            hears = true
+        end
+    end
 
     if currentState == Enums.GuardianState.Sleeping then
         guardianHumanoid.WalkSpeed = 0

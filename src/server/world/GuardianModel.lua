@@ -98,10 +98,40 @@ local function attachSkin(model: Model, root: BasePart, humanoid: Humanoid?)
         corner.CornerRadius = UDim.new(1, 0)
         corner.Parent = eye
     end
+    -- chifres e espinhos: peças empilhadas e inclinadas, soldadas ao rosto (o modelo base é só um humanoide alto)
+    local function spike(offset: Vector3, tilt: number, length: number, color: Color3)
+        local previous = 0
+        for step = 1, 3 do
+            local thick = 0.62 - step * 0.16
+            local piece = Instance.new("Part")
+            piece.Name = "Chifre"
+            piece.Shape = Enum.PartType.Cylinder
+            piece.Size = Vector3.new(length / 3, thick, thick)
+            piece.Material = Enum.Material.SmoothPlastic
+            piece.Color = color
+            piece.CanCollide = false
+            piece.CanTouch = false
+            piece.CanQuery = false
+            piece.Massless = true
+            local along = previous + length / 6
+            piece.CFrame = anchorPart.CFrame * CFrame.new(offset) * CFrame.Angles(0, 0, math.rad(90 - tilt)) * CFrame.new(along, 0, 0)
+            piece.Parent = folder
+            local weld = Instance.new("WeldConstraint")
+            weld.Part0 = anchorPart
+            weld.Part1 = piece
+            weld.Parent = piece
+            previous += length / 3
+        end
+    end
+    local bone = Color3.fromRGB(255, 244, 214)
+    spike(Vector3.new(-0.55, 0.9, 0), -28, 2.2, bone)
+    spike(Vector3.new(0.55, 0.9, 0), 28, 2.2, bone)
+    spike(Vector3.new(-1.1, 0.1, 0), -70, 1.4, Color3.fromRGB(255, 120, 60))
+    spike(Vector3.new(1.1, 0.1, 0), 70, 1.4, Color3.fromRGB(255, 120, 60))
     local glow = Instance.new("PointLight")
     glow.Color = Color3.fromRGB(Config.MonsterGlow[1], Config.MonsterGlow[2], Config.MonsterGlow[3])
-    glow.Range = 26
-    glow.Brightness = 1.6
+    glow.Range = 18
+    glow.Brightness = 0.8
     glow.Parent = anchorPart
     local spores = Instance.new("ParticleEmitter")
     spores.Color = ColorSequence.new(Color3.fromRGB(255, 90, 220), Color3.fromRGB(110, 60, 255))

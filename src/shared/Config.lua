@@ -51,6 +51,7 @@ Config.Features = {
     EchoOthers = true, -- P11 (ligado em 03/11 sem teste: so toca um passo distante para colegas na caverna; precisa de 2 jogadores)
     CaveVoting = true, -- V3 (ligado em 03/11: sem votos nada muda; com votos a caverna é refeita antes da descida)
     GuardianShadow = true, -- ideia maior: luzes de enfeite escurecem perto do Guardiao (so aparencia; sem teste)
+    GuardianSight = true, -- F1: o Guardiao tambem ve (cone curto)
     NightVisitor = true, -- P10 (ligado em 03/11; testado: vulto apareceu na zona B; inofensivo)
     ChainBonus = true, -- P13 (ligado em 03/11; testado: cadeia 3 e 4 deram +20 XP; só XP)
     VillageEndings = true, -- P12 (ligado em 03/11; testado: marcos de extração e relíquia; só texto)
@@ -111,6 +112,8 @@ Config.MonsterYOffset = 0
 Config.MonsterColor = { 168, 42, 196 } -- violeta vivo
 Config.MonsterGlow = { 255, 70, 200 }
 Config.MonsterPoseMin = 0.14 -- segundos por pose na caça (stop-motion mais rápido)
+-- F1: visão curta em cone do Guardião (só com Features.GuardianSight): alcance em studs e meio ângulo em graus
+Config.GuardianSight = { Range = 22, Angle = 50 }
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
