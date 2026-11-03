@@ -23,3 +23,15 @@ Tudo abaixo foi escrito e conferido só por leitura e por checagem de sintaxe (`
 
 ## Caso algo atrapalhe
 Todas as ideias se desligam em `Config.Features` (`src/shared/Config.lua`). A caverna padrão é a Mina; as outras mudam em `Config.ActiveCaveSite`.
+
+## Rodada final por código (V1, V2, V3, V4, V5, T1)
+| O quê | Como | Esperado |
+|---|---|---|
+| Praça da mina | Andar pela mina; olhar o Output "[Praça] placares ... altar ... estátua ..." | Placar da semana e "Hoje na mina", altar com cristais, estátua do Guardião com olhos vermelhos, varal de lanternas. Se algum disser false, a peça não coube |
+| Portas da vila | Chegar perto de uma porta e usar "Abrir" | A folha desliza e volta sozinha em 6 s |
+| Taverna | Entrar na taverna (porta da frente) | Piso de tábuas, balcão, mesas, lustre; "Sentar" nos banquinhos |
+| Carrinho e cachorro | Andar na vila | Carrinho com falas; cachorro que segue e aceita carinho |
+| Lojas e recibo | Abrir o Mercado; fazer uma extração | Itens girando nas cartas; recibo com itens girando |
+| Fim da expedição | QA "Tela de fim" | Baú 3D abrindo |
+| Primeira descida (T1) | "Resetar perfil" (QA), parar e entrar | Abertura, depois a galeria: pegar o núcleo, o chão treme, sombra, bipe, elevador; volta ao lobby com 1 núcleo; "Pular" funciona; na próxima vez não repete |
+| Votação de caverna (V3) | Ficar em cima de um tablado perto do elevador e descer | A caverna do tablado vale; rode "Auditar caminhos" (28 ok, 0 falhas, 3 só pelo gancho) e extraia; repita com os 3 locais, sem recarregar o servidor |

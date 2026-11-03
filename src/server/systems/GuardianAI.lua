@@ -343,6 +343,14 @@ local function update(dt)
     end
 end
 
+-- V3: depois que a caverna é refeita, acha o novo Guardião e o põe para dormir em casa
+function GuardianAI.Rebind()
+    clearPath()
+    guardianModel, guardianHumanoid, guardianRoot = nil, nil, nil
+    findGuardian()
+    GuardianAI.Reset()
+end
+
 function GuardianAI.Init()
     workspace:GetAttributeChangedSignal("FirstCoreExtracted"):Connect(function()
         if workspace:GetAttribute("FirstCoreExtracted") then

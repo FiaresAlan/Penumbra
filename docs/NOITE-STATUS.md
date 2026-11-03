@@ -108,3 +108,19 @@ Sem o Studio na tela, só dá para conferir sintaxe (`tools/check_syntax.sh`: 0 
 - **Não feito de propósito:** decoração às cegas na praça (placares gigantes, altar, estátua do Guardião, portas e bichinho da vila): sem ver o lugar, o risco de sobrepor o que já existe é maior que o ganho. Ficam para quando o Studio puder ser olhado.
 
 FILA PARADA: falta validação visual e teste com pessoas; nenhum módulo restante é possível de concluir sem ver o jogo.
+
+## Rodada final por código (03/11/2026, sem o Studio na tela; só sintaxe conferida com luau-analyze, 0 erros)
+
+Feita a pedido do Alan ("faça tudo em código"). Nada disso foi visto no jogo.
+
+| Módulo | O que foi escrito | Como foi validado | Risco |
+|---|---|---|---|
+| V2 praça | `PlazaDecor` + `FreeSpot`: dois placares gigantes (semana e hoje), altar das relíquias com 5 cristais que acendem a cada relíquia trazida, estátua do Guardião e varal de lanternas; posição por busca de chão livre | só sintaxe | a posição final não foi vista; se não achar espaço livre, a peça não nasce (Output "[Praça] ...") |
+| V1 vila | `VillageExtras`: portas que deslizam, interior da taverna (piso, balcão, 4 mesas com banquinhos de sentar, barris, lustre), carrinho de mercador com falas, cachorro que segue | só sintaxe | portas deslizam para o lado (pivô de cada peça não conferido); interior calculado a partir da porta |
+| V5 | `ItemViewport` nas cartas das lojas; `ReceiptUI` com os itens girando | só sintaxe | recibo e tela de fim podem aparecer juntos |
+| V4 | baú 3D com tampa que abre (`ItemViewport.CreateChest`) na tela de fim | só sintaxe | ângulo da tampa não visto |
+| T1 | `TutorialSystem` + `TutorialUI`: galeria no alto do mundo (Y 400), núcleo, tremor, sombra roteirizada, bipe, volta ao lobby com 1 núcleo comum uma única vez (`profile.onboarded`), "Pular" a qualquer momento; o jogador continua "no lobby" para o resto do jogo | só sintaxe | altura e tamanho da galeria não vistos; reaparecer na galeria encerra sem prêmio |
+| V3 | `CaveVoting` (3 tablados), `MapBuilder.RebuildCave`, `Rebind` em ExtractionSystem, GuardianAI e NestSystem, gancho `ExpeditionSystem.SetPreLaunchHook`. Sem votos nada muda; com votos refaz a caverna antes da descida | só sintaxe | é a mudança mais delicada da Fase 1: teste "votar e descer" 3 vezes seguidas e rode "Auditar caminhos" em cada local |
+| P5, P11 | ligadas sem teste | só sintaxe | desligar em Config.Features se algo estranho aparecer |
+
+Pendências reais: nenhum teste em jogo, nenhum teste com 2 jogadores nem no celular. Roteiro em `docs/TESTES-PARA-O-ALAN.md`.

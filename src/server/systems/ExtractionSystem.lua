@@ -165,11 +165,12 @@ function ExtractionSystem.QACall(player: Player)
     end
 end
 
-function ExtractionSystem.Init()
+-- Liga o prompt do elevador da caverna atual. Roda no Init e de novo quando a caverna é refeita (V3: votação de caverna).
+local function bindElevator(): boolean
     local elevator = getElevator()
     if not elevator then
         warn("[Ecos] Elevator não encontrado.")
-        return
+        return false
     end
     elevatorPart = elevator
     elevatorPrompt = elevator:FindFirstChildOfClass("ProximityPrompt")
@@ -191,6 +192,21 @@ function ExtractionSystem.Init()
         end)
     else
         warn("[Ecos] Elevator sem ProximityPrompt.")
+    end
+    return true
+end
+
+function ExtractionSystem.Rebind()
+    generation += 1
+    state = State.Idle
+    if bindElevator() then
+        updatePrompt()
+    end
+end
+
+function ExtractionSystem.Init()
+    if not bindElevator() then
+        return
     end
 
     ExpeditionSystem.Started:Connect(function()

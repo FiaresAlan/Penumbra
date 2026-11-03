@@ -41,14 +41,15 @@ Config.Features = {
     SilenceMoment = true, -- P2 / J13 (ligado em 03/11; testado: aviso, apagão e fim no Output; texto e escuridão no cliente não vistos)
     DenseCore = false, -- P3 / J14 (testado ligado em 02/11: 2 núcleos densos por descida)
     ShiftingRoute = true, -- P4 (ligado em 03/11; testado: corredor (15, 4) fechado e Auditar caminhos deu 28 ok, 0 falhas, 3 so pelo gancho com a rocha no lugar)
-    LearningGuardian = false, -- P5 (codigo pronto e carrega sem erro; NAO testado em jogo: nao consegui provocar uma caca pelo QA; ligar so depois de testar)
+    LearningGuardian = true, -- P5 (ligado em 03/11 sem teste em jogo: so muda a volta do Guardiao para casa; desligar se algo estranho aparecer)
     DescentCondition = true, -- P6 + P9 (ligado em 03/11; testado: texto no DESCER e condição ativa no Output; névoa vista só de relance)
     VillageRumors = true, -- P7 (ligado a pedido do Alan em 03/11: só texto)
     DropItems = false, -- I2
     ThrowItems = false, -- I3
     VisibleBackpack = false, -- I4
     ElevatorWindow = true, -- P8 (ligado em 03/11: portas abertas de 30 a 40 s, nunca menos que a Fase 1)
-    EchoOthers = false, -- P11 (codigo pronto; NAO testado: precisa de 2 jogadores na caverna; ligar so depois de testar)
+    EchoOthers = true, -- P11 (ligado em 03/11 sem teste: so toca um passo distante para colegas na caverna; precisa de 2 jogadores)
+    CaveVoting = true, -- V3 (ligado em 03/11: sem votos nada muda; com votos a caverna é refeita antes da descida)
     NightVisitor = true, -- P10 (ligado em 03/11; testado: vulto apareceu na zona B; inofensivo)
     ChainBonus = true, -- P13 (ligado em 03/11; testado: cadeia 3 e 4 deram +20 XP; só XP)
     VillageEndings = true, -- P12 (ligado em 03/11; testado: marcos de extração e relíquia; só texto)
@@ -91,6 +92,12 @@ Config.CartLines = {
 -- T1: prêmio único da primeira descida (um núcleo comum) e a velocidade da sombra roteirizada (studs por segundo)
 Config.TutorialCoreValue = 14
 Config.TutorialShadeSpeed = 9
+-- V3: aparência de cada local de caverna nos tablados de votação
+Config.CaveSiteInfo = {
+    Mina = { title = "Mina Abandonada", color = { 230, 160, 70 } },
+    Masmorra = { title = "Masmorra Antiga", color = { 200, 90, 80 } },
+    Gruta = { title = "Gruta de Cristal", color = { 90, 200, 230 } },
+}
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",

@@ -173,6 +173,13 @@ function NestSystem.QAHurry(seconds: number)
     end
 end
 
+-- V3: a caverna foi refeita; os Slots novos precisam dos prompts de resgate
+function NestSystem.Rebind()
+    table.clear(prompts)
+    table.clear(captives)
+    setupSlotPrompts()
+end
+
 function NestSystem.Init()
     setupSlotPrompts()
 

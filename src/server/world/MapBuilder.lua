@@ -58,6 +58,47 @@ local function signature(mapFolder: Folder): (number, number, number)
     return count, hash, cores
 end
 
+-- Limite de luzes da caverna (também usado quando a caverna é refeita)
+local function limitLights(mapFolder: Folder)
+    -- Limite de luzes (Config.CaveMaxLights): as de enfeite (lâmpadas, cristais, velas) são apagadas além do limite;
+    -- as de jogo (núcleos, tochas dos props) ficam sempre
+    local lights: { Instance } = {}
+    local decorative: { Instance } = {}
+    local byName: { [string]: number } = {}
+    for _, descendant in ipairs(mapFolder:GetDescendants()) do
+        if descendant:IsA("PointLight") or descendant:IsA("SpotLight") then
+            table.insert(lights, descendant)
+            local owner = if descendant.Parent then descendant.Parent.Name else "?"
+            byName[owner] = (byName[owner] or 0) + 1
+            if owner == "CaveLamp" or owner == "Crystal" or string.find(owner, "Candle", 1, true) then
+                table.insert(decorative, descendant)
+            end
+        end
+    end
+    -- Apaga de duas em duas (para não deixar uma área inteira escura) até chegar ao limite
+    local order: { Instance } = {}
+    for index = 2, #decorative, 2 do
+        table.insert(order, decorative[index])
+    end
+    for index = 1, #decorative, 2 do
+        table.insert(order, decorative[index])
+    end
+    local removed = 0
+    for _, light in ipairs(order) do
+        if #lights - removed <= Config.CaveMaxLights then
+            break
+        end
+        light:Destroy()
+        removed += 1
+    end
+    local detail = {}
+    for name, count in pairs(byName) do
+        table.insert(detail, string.format("%s=%d", name, count))
+    end
+    table.sort(detail)
+    print(string.format("[Map] %d luzes na caverna antes do corte, %d apagadas (limite %d): %s", #lights, removed, Config.CaveMaxLights, table.concat(detail, " ")))
+end
+
 -- opts.waitForProps: espera os props ficarem prontos antes de voltar (usado na prévia do Studio, onde nada mais os espera).
 function MapBuilder.Build(opts: { waitForProps: boolean? }?)
     MapBuilder.Clear()
@@ -115,46 +156,56 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
         task.spawn(Props.Build, grid, propsRng)
     end
 
-    -- Limite de luzes (Config.CaveMaxLights): as de enfeite (lâmpadas, cristais, velas) são apagadas além do limite;
-    -- as de jogo (núcleos, tochas dos props) ficam sempre
-    local lights: { Instance } = {}
-    local decorative: { Instance } = {}
-    local byName: { [string]: number } = {}
-    for _, descendant in ipairs(mapFolder:GetDescendants()) do
-        if descendant:IsA("PointLight") or descendant:IsA("SpotLight") then
-            table.insert(lights, descendant)
-            local owner = if descendant.Parent then descendant.Parent.Name else "?"
-            byName[owner] = (byName[owner] or 0) + 1
-            if owner == "CaveLamp" or owner == "Crystal" or string.find(owner, "Candle", 1, true) then
-                table.insert(decorative, descendant)
-            end
-        end
-    end
-    -- Apaga de duas em duas (para não deixar uma área inteira escura) até chegar ao limite
-    local order: { Instance } = {}
-    for index = 2, #decorative, 2 do
-        table.insert(order, decorative[index])
-    end
-    for index = 1, #decorative, 2 do
-        table.insert(order, decorative[index])
-    end
-    local removed = 0
-    for _, light in ipairs(order) do
-        if #lights - removed <= Config.CaveMaxLights then
-            break
-        end
-        light:Destroy()
-        removed += 1
-    end
-    local detail = {}
-    for name, count in pairs(byName) do
-        table.insert(detail, string.format("%s=%d", name, count))
-    end
-    table.sort(detail)
-    print(string.format("[Map] %d luzes na caverna antes do corte, %d apagadas (limite %d): %s", #lights, removed, Config.CaveMaxLights, table.concat(detail, " ")))
+    limitLights(mapFolder)
     print(string.format("[Map] Mapa gerado (seed %d, %d partes)", Config.MapSeed, #mapFolder:GetDescendants()))
     local count, hash, cores = signature(mapFolder)
     print(string.format("[Map] assinatura partes=%d hash=%d nucleos=%d", count, hash, cores))
+end
+
+-- V3: refaz só a caverna (outro local) sem tocar no lobby nem na floresta. Quem guarda referências (elevador, Guardião, Ninho)
+-- precisa de Rebind depois (ExtractionSystem, GuardianAI e NestSystem têm). Chamado pela votação de caverna, antes da descida.
+local CAVE_TOP_LEVEL = { "Map", "Elevator", "CaveArrival", "PitySpawnPoint", "FuryZones", "NestSlots", "FakeWallSlots", "HookPoints", "Guardian" }
+
+function MapBuilder.RebuildCave(siteName: string)
+    local site = Config.CaveSites[siteName]
+    if not site then
+        warn("[Map] local de caverna desconhecido: " .. tostring(siteName))
+        return false
+    end
+    local startedAt = os.clock()
+    for _, name in ipairs(CAVE_TOP_LEVEL) do
+        local old = workspace:FindFirstChild(name)
+        if old then
+            old:Destroy()
+        end
+    end
+    local oldTemplate = ServerStorage:FindFirstChild("CoreTemplate")
+    if oldTemplate then
+        oldTemplate:Destroy()
+    end
+
+    local mapFolder = Instance.new("Folder")
+    mapFolder.Name = "Map"
+    Util.topLevel(mapFolder)
+    Util.MapFolder = mapFolder
+
+    Layout.SetSite(site)
+    workspace:SetAttribute("CaveSite", siteName)
+    local rng = Random.new(Layout.Site.seed)
+    local grid = Layout.carveCave(rng)
+    CaveShape.Bind(grid)
+    CaveGeometry.Build(grid)
+    CaveDecor.Build(grid, Random.new(Config.MapSeed + 2))
+    Cores.placeCores(grid, rng)
+    Cores.makeCore("CoreTemplate", Vector3.zero, "Common", "A", "Core", ServerStorage)
+    CaveMarkers.Build(grid, rng)
+    CaveMarkers.BuildLedges()
+    GuardianModel.Build()
+    CaveScatter.Build(grid, Random.new(Config.MapSeed + 4))
+    task.spawn(Props.Build, grid, Random.new(Config.MapSeed + 3))
+    limitLights(mapFolder)
+    print(string.format("[Map] caverna refeita: %s em %.1f s", siteName, os.clock() - startedAt))
+    return true
 end
 
 return MapBuilder

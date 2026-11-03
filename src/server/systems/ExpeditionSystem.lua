@@ -201,7 +201,20 @@ local function checkForEnd(leaving: Player?)
     end
 end
 
+-- V3: um módulo (a votação de caverna) pode refazer a caverna logo antes da descida
+local preLaunch: (() -> ())? = nil
+
+function ExpeditionSystem.SetPreLaunchHook(callback: () -> ())
+    preLaunch = callback
+end
+
 local function launch(passengers: { Player })
+    if preLaunch and phase == Phase.Waiting then
+        local ok, err = pcall(preLaunch)
+        if not ok then
+            warn("[Expedition] gancho antes da descida falhou: " .. tostring(err))
+        end
+    end
     local arrival = getPart("CaveArrival")
     if phase ~= Phase.Waiting then
         return
