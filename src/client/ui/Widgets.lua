@@ -204,8 +204,8 @@ end
 
 export type Tabs = { frame: Frame, Select: (name: string) -> (), Current: () -> string }
 
--- Linha de abas. onSelect é chamado com o nome ao trocar (e uma vez no começo, com a primeira aba).
-function Widgets.Tabs(parent: Instance, names: { string }, onSelect: (string) -> ()): Tabs
+-- Linha de abas. onSelect é chamado só ao trocar de aba; `initial` escolhe a aba já marcada, sem chamar onSelect.
+function Widgets.Tabs(parent: Instance, names: { string }, onSelect: (string) -> (), initial: string?): Tabs
     local frame = Instance.new("Frame")
     frame.BackgroundTransparency = 1
     frame.Size = UDim2.new(1, 0, 0, 44)
@@ -216,7 +216,7 @@ function Widgets.Tabs(parent: Instance, names: { string }, onSelect: (string) ->
     layout.Parent = frame
 
     local buttons: { [string]: TextButton } = {}
-    local current = names[1] or ""
+    local current = initial or names[1] or ""
 
     local function paint()
         for name, button in pairs(buttons) do
@@ -368,11 +368,14 @@ function Widgets.Tooltip(target: GuiObject, getText: () -> string)
         -- GetMouseLocation conta a barra superior; o ScreenGui ignora o inset, então as coordenadas batem
         label.Position = UDim2.fromOffset(mouse.X + 14, mouse.Y + 6)
     end)
-    target.MouseLeave:Connect(function()
+    local function hide()
         if tooltipLabel then
             tooltipLabel.Visible = false
         end
-    end)
+    end
+    target.MouseLeave:Connect(hide)
+    -- A carta pode ser destruída com o mouse em cima (troca de aba): sem isso a dica ficaria presa
+    target.Destroying:Connect(hide)
 end
 
 Widgets.AddCorner = addCorner

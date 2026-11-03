@@ -11,6 +11,7 @@ local HINTS = {
     "O Guardião não enxerga: ele ouve.",
     "Parado você está seguro. Andar faz barulho. Segure Ctrl para andar devagar.",
     "Núcleos e Relíquias pesam e aumentam o barulho. Volte ao elevador para extrair.",
+    "Aperte I para ver os espaços da mochila e o baú. O jogo não pausa.",
     "Quanto mais tempo na caverna, mais valem os itens, e mais furioso fica o Guardião.",
 }
 

@@ -9,6 +9,7 @@ Config.BaseNoise = 0
 Config.RunNoiseMultiplier = 1.0
 Config.WeightNoiseMultiplier = 0.5
 Config.MaxCarryWeight = 10
+Config.SlotWeight = 2 -- cada 2 de peso é 1 espaço na tela da mochila (só apresentação)
 Config.VoiceSpikeDecay = 2.0
 Config.VoiceSpikeAmount = 5.0
 

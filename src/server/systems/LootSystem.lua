@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 local Enums = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Enums"))
@@ -49,10 +50,25 @@ end
 
 local function sendInventoryUpdate(player, notice)
     local inv = getOrCreateInventory(player)
+    -- Lista só dos itens do próprio jogador, para a tela de mochila: o valor atual é calculado aqui, nunca no cliente
+    local items = {}
+    for _, item in ipairs(inv.items) do
+        table.insert(items, {
+            id = item.id,
+            type = item.type,
+            rarity = item.rarity,
+            depthZone = item.depthZone,
+            baseValue = item.baseValue,
+            value = math.floor(item.baseValue * valueMultiplier),
+            weight = weightOf(item.type),
+        })
+    end
     HUDUpdate:FireClient(player, {
         itemsCount = #inv.items,
         totalValue = backpackValue(inv, valueMultiplier),
         weight = totalWeight(inv),
+        maxWeight = Config.MaxCarryWeight,
+        items = items,
         notice = notice,
     })
 end
@@ -98,7 +114,13 @@ function LootSystem.GrantItem(player, itemType, rarity, depthZone)
     end
     local bonus = Config.DepthBonus[depthZone or "A"] or 1
 
-    table.insert(inv.items, { type = itemType, rarity = rarity, baseValue = math.floor(base * bonus) })
+    table.insert(inv.items, {
+        id = HttpService:GenerateGUID(false),
+        type = itemType,
+        rarity = rarity,
+        depthZone = depthZone or "A",
+        baseValue = math.floor(base * bonus),
+    })
 
     updateCarryWeight(player)
     sendInventoryUpdate(player)
