@@ -249,6 +249,17 @@ Config.ZoneBoundaryB = 580
 Config.ZoneBoundaryC = 724
 
 -- QA (botões do painel; só existem no Studio)
+-- X0: pontos de foto da superfície (x, z, alvo tx/tz, altura do olho e do alvo acima do chão). A caverna usa os marcadores.
+Config.PhotoSpots = {
+    { name = "Mina: praça e elevador", x = 55, z = 25, tx = 0, tz = 0, eye = 4, ty = 6 },
+    { name = "Mina: de perto, no chão", x = 14, z = -6, tx = -2, tz = 6, eye = 2.5, ty = 5 },
+    { name = "Trilha para a vila", x = -150, z = 48, tx = -250, tz = -20, eye = 3, ty = 3 },
+    { name = "Ruína na floresta", x = -405, z = 175, tx = -420, tz = 210, eye = 4, ty = 5 },
+    { name = "Vila: praça", x = -600, z = 30, tx = -640, tz = 0, eye = 4, ty = 5 },
+    { name = "Vila: taverna e lojas", x = -600, z = -50, tx = -662, tz = -50, eye = 4, ty = 6 },
+    { name = "Floresta funda", x = -860, z = -35, tx = -940, tz = 60, eye = 3, ty = 5 },
+    { name = "Mercado Negro", x = -1092, z = 72, tx = -1120, tz = 60, eye = 3, ty = 3 },
+}
 Config.QAButtons = {
     { id = "EndFailure", label = "Encerrar: falha" },
     { id = "EndSuccess", label = "Encerrar: sucesso" },
@@ -288,6 +299,8 @@ Config.QAButtons = {
     { id = "ForgetVillage", label = "Esquecer a vila" },
     { id = "CallGroup", label = "Chamar o grupo" },
     { id = "UISample", label = "Amostra de UI" },
+    { id = "Photo", label = "Foto" },
+    { id = "PhotoLit", label = "Foto + luz" },
     { id = "ShuffleItems", label = "Embaralhar itens" },
 }
 

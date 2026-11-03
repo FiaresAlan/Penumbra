@@ -39,7 +39,7 @@ O R3-lite não entrega o R3: o chão continua reto. A fila 4A vale acima da tabe
 
 | Módulo | Estado | Prova |
 |---|---|---|
-| X0 Foto | Pendente | |
+| X0 Foto | OK | Botões QA "Foto" e "Foto + luz" (`ui/Photo.lua`, `Config.PhotoSpots`): esconde a interface, tecla N avança, P sai; 8 pontos na superfície e 5 na caverna. Fotos de base em `docs/portao-visual/base/`. Crítica: a caverna é corredor reto de paredes lisas com cara de caixa, chão plano, cores sem identidade (A cinza, B azulada, C musgo); a vila e a praça da mina ficam bonitas em foto, mas com pouca gente e pouca coisa para tocar |
 | C1 Caverna em Terrain | Pendente | |
 | C2 Identidade das zonas | Pendente | |
 | V1 Coisas para tocar | Pendente | |
