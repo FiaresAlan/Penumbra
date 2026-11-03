@@ -18,7 +18,7 @@ Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de
 | 10 | R2 Caverna em Terrain | Pendente | | | |
 | 11 | R3 Identidade das zonas | Pendente | | | |
 | 12 | L6 Nível, XP e diária | Pendente | | | |
-| 13 | L7 Fim de expedição | Pendente | | | |
+| 13 | L7 Fim de expedição | OK | ver Git | Play: extração real pelo elevador; tela com título, 1588 💎 contando, "Você trouxe 7 itens", carta "Maior saque" com foto, botão Fechar, some em 9 s; Output sem erros | Corrigido depois do teste: o resultado era comparado com "Success" em vez de "success" (mostrou "fracassou" numa extração). Depois da correção testei "Encerrar: sucesso" (título dourado, "Você não extraiu desta vez"). Não testado: 2+ jogadores, "Voltou para salvar". O recibo antigo em texto continua para quem extrai antes do fim |
 | 14 | L8 Placares e convite | Pendente | | | |
 | 15 | A2 Música e sons | Pendente | | | |
 | 16 | R7b NPCs e balões | Pendente | | | |
