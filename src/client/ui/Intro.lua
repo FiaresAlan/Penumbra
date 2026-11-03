@@ -10,6 +10,7 @@ local Widgets = require((script.Parent :: Instance):WaitForChild("Widgets") :: M
 local ProfileHUD = require((script.Parent :: Instance):WaitForChild("ProfileHUD") :: ModuleScript)
 
 local player = Players.LocalPlayer
+local TutorialStart = game:GetService("ReplicatedStorage"):WaitForChild("EcosRemotes"):WaitForChild("TutorialStart") :: RemoteEvent
 
 local Intro = {}
 
@@ -61,6 +62,7 @@ local function play()
             return
         end
         finished = true
+        TutorialStart:FireServer() -- T1: depois da abertura, o servidor decide se começa a primeira descida guiada
         TweenService:Create(backdrop, TweenInfo.new(0.6), { BackgroundTransparency = 1 }):Play()
         TweenService:Create(title, TweenInfo.new(0.4), { TextTransparency = 1 }):Play()
         TweenService:Create(line, TweenInfo.new(0.4), { TextTransparency = 1 }):Play()
@@ -109,7 +111,7 @@ function Intro.Init()
             return
         end
         shown = true
-        local fresh = info.money == 0 and #info.stash == 0 and next(info.upgrades) == nil
+        local fresh = info.money == 0 and #info.stash == 0 and next(info.upgrades) == nil and info.onboarded ~= true
         if fresh then
             play()
         end

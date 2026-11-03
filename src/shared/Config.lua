@@ -88,6 +88,9 @@ Config.CartLines = {
     "Já viu o placar da praça? Tem gente corajosa por aí.",
     "Se for descer, leve algo para comer. Eu sempre levo.",
 }
+-- T1: prêmio único da primeira descida (um núcleo comum) e a velocidade da sombra roteirizada (studs por segundo)
+Config.TutorialCoreValue = 14
+Config.TutorialShadeSpeed = 9
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",

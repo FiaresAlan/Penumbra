@@ -27,6 +27,7 @@ export type Profile = {
     dailyLastDay: number, -- dia UTC (os.time() // 86400) da última recompensa
     streak: number, -- P13: extrações seguidas sem ser capturado
     stats: { [string]: number }, -- P12: contadores de marcos (extractions, relics, rescues)
+    onboarded: boolean, -- T1: já fez ou pulou a primeira descida guiada
 }
 
 local PlayerProfile = {}
@@ -61,6 +62,7 @@ local function defaultProfile(): Profile
         dailyLastDay = 0,
         streak = 0,
         stats = {},
+        onboarded = false,
     }
 end
 
@@ -89,6 +91,10 @@ local function migrate(data: any): any
     data.dailyLastDay = data.dailyLastDay or 0
     data.streak = data.streak or 0
     data.stats = data.stats or {}
+    -- T1: perfil antigo (com moedas, itens ou melhorias) já conhece o jogo e nunca vê a primeira descida guiada
+    if data.onboarded == nil then
+        data.onboarded = data.money > 0 or #data.stash > 0 or next(data.upgrades) ~= nil or data.xp > 0
+    end
     return data
 end
 
@@ -197,6 +203,7 @@ local function sendUpdate(player: Player, notice: string?)
         xp = profile.xp,
         daily = dailyInfo(profile),
         money = profile.money,
+        onboarded = profile.onboarded,
         stash = profile.stash,
         upgrades = profile.upgrades,
         relicDisplay = profile.relicDisplay,
@@ -367,6 +374,15 @@ function PlayerProfile.AddXp(player: Player, amount: number)
     profile.xp += amount
     local after = LevelRules.FromXp(profile.xp)
     sendUpdate(player, if after > before then string.format("Nível %d! %s", after, LevelRules.Title(after)) else nil)
+end
+
+-- T1: marca a primeira descida guiada como feita (ou pulada). Só grava uma vez.
+function PlayerProfile.SetOnboarded(player: Player)
+    local profile = profiles[player]
+    if profile and not profile.onboarded then
+        profile.onboarded = true
+        sendUpdate(player)
+    end
 end
 
 function PlayerProfile.GetLevel(player: Player): number

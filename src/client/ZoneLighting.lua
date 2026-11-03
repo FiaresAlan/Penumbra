@@ -269,6 +269,11 @@ function ZoneLighting.Init(onZoneChange: ((boolean) -> ())?)
         end
     end)
 
+    -- T1: na galeria do tutorial o servidor não muda o local do jogador; o cliente liga o visual de caverna sozinho
+    player:GetAttributeChangedSignal("InTutorial"):Connect(function()
+        transitionTo(player:GetAttribute("InTutorial") == true)
+    end)
+
     workspace:GetAttributeChangedSignal("ActiveCondition"):Connect(function()
         lastZone = ""
     end)
