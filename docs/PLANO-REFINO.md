@@ -153,13 +153,13 @@ A ordem junta o que o Alan mais quer (lobby e painéis) com o que precisa existi
 | 8 | **T1** Primeira descida | Médio | Os primeiros 60 s |
 | 9 | **J1** Itens mudam de lugar | Baixo | Cada descida é diferente |
 | 10 | **R2** Caverna em Terrain | **Alto** | Paredes e chão orgânicos |
-| 11 | **R3** Identidade das zonas | Médio | Cada zona com cara própria |
+| 11 | **R3** Identidade das zonas | Médio | Cada zona com cara própria. **R3-lite feito (lâmpadas por zona); o resto depende do R2** |
 | 12 | **L6** Nível, XP e recompensa diária | Médio | Sempre há progresso |
 | 13 | **L7** Fim de expedição | Baixo | Recibo e destaques |
 | 14 | **L8** Placares e convite | Médio | Lobby que chama para jogar |
-| 15 | **A2** Música e sons | Baixo | Som de verdade, se houver permissão de uso |
+| 15 | **A2** Música e sons | Baixo | **Feito em 02/11** (música mina e vila, fogueira, taverna; ver CREDITOS) |
 | 16 | **R7b** NPCs e balões | Médio | Vila com gente |
-| 17 | **R7c** Animais, morcegos e poeira | Baixo | Mais vida |
+| 17 | **R7c** Animais, morcegos e poeira | Baixo | **Feito em 02/11** (coelhos, morcegos, poeira) |
 | 18 | **P1** Desempenho e celular | Baixo | Números medidos e cortes |
 | 19 | **A3** Portão visual e candidatos a capa | Baixo | Prints para o Alan |
 | 20 | **S1** `--!strict` restante | Baixo | Tipos, sem mudar comportamento |
