@@ -40,7 +40,7 @@ Config.Features = {
     TensionDirector = true, -- P1 (ligado em 03/11; testado: fases Silence e Hunt alternam com durações sorteadas)
     SilenceMoment = true, -- P2 / J13 (ligado em 03/11; testado: aviso, apagão e fim no Output; texto e escuridão no cliente não vistos)
     DenseCore = false, -- P3 / J14 (testado ligado em 02/11: 2 núcleos densos por descida)
-    ShiftingRoute = false, -- P4
+    ShiftingRoute = true, -- P4 (ligado em 03/11; testado: corredor (15, 4) fechado e Auditar caminhos deu 28 ok, 0 falhas, 3 so pelo gancho com a rocha no lugar)
     LearningGuardian = false, -- P5
     DescentCondition = false, -- P6
     VillageRumors = true, -- P7 (ligado a pedido do Alan em 03/11: só texto)
@@ -62,6 +62,8 @@ Config.Tension = {
 -- P2: momento de silêncio (só com Features.SilenceMoment). Aviso de 3 s, depois um apagão curto: quem se mexe faz barulho extra.
 -- Quem está perto do elevador (extraindo) fica de fora. Uma vez por expedição, entre MinDelay e MaxDelay segundos depois da descida.
 Config.Silence = { WarnSeconds = 3, Seconds = 12, Boost = 0.4, MoveSpeed = 3, MinDelay = 90, MaxDelay = 240, ElevatorSafeRadius = 24 }
+-- P4: desabamento que fecha um corredor por um tempo (só com Features.ShiftingRoute)
+Config.RouteShift = { MinDelay = 120, MaxDelay = 300, WarnSeconds = 4, Seconds = 60 }
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
