@@ -32,9 +32,9 @@ local THEMES: { [string]: { [string]: { floor: Enum.Material, wall: Enum.Materia
         C = { floor = Enum.Material.Salt, wall = Enum.Material.Limestone },
     },
     dungeon = {
-        A = { floor = Enum.Material.Concrete, wall = Enum.Material.Asphalt },
-        B = { floor = Enum.Material.Pavement, wall = Enum.Material.Asphalt },
-        C = { floor = Enum.Material.Pavement, wall = Enum.Material.Concrete },
+        A = { floor = Enum.Material.WoodPlanks, wall = Enum.Material.Cobblestone },
+        B = { floor = Enum.Material.Brick, wall = Enum.Material.Cobblestone },
+        C = { floor = Enum.Material.Brick, wall = Enum.Material.Slate },
     },
     grotto = {
         A = { floor = Enum.Material.Sandstone, wall = Enum.Material.Limestone },
@@ -53,7 +53,9 @@ local MATERIAL_COLORS: { [Enum.Material]: Color3 } = {
     [Enum.Material.Concrete] = Color3.fromRGB(84, 82, 82),
     [Enum.Material.Asphalt] = Color3.fromRGB(40, 40, 46),
     [Enum.Material.Pavement] = Color3.fromRGB(58, 56, 64),
-    [Enum.Material.Ice] = Color3.fromRGB(120, 168, 196),
+    [Enum.Material.WoodPlanks] = Color3.fromRGB(88, 62, 44),
+    [Enum.Material.Brick] = Color3.fromRGB(104, 64, 54),
+    [Enum.Material.Ice] =Color3.fromRGB(120, 168, 196),
     [Enum.Material.Glacier] = Color3.fromRGB(84, 128, 160),
 }
 
