@@ -183,6 +183,11 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
             end
             clone.CFrame = CFrame.new(x, ground.Position.Y + size.Y / 2 - 0.15, z) * CFrame.Angles(0, rng:NextNumber(0, math.pi * 2), 0)
         end
+        if string.sub(template.Name, 1, 4) == "TD3_" then
+            -- as peças do 3TD vêm claras: escurece conforme a zona (A quente, B arroxeada, C azulada)
+            local zoneTint = ({ A = Color3.fromRGB(150, 130, 110), B = Color3.fromRGB(120, 110, 150), C = Color3.fromRGB(110, 140, 150) })[Layout.zoneOf(cell[1])]
+            clone.Color = zoneTint or Color3.fromRGB(130, 130, 130)
+        end
         clone.Parent = folder
         placed += 1
         if rule.light then

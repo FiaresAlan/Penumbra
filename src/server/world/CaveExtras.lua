@@ -110,6 +110,18 @@ function CaveExtras.Build(grid: Layout.Grid, rng: Random)
                     end
                 end
 
+                if theme == "grotto" and straight and (zone == "B" or zone == "C") and rng:NextNumber() < 0.3 then
+                    -- riacho: faixa fina de água ao longo do corredor, sem colisão
+                    local y = groundAt(center.X, center.Z, center.Y)
+                    if y then
+                        local base = CFrame.new(center.X, y, center.Z) * (along - along.Position)
+                        local stream = make("Riacho", Vector3.new(15.5, 0.08, rng:NextNumber(2.2, 3.4)), base * CFrame.new(0, 0.07, rng:NextNumber(-1.5, 1.5)), Enum.Material.Glass, Color3.fromRGB(80, 160, 210), false, folder)
+                        stream.Transparency = 0.4
+                        stream.Reflectance = 0.25
+                        tally("riachos")
+                    end
+                end
+
                 if theme == "dungeon" and straight and rng:NextNumber() < 0.4 then
                     -- arco de pedra: dois pilares nas bordas e uma verga em cima
                     local y = groundAt(center.X, center.Z, center.Y)

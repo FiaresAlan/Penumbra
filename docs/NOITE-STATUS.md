@@ -126,3 +126,5 @@ Feita a pedido do Alan ("faça tudo em código"). Nada disso foi visto no jogo.
 Pendências reais: nenhum teste em jogo, nenhum teste com 2 jogadores nem no celular. Roteiro em `docs/TESTES-PARA-O-ALAN.md`.
 
 | C2/C4/C5 (código) | `CaveExtras` (Config.CaveExtras): trilhos e dormentes na zona A da Mina, lama na B, crostas de sal na C, arcos de pedra e símbolos de néon na Masmorra, poças rasas de vidro azul na Gruta e marcas de garra no Ninho; tudo fino e sem colisão, menos os pilares dos arcos (nas bordas) | só sintaxe | muda a assinatura do mapa (leia o novo valor no Output ao testar e atualize o CLAUDE.md); se os arcos atrapalharem a auditoria de caminhos, desligue `Config.CaveExtras` |
+
+| Extras (código) | Peças do 3TD tingidas por zona; riachos de água na Gruta (CaveExtras); `GuardianShadow` (luzes de enfeite escurecem perto do Guardião); `SiteBanner` ("Descendo para: ..." ao entrar na caverna) | só sintaxe | não vistos; desligue `Features.GuardianShadow` ou `Config.CaveExtras` se atrapalhar |
