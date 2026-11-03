@@ -89,6 +89,48 @@ local function applyEffects(isCave: boolean)
     end
 end
 
+-- S1: névoa e tom por zona da caverna. As colunas da grade têm 16 studs a partir de X 420: A até a coluna 9,
+-- B até a 18 e C depois. A transição é suave (tween) e só roda dentro da caverna.
+local CAVE_ORIGIN_X = 420
+local CAVE_CELL = 16
+local ZONE_LOOK: { [string]: { density: number, haze: number, color: Color3, decay: Color3, tint: Color3 } } = {
+    A = { density = 0.40, haze = 2.0, color = Color3.fromRGB(46, 30, 20), decay = Color3.fromRGB(30, 16, 8), tint = Color3.fromRGB(255, 226, 190) },
+    B = { density = 0.46, haze = 2.4, color = Color3.fromRGB(26, 22, 52), decay = Color3.fromRGB(14, 10, 30), tint = Color3.fromRGB(210, 205, 255) },
+    C = { density = 0.54, haze = 3.0, color = Color3.fromRGB(12, 44, 50), decay = Color3.fromRGB(4, 22, 28), tint = Color3.fromRGB(190, 240, 245) },
+}
+local lastZone = ""
+
+local function zoneNow(): string?
+    local character = player.Character
+    local root = character and character:FindFirstChild("HumanoidRootPart")
+    if not root or not root:IsA("BasePart") then
+        return nil
+    end
+    local column = math.floor((root.Position.X - CAVE_ORIGIN_X) / CAVE_CELL)
+    if column <= 9 then
+        return "A"
+    elseif column <= 18 then
+        return "B"
+    end
+    return "C"
+end
+
+local function updateZoneLook()
+    local zone = zoneNow()
+    if not zone or zone == lastZone then
+        return
+    end
+    lastZone = zone
+    local look = ZONE_LOOK[zone]
+    local info = TweenInfo.new(2.5, Enum.EasingStyle.Sine)
+    if atmosphere then
+        TweenService:Create(atmosphere, info, { Density = look.density, Haze = look.haze, Color = look.color, Decay = look.decay }):Play()
+    end
+    if colorEffect then
+        TweenService:Create(colorEffect, info, { TintColor = look.tint }):Play()
+    end
+end
+
 local function setupEffects()
     colorEffect = Lighting:FindFirstChild("EcosColor") :: ColorCorrectionEffect?
     if not colorEffect then
@@ -125,6 +167,7 @@ local function transitionTo(isCave: boolean)
         return
     end
     currentIsCave = isCave
+    lastZone = ""
     if onChange then
         onChange(isCave)
     end
@@ -203,6 +246,15 @@ function ZoneLighting.Init(onZoneChange: ((boolean) -> ())?)
         task.delay(0.9, function()
             TweenService:Create(frame, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
         end)
+    end)
+
+    task.spawn(function()
+        while true do
+            task.wait(0.6)
+            if currentIsCave then
+                updateZoneLook()
+            end
+        end
     end)
 
     remote.OnClientEvent:Connect(function(location: unknown)

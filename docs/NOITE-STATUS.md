@@ -73,3 +73,9 @@ Nenhum ainda.
 ## Fechamento (03/11/2026)
 
 FILA PARADA: todos os módulos da 4A foram tentados; ficaram OK: X0, C1, C3, V6 (já coberto). PARCIAL: C2, C4, C5, V1, V2, V4, V5, T1. BLOQUEADO: V3 (votação). Restam P1, P2, P4, P5, P6, P8, P9, P11, P12, P13 e os testes com 2 jogadores, celular e extração real, que dependem de pessoas ou de mais sessões. Tudo no GitHub (último commit ff8c9f5) e o lugar salvo no Roblox.
+
+## Rodada 4B (Skyrim e BG3)
+
+| Módulo | Estado | Feito | Não testado |
+|---|---|---|---|
+| S1 Luz e névoa | PARCIAL | ZoneLighting: névoa e tom por zona (A âmbar, B violeta, C ciano) com transição de 2,5 s; prints em docs/portao-visual/S1 | Sem raios de luz (LightShafts) e sem luzes novas em cristais além das lâmpadas por zona que já existiam; vi só por Foto com luz; sem celular |
