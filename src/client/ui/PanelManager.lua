@@ -26,6 +26,7 @@ export type Panel = {
     Close: () -> (),
     IsOpen: () -> boolean,
     SelectTab: (name: string) -> (),
+    Refresh: () -> (), -- redesenha a aba atual (ou o painel sem abas) com os dados mais novos
 }
 
 local PanelManager = {}
@@ -87,12 +88,14 @@ function PanelManager.Create(id: string, opts: PanelOptions): Panel
     overlay.Visible = false
     overlay.Parent = gui
 
-    local window = Instance.new("Frame")
+    -- A janela é um botão mudo: um clique em área vazia dela não chega ao fundo (que fecha o painel)
+    local window = Instance.new("TextButton")
+    window.AutoButtonColor = false
+    window.Text = ""
     window.AnchorPoint = Vector2.new(0.5, 0.5)
     window.Position = UDim2.fromScale(0.5, 0.5)
     window.Size = UDim2.fromScale(0.84, 0.82)
     window.BackgroundColor3 = C.PanelBg
-    window.Active = true -- clicar na janela não conta como clicar fora
     window.Parent = overlay
     Widgets.AddCorner(window, UDim.new(0, 14))
     Widgets.AddStroke(window, C.Amber, 3)
@@ -188,6 +191,9 @@ function PanelManager.Create(id: string, opts: PanelOptions): Panel
             if currentTabs then
                 currentTabs.Select(currentTabs.Current())
             elseif opts.onTab then
+                for _, child in ipairs(content:GetChildren()) do
+                    child:Destroy() -- sem isso, reabrir o painel empilharia uma segunda cópia do conteúdo
+                end
                 opts.onTab("", content)
             end
         end,
@@ -219,6 +225,20 @@ function PanelManager.Create(id: string, opts: PanelOptions): Panel
             local currentTabs = tabs
             if currentTabs then
                 currentTabs.Select(name)
+            end
+        end,
+        Refresh = function()
+            if not isOpen then
+                return
+            end
+            local currentTabs = tabs
+            if currentTabs then
+                currentTabs.Select(currentTabs.Current())
+            elseif opts.onTab then
+                for _, child in ipairs(content:GetChildren()) do
+                    child:Destroy()
+                end
+                opts.onTab("", content)
             end
         end,
     }
