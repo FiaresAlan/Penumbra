@@ -37,8 +37,8 @@ Config.NpcLines = {
 
 -- Mecânicas novas, todas DESLIGADAS até o Portão 1 (ver docs/PLANO-REFINO.md seção 10B). Ligue uma por vez.
 Config.Features = {
-    TensionDirector = true, -- P1 (TESTE: voltar para false se não for aprovado)
-    SilenceMoment = false, -- P2 / J13
+    TensionDirector = true, -- P1 (ligado em 03/11; testado: fases Silence e Hunt alternam com durações sorteadas)
+    SilenceMoment = true, -- P2 / J13 (ligado em 03/11; testado: aviso, apagão e fim no Output; texto e escuridão no cliente não vistos)
     DenseCore = false, -- P3 / J14 (testado ligado em 02/11: 2 núcleos densos por descida)
     ShiftingRoute = false, -- P4
     LearningGuardian = false, -- P5
@@ -59,6 +59,9 @@ Config.Tension = {
     Silence = { seconds = { 25, 45 }, hearScale = 1.35, speed = 0.85 },
     Hunt = { seconds = { 20, 35 }, hearScale = 0.85, speed = 1 },
 }
+-- P2: momento de silêncio (só com Features.SilenceMoment). Aviso de 3 s, depois um apagão curto: quem se mexe faz barulho extra.
+-- Quem está perto do elevador (extraindo) fica de fora. Uma vez por expedição, entre MinDelay e MaxDelay segundos depois da descida.
+Config.Silence = { WarnSeconds = 3, Seconds = 12, Boost = 0.4, MoveSpeed = 3, MinDelay = 90, MaxDelay = 240, ElevatorSafeRadius = 24 }
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
