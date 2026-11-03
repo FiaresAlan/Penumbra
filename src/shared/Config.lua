@@ -42,7 +42,7 @@ Config.Features = {
     DenseCore = false, -- P3 / J14 (testado ligado em 02/11: 2 núcleos densos por descida)
     ShiftingRoute = true, -- P4 (ligado em 03/11; testado: corredor (15, 4) fechado e Auditar caminhos deu 28 ok, 0 falhas, 3 so pelo gancho com a rocha no lugar)
     LearningGuardian = false, -- P5 (codigo pronto e carrega sem erro; NAO testado em jogo: nao consegui provocar uma caca pelo QA; ligar so depois de testar)
-    DescentCondition = false, -- P6
+    DescentCondition = true, -- P6 + P9 (ligado em 03/11; testado: texto no DESCER e condição ativa no Output; névoa vista só de relance)
     VillageRumors = true, -- P7 (ligado a pedido do Alan em 03/11: só texto)
     DropItems = false, -- I2
     ThrowItems = false, -- I3
@@ -66,6 +66,14 @@ Config.Silence = { WarnSeconds = 3, Seconds = 12, Boost = 0.4, MoveSpeed = 3, Mi
 Config.RouteShift = { MinDelay = 120, MaxDelay = 300, WarnSeconds = 4, Seconds = 60 }
 -- P5: o Guardião lembra de onde ouviu barulho (só com Features.LearningGuardian) e passa por lá na volta para casa
 Config.Learning = { MinSeparation = 25, MaxMemory = 5, VisitRadius = 7, MaxVisitSeconds = 25 }
+-- P6 + P9: condição da descida, sorteada a cada expedição e mostrada antes de descer (só com Features.DescentCondition).
+-- Cada uma tem um lado bom e um ruim, sempre informados. fog muda a névoa da caverna (cliente); hearBias multiplica o quanto o
+-- Guardião escuta (acima de 1 ele escuta menos). Nunca muda preço, valor de item nem velocidade.
+Config.DescentConditions = {
+    { id = "fog", name = "Neblina", text = "Neblina: você vê menos, mas o Guardião escuta menos", fog = 0.22, hearBias = 1.15 },
+    { id = "clear", name = "Ar limpo", text = "Ar limpo: você vê longe, mas o Guardião escuta mais", fog = -0.18, hearBias = 0.9 },
+    { id = "embers", name = "Brasas", text = "Brasas no ar: tudo fica avermelhado, sem outro efeito", fog = 0, hearBias = 1, tint = { 255, 200, 170 } },
+}
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",

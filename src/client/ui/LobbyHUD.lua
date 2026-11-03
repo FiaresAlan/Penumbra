@@ -122,6 +122,10 @@ local function refreshDescend()
         else
             hint.Text = if near then "Pressione DESCER para começar a expedição" else "Você está longe: te levamos de carroça até o elevador"
         end
+        local condition = workspace:GetAttribute("NextConditionText")
+        if typeof(condition) == "string" and condition ~= "" then
+            hint.Text = hint.Text .. "  ·  " .. condition
+        end
     end
     button.Active = enabled
     button.BackgroundTransparency = if enabled then 0 else 0.45

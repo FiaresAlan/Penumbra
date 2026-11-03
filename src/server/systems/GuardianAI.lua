@@ -24,6 +24,7 @@ local sleptAt = os.clock()
 local hearThreshold = Config.GuardianHearThreshold
 -- P5: onde o Guardião ouviu barulho nesta expedição. Na volta para casa ele passa por esses pontos. Esquece em Reset().
 local memory: { Vector3 } = {}
+local hearBias = 1 -- P6/P9: a condição da descida muda o quanto ele escuta (1 = normal)
 local hearScale = 1 -- P1: o diretor de tensão muda o quanto o Guardião escuta (1 = normal)
 local speedMultipliers = {}
 local lastMoveAt = 0
@@ -171,6 +172,10 @@ function GuardianAI.SetHearThreshold(value)
     hearThreshold = value
 end
 
+function GuardianAI.SetHearBias(value)
+    hearBias = value
+end
+
 function GuardianAI.SetHearScale(value)
     hearScale = value
 end
@@ -251,7 +256,7 @@ local function update(dt)
     local multiplier = speedMultiplier()
     local loudest, noise = NoiseSystem.GetLoudestPlayer()
     local loudestRoot = loudest and loudest.Character and loudest.Character:FindFirstChild("HumanoidRootPart")
-    local hears = loudestRoot ~= nil and noise > hearThreshold * hearScale
+    local hears = loudestRoot ~= nil and noise > hearThreshold * hearScale * hearBias
 
     if currentState == Enums.GuardianState.Sleeping then
         guardianHumanoid.WalkSpeed = 0

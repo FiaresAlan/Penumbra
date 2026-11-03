@@ -115,6 +115,13 @@ local function zoneNow(): string?
     return "C"
 end
 
+local function conditionLook(): { fog: number, tint: Color3? }
+    local id = workspace:GetAttribute("ActiveCondition")
+    local fog = workspace:GetAttribute("ConditionFog")
+    local tint = workspace:GetAttribute("ConditionTint")
+    return { fog = if typeof(id) == "string" and typeof(fog) == "number" then fog else 0, tint = if typeof(tint) == "Color3" then tint else nil }
+end
+
 local function updateZoneLook()
     local zone = zoneNow()
     if not zone or zone == lastZone then
@@ -123,11 +130,16 @@ local function updateZoneLook()
     lastZone = zone
     local look = ZONE_LOOK[zone]
     local info = TweenInfo.new(2.5, Enum.EasingStyle.Sine)
+    local condition = conditionLook()
     if atmosphere then
-        TweenService:Create(atmosphere, info, { Density = look.density, Haze = look.haze, Color = look.color, Decay = look.decay }):Play()
+        TweenService:Create(atmosphere, info, { Density = math.clamp(look.density + condition.fog, 0.1, 0.9), Haze = look.haze, Color = look.color, Decay = look.decay }):Play()
     end
     if colorEffect then
-        TweenService:Create(colorEffect, info, { TintColor = look.tint }):Play()
+        local tint = look.tint
+        if condition.tint then
+            tint = tint:Lerp(condition.tint, 0.5)
+        end
+        TweenService:Create(colorEffect, info, { TintColor = tint }):Play()
     end
 end
 
@@ -255,6 +267,10 @@ function ZoneLighting.Init(onZoneChange: ((boolean) -> ())?)
                 updateZoneLook()
             end
         end
+    end)
+
+    workspace:GetAttributeChangedSignal("ActiveCondition"):Connect(function()
+        lastZone = ""
     end)
 
     remote.OnClientEvent:Connect(function(location: unknown)
