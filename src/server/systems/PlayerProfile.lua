@@ -25,6 +25,8 @@ export type Profile = {
     xp: number,
     dailyClaims: number, -- quantas recompensas diárias já foram recebidas (o dia da sequência é dailyClaims % 7)
     dailyLastDay: number, -- dia UTC (os.time() // 86400) da última recompensa
+    streak: number, -- P13: extrações seguidas sem ser capturado
+    stats: { [string]: number }, -- P12: contadores de marcos (extractions, relics, rescues)
 }
 
 local PlayerProfile = {}
@@ -57,6 +59,8 @@ local function defaultProfile(): Profile
         xp = 0,
         dailyClaims = 0,
         dailyLastDay = 0,
+        streak = 0,
+        stats = {},
     }
 end
 
@@ -83,6 +87,8 @@ local function migrate(data: any): any
     data.xp = data.xp or 0
     data.dailyClaims = data.dailyClaims or 0
     data.dailyLastDay = data.dailyLastDay or 0
+    data.streak = data.streak or 0
+    data.stats = data.stats or {}
     return data
 end
 

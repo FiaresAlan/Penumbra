@@ -13,6 +13,16 @@ Config.MaxCarryWeight = 10
 -- Variação entre partidas. Desligue (false) para o teste com pessoas medir sempre o mesmo mapa.
 -- Nível e XP (só mostram progresso: não dão poder). Recompensa diária: 7 dias, nunca zera por faltar um dia.
 Config.Xp = { Extraction = 30, PerItem = 8, PerRelic = 40, Rescue = 50, Participation = 10 }
+-- P13: a partir de ChainFrom extrações seguidas, cada extração dá XP extra (só XP, nunca moeda). Perder a cadeia não tira nada.
+Config.Chain = { From = 3, XpBonus = 20 }
+-- P12: marcos da vila. Ao atingir `at` no contador `stat`, o jogador ganha uma frase (só texto, uma vez).
+Config.VillageEndings = {
+    { stat = "extractions", at = 1, text = "Primeira volta: a vila já sabe seu nome." },
+    { stat = "extractions", at = 10, text = "Dez descidas e dez voltas. Dizem que você tem sorte." },
+    { stat = "rescues", at = 1, text = "Você trouxe alguém de volta. A taverna brindou à sua saúde." },
+    { stat = "relics", at = 1, text = "Uma relíquia sua brilha na vitrine do mercado." },
+    { stat = "relics", at = 5, text = "Cinco relíquias: o ferreiro quer ver todas elas." },
+}
 Config.DailyRewards = { 40, 60, 80, 100, 140, 180, 300 }
 
 -- Falas dos moradores da vila (balões curtos). Algumas comentam a caverna, sem dar pista de onde está o Guardião.
@@ -33,11 +43,13 @@ Config.Features = {
     ShiftingRoute = false, -- P4
     LearningGuardian = false, -- P5
     DescentCondition = false, -- P6
-    VillageRumors = false, -- P7
+    VillageRumors = true, -- P7 (ligado a pedido do Alan em 03/11: só texto)
     DropItems = false, -- I2
     ThrowItems = false, -- I3
     VisibleBackpack = false, -- I4
-    NightVisitor = false, -- P10 (testado ligado em 03/11: vulto apareceu na zona B)
+    NightVisitor = true, -- P10 (ligado em 03/11; testado: vulto apareceu na zona B; inofensivo)
+    ChainBonus = true, -- P13 (ligado em 03/11; testado: cadeia 3 e 4 deram +20 XP; só XP)
+    VillageEndings = true, -- P12 (ligado em 03/11; testado: marcos de extração e relíquia; só texto)
 }
 
 -- P7: boatos da vila (só com Features.VillageRumors). Alguns são só meio certos de propósito.
