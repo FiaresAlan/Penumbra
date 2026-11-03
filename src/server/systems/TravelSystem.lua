@@ -106,7 +106,7 @@ local function travel(player: Player, fromCart: BasePart?, destination: string)
 
     lastTravel[player] = now
     traveling[player] = true
-    local arrivalCart = getPart("Cart" .. destination)
+    local arrivalCart = getPart(if destination == "Elevador" then "LobbyElevator" else "Cart" .. destination)
     teleport(player, arrival, if arrivalCart then arrivalCart.Position else nil)
     traveling[player] = nil
     print(string.format("[Travel] %s foi de carroça para %s", player.Name, destination))
@@ -168,6 +168,11 @@ function TravelSystem.Init()
             checkDiscovery()
         end
     end)
+end
+
+-- Leva ao elevador da mina de qualquer ponto da superfície, com o mesmo cooldown (botão DESCER do HUD, estando longe).
+function TravelSystem.ToElevator(player: Player)
+    travel(player, nil, "Elevador")
 end
 
 -- Usado só pelo QA do Studio: apaga a descoberta da vila.

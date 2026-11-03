@@ -117,6 +117,8 @@ local function buildLobby()
         -- A chegada olha para a carroça, para o jogador já ver o prompt da volta
         marker(arrivalName, Vector3.new(4, 1, 4), CFrame.lookAt(Vector3.new(arrivalX, 2, arrivalZ), Vector3.new(x, 2, z)), workspace):SetAttribute("Generated", true)
     end
+    -- Chegada do botão DESCER do HUD: dentro do raio do elevador, virada para ele
+    marker("CartArrivalElevador", Vector3.new(4, 1, 4), CFrame.lookAt(Vector3.new(40, 2, 8), Vector3.new(48, 2, 0)), workspace):SetAttribute("Generated", true)
     cart("CartMina", 20, 34, "CartArrivalMina", 20, 27)
     cart("CartVila", VX + 12, VZ + 36, "CartArrivalVila", VX + 12, VZ + 29)
 

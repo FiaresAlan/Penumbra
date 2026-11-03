@@ -55,7 +55,7 @@ function Compass.Init()
 
     local box = Instance.new("Frame")
     box.Size = UDim2.new(0, 150, 0, 72)
-    box.Position = UDim2.new(0, 12, 0.35, 0)
+    box.Position = UDim2.new(0, 12, 0.27, 42)
     box.BackgroundColor3 = Color3.fromRGB(20, 20, 28)
     box.BackgroundTransparency = 0.35
     box.Parent = gui

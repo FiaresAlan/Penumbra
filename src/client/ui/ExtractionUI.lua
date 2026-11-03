@@ -10,6 +10,19 @@ local Receipt = Remotes:WaitForChild("Receipt")
 
 local ExtractionUI = {}
 local statusLabel, inventoryLabel, noticeLabel, receiptLabel
+
+-- O HUD do lobby tem a própria mochila e moedas: este texto fica só para a caverna
+function ExtractionUI.SetInventoryVisible(visible)
+    if inventoryLabel then
+        inventoryLabel.Visible = visible
+    end
+end
+
+-- A faixa do elevador só aparece quando há mensagem
+local function setStatus(text)
+    statusLabel.Text = text
+    statusLabel.Visible = text ~= ""
+end
 local noticeToken = 0
 local receiptToken = 0
 
@@ -62,6 +75,7 @@ function ExtractionUI.Init()
     statusLabel.Font = Enum.Font.GothamBold
     statusLabel.TextSize = 24
     statusLabel.Text = ""
+    statusLabel.Visible = false
     statusLabel.Parent = gui
 
     local statusCorner = Instance.new("UICorner")
@@ -87,17 +101,17 @@ function ExtractionUI.Init()
 
     ElevatorUpdate.OnClientEvent:Connect(function(data)
         if data.stage == "arriving" then
-            statusLabel.Text = string.format("⏳ Elevador chegando em %ds", data.timeLeft)
+            setStatus(string.format("⏳ Elevador chegando em %ds", data.timeLeft))
         elseif data.stage == "open" then
-            statusLabel.Text = string.format("🚪 PORTAS ABERTAS — %ds", data.timeLeft)
+            setStatus(string.format("🚪 PORTAS ABERTAS — %ds", data.timeLeft))
         elseif data.stage == "cooldown" then
-            statusLabel.Text = string.format("🔁 Elevador voltando em %ds", data.timeLeft)
+            setStatus(string.format("🔁 Elevador voltando em %ds", data.timeLeft))
         elseif data.stage == "idle" then
-            statusLabel.Text = ""
+            setStatus("")
         elseif data.stage == "closed" then
-            statusLabel.Text = "🚫 Portas fechadas"
+            setStatus("🚫 Portas fechadas")
             task.delay(3, function()
-                statusLabel.Text = ""
+                setStatus("")
             end)
         end
     end)

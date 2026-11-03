@@ -33,6 +33,7 @@ local hasExtraction = false
 local extracted: { [Player]: boolean } = {}
 local lobbyElevator: BasePart? = nil
 local lobbyPrompt: ProximityPrompt? = nil
+local descentEndsAt = 0 -- hora do servidor (GetServerTimeNow) em que a contagem termina; 0 = sem contagem
 
 local function getPart(name: string): BasePart?
     local found = workspace:FindFirstChild(name)
@@ -56,10 +57,25 @@ local function isInExpedition(player: Player): boolean
     return location == Location.Cave or location == Location.Dragged or location == Location.Captive
 end
 
+-- Estado da expedição como Attributes do Workspace: o cliente lê sem remote (HUD do lobby)
+local function publishState()
+    local inside = 0
+    for _, player in ipairs(Players:GetPlayers()) do
+        if isInExpedition(player) then
+            inside += 1
+        end
+    end
+    workspace:SetAttribute("ExpPhase", phase)
+    workspace:SetAttribute("ExpDescending", descending)
+    workspace:SetAttribute("ExpDescentEnds", descentEndsAt)
+    workspace:SetAttribute("ExpInside", inside)
+end
+
 local function updatePrompt()
     if lobbyPrompt then
         lobbyPrompt.Enabled = phase == Phase.Waiting and not descending
     end
+    publishState()
 end
 
 -- Com StreamingEnabled, pede ao servidor para carregar o destino antes de teleportar.
@@ -245,7 +261,6 @@ end
 
 local function beginDescent()
     descending = true
-    updatePrompt()
 
     -- Quem está no lobby fora do raio do elevador (na vila, por exemplo) ganha mais tempo e recebe o aviso
     local countdown = Config.DescentCountdown
@@ -266,12 +281,32 @@ local function beginDescent()
         end
     end
     print(string.format("[Expedition] Descida em %ds (%d longe do elevador)", countdown, #far))
+    descentEndsAt = workspace:GetServerTimeNow() + countdown
+    updatePrompt()
 
     task.delay(countdown, function()
         descending = false
+        descentEndsAt = 0
         startExpedition()
         updatePrompt()
     end)
+end
+
+-- Pedido de descida (prompt do elevador ou botão do HUD). Devolve "started", "far" (longe do elevador) ou "busy".
+function ExpeditionSystem.TryBeginDescent(player: Player): string
+    if phase ~= Phase.Waiting or descending or PlayerState.Get(player) ~= Location.Lobby then
+        return "busy"
+    end
+    local elevator = lobbyElevator
+    local root = getRoot(player)
+    if not elevator or not root then
+        return "busy"
+    end
+    if (root.Position - elevator.Position).Magnitude > Config.LobbyElevatorRadius then
+        return "far"
+    end
+    beginDescent()
+    return "started"
 end
 
 -- Usado só pelo QA do Studio: começa a contagem sem precisar do prompt do elevador.
@@ -330,17 +365,7 @@ function ExpeditionSystem.Init()
     local prompt = lobbyPrompt
     if elevator and prompt then
         prompt.Triggered:Connect(function(player)
-            if phase ~= Phase.Waiting or descending then
-                return
-            end
-            if PlayerState.Get(player) ~= Location.Lobby then
-                return
-            end
-            local root = getRoot(player)
-            if not root or (root.Position - elevator.Position).Magnitude > Config.LobbyElevatorRadius then
-                return
-            end
-            beginDescent()
+            ExpeditionSystem.TryBeginDescent(player)
         end)
     else
         warn("[Expedition] LobbyElevator (com ProximityPrompt) não encontrado.")
@@ -349,6 +374,7 @@ function ExpeditionSystem.Init()
     task.spawn(function()
         while true do
             task.wait(1)
+            publishState()
             if phase == Phase.Active and os.clock() - startTime >= Config.ExpeditionMaxTime then
                 print("[Expedition] Tempo máximo atingido.")
                 ExpeditionSystem.End(hasExtraction and Outcome.Success or Outcome.Failure)

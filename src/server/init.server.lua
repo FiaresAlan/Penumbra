@@ -44,6 +44,7 @@ getOrCreateRemote("Run", "RemoteEvent")
 getOrCreateRemote("TravelFade", "RemoteEvent")
 getOrCreateRemote("GroupCall", "RemoteEvent")
 getOrCreateRemote("CallCart", "RemoteEvent")
+getOrCreateRemote("RequestDescent", "RemoteEvent")
 
 -- O mapa é gerado antes dos sistemas, que procuram as peças pelo nome
 require(script:WaitForChild("world"):WaitForChild("MapBuilder")).Build()
@@ -73,6 +74,7 @@ local NestSystem = require(systems:WaitForChild("NestSystem"))
 local GuardianDirector = require(systems:WaitForChild("GuardianDirector"))
 local CaveClock = require(systems:WaitForChild("CaveClock"))
 local TravelSystem = require(systems:WaitForChild("TravelSystem"))
+local DescentRequest = require(systems:WaitForChild("DescentRequest"))
 local QACommands = require(systems:WaitForChild("QACommands"))
 
 PlayerState.Init()
@@ -98,6 +100,7 @@ NestSystem.Init()
 GuardianDirector.Init()
 CaveClock.Init()
 TravelSystem.Init()
+DescentRequest.Init()
 QACommands.Init()
 
 print("[Ecos] Servidor inicializado. Aguardando jogadores.")

@@ -11,6 +11,15 @@ local ProfileHUD = {}
 -- Último perfil recebido do servidor, para as telas de mercado e oficina lerem
 local lastProfile: { money: number, stash: { any }, upgrades: { [string]: boolean } }? = nil
 local listeners: { (any) -> () } = {}
+local profileLabel: TextLabel? = nil
+
+-- O HUD do lobby mostra as moedas por conta própria; este texto fica só para a caverna
+function ProfileHUD.SetLabelVisible(visible: boolean)
+    local label = profileLabel
+    if label then
+        label.Visible = visible
+    end
+end
 
 function ProfileHUD.GetProfile()
     return lastProfile
@@ -33,6 +42,7 @@ function ProfileHUD.Init()
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Text = "Moedas: 0 · Baú: 0 itens"
     label.Parent = gui
+    profileLabel = label
 
     local notice = Instance.new("TextLabel")
     notice.Size = UDim2.new(0, 340, 0, 30)
