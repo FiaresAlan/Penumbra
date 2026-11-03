@@ -37,6 +37,18 @@ Config.Features = {
     DropItems = false, -- I2
     ThrowItems = false, -- I3
     VisibleBackpack = false, -- I4
+    NightVisitor = false, -- P10 (testado ligado em 03/11: vulto apareceu na zona B)
+}
+
+-- P7: boatos da vila (só com Features.VillageRumors). Alguns são só meio certos de propósito.
+Config.RumorChance = 0.4
+Config.VillageRumors = {
+    "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
+    "ouvi que as relíquias ficam nos salões mais fundos.",
+    "um mineiro jurou que o elevador demora mais quando a caverna está furiosa.",
+    "falam de paredes que parecem pedra, mas cedem ao toque.",
+    "dizem que o núcleo brilhante vale bem mais que os comuns.",
+    "alguém contou que o Guardião vira mais bravo com o tempo.",
 }
 
 Config.Variation = {

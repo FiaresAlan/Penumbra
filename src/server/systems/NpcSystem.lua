@@ -150,6 +150,10 @@ say = function(npc: Npc, rng: Random)
         return
     end
     npc.bubble.Text = lines[rng:NextInteger(1, #lines)]
+    -- P7: com o flag ligado, às vezes o morador conta um boato (sempre marcado, nunca a única pista de nada)
+    if Config.Features.VillageRumors and rng:NextNumber() < Config.RumorChance then
+        npc.bubble.Text = "Boato: " .. Config.VillageRumors[rng:NextInteger(1, #Config.VillageRumors)]
+    end
     local gui = npc.bubble.Parent :: BillboardGui
     gui.Enabled = true
     task.delay(5, function()

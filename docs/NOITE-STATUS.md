@@ -55,7 +55,7 @@ O R3-lite não entrega o R3: o chão continua reto. A fila 4A vale acima da tabe
 
 ## Pesquisa de imprevisibilidade
 
-Feita (seção 10B do plano): 7 melhorias com fonte, pilar, risco e teste, todas desligadas em `Config.Features`. Segunda rodada (seção 10B-2, a pedido do Alan): mais 6 ideias (P8 a P13) com fontes de HUSH e 99 Nights; "Drifters" não achei em nenhuma busca. Implementada só a P3 (Núcleo denso).
+Feita (seção 10B do plano): 7 melhorias com fonte, pilar, risco e teste, todas desligadas em `Config.Features`. Segunda rodada (seção 10B-2, a pedido do Alan): mais 6 ideias (P8 a P13) com fontes de HUSH e 99 Nights; "Drifters" não achei em nenhuma busca. Implementadas: P3 (Núcleo denso, testada ligada), P7 (boatos da vila: o morador diz "Boato: ..." com 40% de chance, só com Features.VillageRumors, não testada ligada) e P10 (Visitante da noite: vulto azul inofensivo na zona B em 1 de 6 expedições, testada ligada com chance 1: Output "[NightVisitor] vulto apareceu na zona B", sem erro; não vi o vulto na tela). Todas desligadas. Faltam P1, P2, P4, P5, P6, P8, P9, P11, P12, P13.
 
 ## Decisões tomadas sem o Alan
 
