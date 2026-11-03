@@ -381,6 +381,10 @@ Tela como a da referência: barra, recompensa, botão Reivindicar. `MissionRules
 
 **Pesquisa (03/11):** o "Stalactites Cave Kit" só aparece no Fab (Unreal/Unity), sem versão Roblox confirmada nem preço; o "MarchingCubesService" não existe nas buscas. Decisão: nada disso é necessário. O Terrain já é voxel e já temos ruído. Se o Alan achar um pacote em formato Roblox ou FBX, importar pela seção 7 (assets, sem scripts).
 
+**Pesquisa de kits (03/11, segunda busca):** não achei pacote gratuito de formações no Creator Store. Candidatos fora do Roblox: **3TD Cave Pack Pro v1.0** (OpenGameArt, CC0, 22 rochas, estalagmites e estalactites, mas em DAE: converter para FBX, por exemplo no Blender) e o **Free mine assets pack** (OpenGameArt, CC0, formato a confirmar). Antes de baixar, pedir o OK do Alan (nome do arquivo, origem e tamanho), baixar para uma pasta nova e vazia, auditar sem script (seção 7) e só então importar. Fab e CGTrader têm pacotes pagos ou de licença incerta: fora.
+
+**Rodada S4 (feita em 03/11):** salões nos cruzamentos, alargamento irregular, teto de 24 studs com cúpulas e relevo maior (Mina 4,5, Gruta 6, Masmorra 1,5; variação medida de 9 a 12 studs). Falta: câmaras de mais de 40 studs de largura e piscinas rasas de verdade.
+
 **Decisões do Alan:** ordem luz e névoa, depois formações, depois salões grandes; formações esculpidas no Terrain por código (passo 1) e, no passo 2, pacotes de rochas do Creator Store só para dar vida; alternar um passo visual com um passo das ideias P, com commit em cada.
 
 | # | Módulo | Esforço | O que entrega |
