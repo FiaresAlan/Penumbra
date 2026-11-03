@@ -37,7 +37,7 @@ Config.NpcLines = {
 
 -- Mecânicas novas, todas DESLIGADAS até o Portão 1 (ver docs/PLANO-REFINO.md seção 10B). Ligue uma por vez.
 Config.Features = {
-    TensionDirector = false, -- P1
+    TensionDirector = true, -- P1 (TESTE: voltar para false se não for aprovado)
     SilenceMoment = false, -- P2 / J13
     DenseCore = false, -- P3 / J14 (testado ligado em 02/11: 2 núcleos densos por descida)
     ShiftingRoute = false, -- P4
@@ -53,6 +53,12 @@ Config.Features = {
 }
 
 -- P7: boatos da vila (só com Features.VillageRumors). Alguns são só meio certos de propósito.
+-- P1: fases do diretor de tensão (só com Features.TensionDirector). hearScale multiplica o limiar de escuta do Guardião:
+-- acima de 1 ele escuta menos (silêncio), abaixo de 1 escuta mais (caça). speed nunca passa de 1.
+Config.Tension = {
+    Silence = { seconds = { 25, 45 }, hearScale = 1.35, speed = 0.85 },
+    Hunt = { seconds = { 20, 35 }, hearScale = 0.85, speed = 1 },
+}
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",

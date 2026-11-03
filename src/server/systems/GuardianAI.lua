@@ -22,6 +22,7 @@ local stateTimer = 0
 local silenceTimer = 0
 local sleptAt = os.clock()
 local hearThreshold = Config.GuardianHearThreshold
+local hearScale = 1 -- P1: o diretor de tensão muda o quanto o Guardião escuta (1 = normal)
 local speedMultipliers = {}
 local lastMoveAt = 0
 local lastMoveTarget
@@ -168,6 +169,10 @@ function GuardianAI.SetHearThreshold(value)
     hearThreshold = value
 end
 
+function GuardianAI.SetHearScale(value)
+    hearScale = value
+end
+
 function GuardianAI.GetRoot()
     return guardianRoot
 end
@@ -227,7 +232,7 @@ local function update(dt)
     local multiplier = speedMultiplier()
     local loudest, noise = NoiseSystem.GetLoudestPlayer()
     local loudestRoot = loudest and loudest.Character and loudest.Character:FindFirstChild("HumanoidRootPart")
-    local hears = loudestRoot ~= nil and noise > hearThreshold
+    local hears = loudestRoot ~= nil and noise > hearThreshold * hearScale
 
     if currentState == Enums.GuardianState.Sleeping then
         guardianHumanoid.WalkSpeed = 0
