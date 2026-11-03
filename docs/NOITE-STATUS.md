@@ -97,3 +97,14 @@ FILA PARADA: todos os módulos da 4A foram tentados; ficaram OK: X0, C1, C3, V6 
 | P7, P10, P12, P13 | LIGADAS | Ver linhas anteriores | |
 
 Para desligar qualquer uma: `Config.Features` em `src/shared/Config.lua`.
+
+## Fechamento (03/11/2026, depois que o Alan retirou o uso do computador)
+
+Sem o Studio na tela, só dá para conferir sintaxe (`tools/check_syntax.sh`: 0 erros em 124 arquivos) e ler código; o jogo em si não roda por aqui. O que fica:
+
+- **OK:** X0, C1, C3, V6 (já coberto pelos contratos).
+- **PARCIAL, aguardando o Alan olhar no Studio (roteiro em `docs/TESTES-PARA-O-ALAN.md`):** C2, C4, C5, S1, S2, S3, S4, V1, V2, V4, V5, T1 (só a abertura de 5 s) e as ideias P.
+- **BLOQUEADO:** V3 (votação entre expedições: exige refatorar sistemas da Fase 1 e testar em jogo) e a galeria separada do T1 (novo PlayerLocation mexe em vários sistemas da Fase 1).
+- **Não feito de propósito:** decoração às cegas na praça (placares gigantes, altar, estátua do Guardião, portas e bichinho da vila): sem ver o lugar, o risco de sobrepor o que já existe é maior que o ganho. Ficam para quando o Studio puder ser olhado.
+
+FILA PARADA: falta validação visual e teste com pessoas; nenhum módulo restante é possível de concluir sem ver o jogo.
