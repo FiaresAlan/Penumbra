@@ -11,10 +11,10 @@ local NatureLibrary = require(script.Parent:WaitForChild("NatureLibrary") :: Mod
 local SurfaceDecor = {}
 
 local B = Config.WorldBounds
-local MAX_TREES = 1800
-local MAX_DETAILS = 2600
-local TREE_GRID = 22
-local DETAIL_GRID = 15
+local MAX_TREES = 3400
+local MAX_DETAILS = 5200
+local TREE_GRID = 19
+local DETAIL_GRID = 12
 
 -- Clareiras com adereços (ruína e acampamento abandonado): sem árvores nem detalhes dentro do raio
 local CLEARINGS = {
@@ -103,11 +103,11 @@ local function biome(x: number, z: number): (string, number)
     if distBlack < 230 then
         return "sombria", 0.95
     elseif x > -140 then
-        return "campo", 0.14
+        return "campo", 0.3
     elseif x > -540 then
         return "mista", 0.65
     elseif x > -760 then
-        return "vila", 0.1
+        return "vila", 0.22
     end
     return "profunda", 0.9
 end
