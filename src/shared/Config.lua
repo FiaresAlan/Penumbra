@@ -103,6 +103,12 @@ Config.CaveExtras = true -- C2/C4/C5: trilhos, lama, sal, arcos, símbolos, poç
 -- O Guardião escurece as luzes de enfeite por onde passa (só com Features.GuardianShadow)
 Config.GuardianShadow = { Radius = 22, Dim = 0.15 }
 Config.CaveRockCollision = true -- rochas e estalagmites do 3TD têm colisão (nas bordas dos corredores); rode Auditar caminhos
+-- F1: monstro com pele (poses em stop-motion). Altura em studs, giro em graus (ajuste se ele andar de lado) e deslocamento vertical
+Config.MonsterSkin = true
+Config.MonsterHeight = 9.5
+Config.MonsterYaw = 0
+Config.MonsterYOffset = 0
+Config.MonsterPoseMin = 0.14 -- segundos por pose na caça (stop-motion mais rápido)
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
