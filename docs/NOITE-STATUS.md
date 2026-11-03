@@ -7,7 +7,7 @@ Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de
 | # | Módulo | Estado | Commit | Testado | Não testado ou observação |
 |---|---|---|---|---|---|
 | 1 | N0 Preparar e fechar pontas | OK | ver Git | Auditar caminhos (28 ok, 0 falhas, 3 gancho), Auditar assets (sem scripts), WorldVersion=1, chegada de carroça com prompt à vista, backup .rbxl | **Teste com 2 clientes NÃO feito**: "Server and Clients" abriu só o servidor, sem clientes (tentei uma vez e encerrei) |
-| 2 | L1 Tema e componentes | Pendente | | | |
+| 2 | L1 Tema e componentes | OK | ver Git | Play: amostra de UI com abas Botões, Cartas e Barras, selos, dica ao passar o mouse, fechar no X, Output sem erros | Não testado: tela de celular (375x812), tecla Esc (fecha via evento MenuOpened do Roblox), som de clique (usa rbxasset://sounds/button.wav; não ouvi) |
 | 3 | L2 HUD do lobby | Pendente | | | |
 | 4 | I1 Mochila e Baú | Pendente | | | |
 | 5 | L3 Painéis de loja | Pendente | | | |

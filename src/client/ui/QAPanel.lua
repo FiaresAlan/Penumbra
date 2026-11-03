@@ -61,6 +61,11 @@ function QAPanel.Init()
         corner.Parent = button
 
         button.Activated:Connect(function()
+            -- Botões só do cliente (não passam pelo servidor)
+            if definition.id == "UISample" then
+                require((script.Parent :: Instance):WaitForChild("UISample") :: ModuleScript).Toggle()
+                return
+            end
             remote:FireServer(definition.id)
         end)
     end

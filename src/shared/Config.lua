@@ -244,6 +244,7 @@ Config.QAButtons = {
     { id = "GoToCart", label = "Ir à carroça" },
     { id = "ForgetVillage", label = "Esquecer a vila" },
     { id = "CallGroup", label = "Chamar o grupo" },
+    { id = "UISample", label = "Amostra de UI" },
 }
 
 return Config
