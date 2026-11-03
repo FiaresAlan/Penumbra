@@ -48,6 +48,7 @@ Config.Features = {
     ThrowItems = false, -- I3
     VisibleBackpack = false, -- I4
     ElevatorWindow = true, -- P8 (ligado em 03/11: portas abertas de 30 a 40 s, nunca menos que a Fase 1)
+    EchoOthers = false, -- P11 (codigo pronto; NAO testado: precisa de 2 jogadores na caverna; ligar so depois de testar)
     NightVisitor = true, -- P10 (ligado em 03/11; testado: vulto apareceu na zona B; inofensivo)
     ChainBonus = true, -- P13 (ligado em 03/11; testado: cadeia 3 e 4 deram +20 XP; só XP)
     VillageEndings = true, -- P12 (ligado em 03/11; testado: marcos de extração e relíquia; só texto)
@@ -77,6 +78,8 @@ Config.DescentConditions = {
 }
 -- P8: janela do elevador sortuda (só com Features.ElevatorWindow). Min nunca fica abaixo de ElevatorCloseTime (Fase 1).
 Config.ElevatorWindow = { Min = 30, Max = 40 }
+-- P11: eco distante da voz de um colega (só com Features.EchoOthers e 2 ou mais jogadores na caverna)
+Config.EchoOthers = { Chance = 0.35, Cooldown = 20, SoundKey = "Footstep" }
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
