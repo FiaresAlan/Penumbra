@@ -15,6 +15,16 @@ Config.MaxCarryWeight = 10
 Config.Xp = { Extraction = 30, PerItem = 8, PerRelic = 40, Rescue = 50, Participation = 10 }
 Config.DailyRewards = { 40, 60, 80, 100, 140, 180, 300 }
 
+-- Falas dos moradores da vila (balões curtos). Algumas comentam a caverna, sem dar pista de onde está o Guardião.
+Config.NpcLines = {
+    merchant = { "Traga coisas boas da mina que eu pago bem!", "Quem desce com barulho não sobe.", "Núcleo raro vale ouro, viajante." },
+    smith = { "Botas silenciosas salvam vidas.", "O gancho aguenta qualquer peso. Quase.", "A relíquia fica linda na vitrine!" },
+    foreman = { "Tem contrato novo no quadro.", "Hoje o pessoal voltou calado da mina...", "Quem cumpre o combinado, recebe." },
+    tavern = { "Aqui se conta cada história da caverna.", "Ouvi um grito vindo do fundo ontem.", "Sente, descanse. A mina espera." },
+    villager = { "Lá embaixo o escuro escuta.", "Ande devagar e volte inteiro.", "Bom dia! Ou boa tarde, sei lá.", "Dizem que tem um ninho no fundo." },
+    hooded = { "Psiu... tenho pedidos especiais.", "Aqui nunca esteve ninguém.", "Traga o que pedi e eu pago melhor." },
+}
+
 Config.Variation = {
     ShuffleItems = true, -- núcleos e relíquias normais mudam de lugar a cada expedição
 }
