@@ -106,6 +106,7 @@ Config.GuardianShadow = { Radius = 22, Dim = 0.15 }
 Config.CaveRockCollision = true -- rochas e estalagmites do 3TD têm colisão (nas bordas dos corredores); rode Auditar caminhos
 -- F1: monstro com pele (poses em stop-motion). Altura em studs, giro em graus (ajuste se ele andar de lado) e deslocamento vertical
 Config.MonsterSkin = true
+Config.MonsterTexture = true -- pele em escamas gerada por código no cliente (EditableImage); sem a API, fica a cor lisa
 Config.MonsterHeight = 9.5
 Config.MonsterYaw = 0
 Config.MonsterYOffset = 0
