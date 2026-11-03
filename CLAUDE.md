@@ -50,6 +50,10 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
   só o que é de jogo (núcleos, elevadores, marcadores, Guardião) a cada partida.
 - Assets de terceiros só entram sem scripts e depois de auditados (regras na seção 7 do plano de refino).
 
+## Missão noturna
+- `plano-refino.md` é `docs/PLANO-REFINO.md`. A fila, as regras e o que fazer ao chegar por tarefa agendada estão na seção 4. Andamento em `docs/NOITE-STATUS.md`.
+- Filtro de novas ideias: `design_psicologico.md`.
+
 ## Estado atual
 - Fase 0 concluída e validada (loop de extração funcional).
 - Fase 1: módulos M1 a M20 de docs/PLANO-FASE-1.md implementados e testados sozinhos no Studio
