@@ -55,7 +55,8 @@ local function attachSkin(model: Model, root: BasePart, humanoid: Humanoid?)
         pose.Massless = true
         -- sem textura (as imagens do pacote ainda não foram enviadas), a pele ganha uma cor fria e fosca
         pose.Color = Color3.fromRGB(Config.MonsterColor[1], Config.MonsterColor[2], Config.MonsterColor[3])
-        pose.Material = Enum.Material.Slate
+        pose.Material = Enum.Material.SmoothPlastic
+        pose.Reflectance = 0.08
         pose.Transparency = if index == 1 then 0 else 1
         pose.CFrame = root.CFrame * CFrame.new(0, feetY + pose.Size.Y / 2 + Config.MonsterYOffset, 0) * CFrame.Angles(0, math.rad(Config.MonsterYaw), 0)
         pose.Parent = folder
@@ -64,6 +65,54 @@ local function attachSkin(model: Model, root: BasePart, humanoid: Humanoid?)
         weld.Part1 = pose
         weld.Parent = pose
     end
+    -- Cor e brilho: olhos que brilham (sempre virados para a câmera), luz magenta, névoa de esporos e um aro de luz
+    local head = Vector3.new(0, feetY + Config.MonsterHeight * 0.86, 0)
+    local anchorPart = Instance.new("Part")
+    anchorPart.Name = "Rosto"
+    anchorPart.Size = Vector3.new(0.4, 0.4, 0.4)
+    anchorPart.Transparency = 1
+    anchorPart.CanCollide = false
+    anchorPart.CanTouch = false
+    anchorPart.CanQuery = false
+    anchorPart.Massless = true
+    anchorPart.CFrame = root.CFrame * CFrame.new(head)
+    anchorPart.Parent = folder
+    local anchorWeld = Instance.new("WeldConstraint")
+    anchorWeld.Part0 = root
+    anchorWeld.Part1 = anchorPart
+    anchorWeld.Parent = anchorPart
+    local eyes = Instance.new("BillboardGui")
+    eyes.Size = UDim2.fromOffset(46, 16)
+    eyes.AlwaysOnTop = false
+    eyes.LightInfluence = 0
+    eyes.MaxDistance = 140
+    eyes.Parent = anchorPart
+    for _, side in ipairs({ 0.05, 0.62 }) do
+        local eye = Instance.new("Frame")
+        eye.Size = UDim2.fromOffset(14, 9)
+        eye.Position = UDim2.fromScale(side, 0.2)
+        eye.BackgroundColor3 = Color3.fromRGB(255, 240, 80)
+        eye.BorderSizePixel = 0
+        eye.Parent = eyes
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(1, 0)
+        corner.Parent = eye
+    end
+    local glow = Instance.new("PointLight")
+    glow.Color = Color3.fromRGB(Config.MonsterGlow[1], Config.MonsterGlow[2], Config.MonsterGlow[3])
+    glow.Range = 26
+    glow.Brightness = 1.6
+    glow.Parent = anchorPart
+    local spores = Instance.new("ParticleEmitter")
+    spores.Color = ColorSequence.new(Color3.fromRGB(255, 90, 220), Color3.fromRGB(110, 60, 255))
+    spores.LightEmission = 0.8
+    spores.Rate = 18
+    spores.Lifetime = NumberRange.new(2, 4)
+    spores.Speed = NumberRange.new(0.5, 2)
+    spores.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0) })
+    spores.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.3), NumberSequenceKeypoint.new(1, 1) })
+    spores.SpreadAngle = Vector2.new(180, 180)
+    spores.Parent = anchorPart
     model:SetAttribute("Skinned", true)
 end
 

@@ -161,7 +161,7 @@ function Widgets.Badge(parent: GuiObject): Badge
     }
 end
 
-export type SideButtonOptions = { emoji: string, label: string, onClick: (() -> ())? }
+export type SideButtonOptions = { emoji: string, label: string, onClick: (() -> ())?, accent: { Color3 }? }
 export type SideButton = { button: TextButton, badge: Badge }
 
 -- Botão quadrado de lateral de tela: emoji grande, nome embaixo e selo opcional
@@ -169,12 +169,14 @@ function Widgets.SideButton(parent: Instance, opts: SideButtonOptions): SideButt
     local button = Instance.new("TextButton")
     button.AutoButtonColor = false
     button.Size = UDim2.new(0, 76, 0, 76)
-    button.BackgroundColor3 = C.TileDark
+    local base = if opts.accent then opts.accent[1] else C.TileDark
+    local light = if opts.accent then opts.accent[2] else C.Tile
+    button.BackgroundColor3 = base
     button.Text = ""
     button.Parent = parent
     addCorner(button)
-    addStroke(button, C.Amber, 2)
-    addFeedback(button, C.TileDark, C.Tile)
+    addStroke(button, C.Text, 2)
+    addFeedback(button, base, light)
 
     Widgets.Label(button, {
         text = opts.emoji,

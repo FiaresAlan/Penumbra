@@ -275,7 +275,7 @@ function LobbyHUD.Init()
     grid.Parent = sides
     for index, entry in ipairs(SIDE_BUTTONS) do
         local id = entry.id
-        local side = Widgets.SideButton(sides, { emoji = entry.emoji, label = entry.label, onClick = function()
+        local side = Widgets.SideButton(sides, { emoji = entry.emoji, label = entry.label, accent = Theme.Accent[entry.id], onClick = function()
             local open = openers[id]
             if open then
                 open()

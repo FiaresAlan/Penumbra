@@ -1,31 +1,47 @@
 --!strict
--- Linguagem visual única das telas: medieval quente (madeira, âmbar, dourado, vermelho telha, pergaminho).
+-- Linguagem visual única das telas: aventura vibrante (índigo profundo com ciano, magenta, laranja, lima e dourado).
 -- Nenhuma tela define cor, fonte ou tamanho por conta própria: tudo vem daqui.
 local Theme = {}
 
 Theme.Color = {
-    Overlay = Color3.fromRGB(8, 5, 4),
-    PanelBg = Color3.fromRGB(38, 28, 22),
-    PanelDark = Color3.fromRGB(26, 19, 15),
-    Wood = Color3.fromRGB(86, 58, 38),
-    WoodLight = Color3.fromRGB(122, 84, 54),
-    Amber = Color3.fromRGB(232, 168, 64),
-    Gold = Color3.fromRGB(246, 206, 96),
-    Tile = Color3.fromRGB(176, 72, 48),
-    TileDark = Color3.fromRGB(128, 48, 32),
-    Parchment = Color3.fromRGB(236, 222, 192),
-    Text = Color3.fromRGB(244, 236, 220),
-    TextDim = Color3.fromRGB(176, 164, 146),
-    TextDark = Color3.fromRGB(40, 28, 20),
-    Danger = Color3.fromRGB(196, 62, 50),
-    Success = Color3.fromRGB(98, 168, 92),
-    Line = Color3.fromRGB(96, 70, 48),
+    Overlay = Color3.fromRGB(8, 4, 28),
+    PanelBg = Color3.fromRGB(34, 24, 78),
+    PanelDark = Color3.fromRGB(22, 14, 54),
+    Wood = Color3.fromRGB(70, 48, 140),
+    WoodLight = Color3.fromRGB(104, 76, 196),
+    Amber = Color3.fromRGB(255, 176, 40),
+    Gold = Color3.fromRGB(255, 226, 72),
+    Tile = Color3.fromRGB(255, 96, 120),
+    TileDark = Color3.fromRGB(196, 52, 104),
+    Parchment = Color3.fromRGB(255, 246, 220),
+    Text = Color3.fromRGB(255, 255, 255),
+    TextDim = Color3.fromRGB(196, 186, 240),
+    TextDark = Color3.fromRGB(28, 18, 62),
+    Danger = Color3.fromRGB(255, 64, 100),
+    Success = Color3.fromRGB(64, 228, 150),
+    Line = Color3.fromRGB(136, 106, 236),
+    Cyan = Color3.fromRGB(64, 222, 255),
+    Lime = Color3.fromRGB(150, 236, 70),
+    Magenta = Color3.fromRGB(255, 80, 220),
+    Orange = Color3.fromRGB(255, 132, 48),
+}
+
+-- Cada botão lateral do lobby tem a sua cor (base, realce)
+Theme.Accent = {
+    bag = { Color3.fromRGB(230, 110, 30), Color3.fromRGB(255, 160, 70) },
+    contracts = { Color3.fromRGB(30, 170, 200), Color3.fromRGB(80, 225, 255) },
+    workshop = { Color3.fromRGB(120, 90, 230), Color3.fromRGB(170, 140, 255) },
+    market = { Color3.fromRGB(40, 190, 110), Color3.fromRGB(100, 240, 160) },
+    profile = { Color3.fromRGB(230, 60, 140), Color3.fromRGB(255, 120, 190) },
+    board = { Color3.fromRGB(230, 180, 20), Color3.fromRGB(255, 225, 90) },
+    settings = { Color3.fromRGB(70, 130, 230), Color3.fromRGB(130, 180, 255) },
+    daily = { Color3.fromRGB(220, 50, 70), Color3.fromRGB(255, 110, 120) },
 }
 
 Theme.RarityColor = {
-    Common = Color3.fromRGB(168, 168, 172),
-    Rare = Color3.fromRGB(84, 156, 236),
-    Legendary = Color3.fromRGB(246, 196, 72),
+    Common = Color3.fromRGB(120, 200, 255),
+    Rare = Color3.fromRGB(196, 110, 255),
+    Legendary = Color3.fromRGB(255, 204, 40),
 }
 
 Theme.Font = {

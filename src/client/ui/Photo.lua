@@ -88,6 +88,12 @@ local function caveSpots(): { Spot }
     if slot and slot:IsA("BasePart") then
         table.insert(list, { name = "Caverna: Ninho", position = slot.Position + Vector3.new(0, 5, 0) })
     end
+    local guardian = workspace:FindFirstChild("Guardian")
+    local root = guardian and guardian:FindFirstChild("HumanoidRootPart")
+    if root and root:IsA("BasePart") then
+        local focus = root.Position + Vector3.new(0, 1, 0)
+        table.insert(list, { name = "Caverna: o Guardião", position = focus + root.CFrame.LookVector * 18, target = focus })
+    end
     return list
 end
 
