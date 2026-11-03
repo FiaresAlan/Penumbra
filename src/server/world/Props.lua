@@ -12,7 +12,7 @@ local addLight = Util.addLight
 local CELL = Layout.CELL
 local COLS = Layout.COLS
 local ROWS = Layout.ROWS
-local FLOOR_Y = Layout.FLOOR_Y
+local floorAt = Layout.floorAt
 local ENTRANCE = Layout.ENTRANCE
 local CHAMBER = Layout.CHAMBER
 local cellCenter = Layout.cellCenter
@@ -70,7 +70,19 @@ local function buildProps(grid: Grid, rng: Random)
     local function onFloor(name: string, scale: number, x: number, z: number, yaw: number, collide: boolean): MeshPart?
         local definition = Assets[name]
         local height = definition.size.Y * scale
-        return makeProp(name, CFrame.new(x, FLOOR_Y + height / 2, z) * CFrame.Angles(0, yaw, 0), scale, collide, props)
+        return makeProp(name, CFrame.new(x, floorAt(x, z) + height / 2 - 0.1, z) * CFrame.Angles(0, yaw, 0), scale, collide, props)
+    end
+
+    -- A parede de Terrain tem reentrâncias: acha a superfície de verdade com um raio, a partir do meio do corredor
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Exclude
+    rayParams.FilterDescendantsInstances = { props }
+    local function wallPoint(origin: Vector3, direction: Vector3): Vector3?
+        local result = workspace:Raycast(origin, direction * (CELL * 0.9), rayParams)
+        if result and result.Instance:IsA("Terrain") then
+            return result.Position
+        end
+        return nil
     end
 
     for r = 1, ROWS - 2 do
@@ -102,10 +114,15 @@ local function buildProps(grid: Grid, rng: Random)
 
                         -- Tochas nas paredes da zona A e da sala de entrada
                         if (zone == "A" or inRect(ENTRANCE, c, r)) and rng:NextNumber() < 0.1 then
-                            local position = Vector3.new(wallX - dir[1] * 1.2 + alongX, FLOOR_Y + 8.5, wallZ - dir[2] * 1.2 + alongZ)
-                            local torch = makeProp("torch_lit", CFrame.lookAt(position, position - Vector3.new(dir[1], 0, dir[2])), 3.2, false, props)
-                            if torch then
-                                addLight(torch, Color3.fromRGB(255, 150, 70), 26, 1.6)
+                            local direction = Vector3.new(dir[1], 0, dir[2])
+                            local origin = Vector3.new(center.X + alongX, center.Y + 8.5, center.Z + alongZ)
+                            local hit = wallPoint(origin, direction)
+                            if hit then
+                                local position = hit - direction * 1.2
+                                local torch = makeProp("torch_lit", CFrame.lookAt(position, position - direction), 3.2, false, props)
+                                if torch then
+                                    addLight(torch, Color3.fromRGB(255, 150, 70), 26, 1.6)
+                                end
                             end
                         end
                         break
@@ -120,12 +137,15 @@ local function buildProps(grid: Grid, rng: Random)
         local center = cellCenter(cell[1], cell[2])
         local scale = 9
         local height = Assets.column.size.Y * scale
-        makeProp("column", CFrame.new(center.X, FLOOR_Y + height / 2, center.Z), scale, true, props)
+        makeProp("column", CFrame.new(center.X, center.Y + height / 2 - 0.2, center.Z), scale, true, props)
     end
     for _, column in ipairs({ 23, 25 }) do
         local center = cellCenter(column, 5)
-        local position = Vector3.new(center.X, FLOOR_Y + 8, center.Z - CELL / 2 + 0.6)
-        makeProp("banner_triple_brown", CFrame.lookAt(position, position + Vector3.new(0, 0, 1)), 2.6, false, props)
+        local hit = wallPoint(Vector3.new(center.X, center.Y + 8, center.Z), Vector3.new(0, 0, -1))
+        if hit then
+            local position = hit + Vector3.new(0, 0, 0.6)
+            makeProp("banner_triple_brown", CFrame.lookAt(position, position + Vector3.new(0, 0, 1)), 2.6, false, props)
+        end
     end
 
     -- Tesouros decorativos nas saliências do gancho
@@ -133,7 +153,7 @@ local function buildProps(grid: Grid, rng: Random)
         local center = cellCenter(cell[1], cell[2])
         local scale = 2.6
         local height = Assets.chest_gold.size.Y * scale
-        makeProp("chest_gold", CFrame.new(center.X - 4, FLOOR_Y + 10 + height / 2, center.Z), scale, true, props)
+        makeProp("chest_gold", CFrame.new(center.X - 4, center.Y + 10 + height / 2, center.Z), scale, true, props)
     end
 
     print(string.format("[Map] %d props do KayKit criados", #props:GetChildren()))

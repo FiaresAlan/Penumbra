@@ -8,6 +8,7 @@ local MapBuilder = require(script.Parent:WaitForChild("MapBuilder") :: ModuleScr
 local SurfaceTerrain = require(script.Parent:WaitForChild("SurfaceTerrain") :: ModuleScript)
 local SurfaceDecor = require(script.Parent:WaitForChild("SurfaceDecor") :: ModuleScript)
 local Village = require(script.Parent:WaitForChild("Village") :: ModuleScript)
+local CaveTerrain = require(script.Parent:WaitForChild("CaveTerrain") :: ModuleScript)
 local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 
 local WorldBake = {}
@@ -81,6 +82,20 @@ function WorldBake.BakeVillage(): (boolean, string)
     end
     Village.Build(root :: Folder, log)
     return true, string.format("Vila gerada em %.0f s.", os.clock() - startedAt)
+end
+
+-- Escreve só a caverna em Terrain (região X a partir de 396). Não apaga o resto do Terrain. Depois, salve o lugar.
+-- Atenção: "Gerar mundo" (BakeWorld) apaga todo o Terrain, a caverna inclusive: rode BakeCave de novo depois dele.
+function WorldBake.BakeCave(): (boolean, string)
+    if RunService:IsRunning() then
+        return false, "Pare o jogo antes de gerar a caverna."
+    end
+    local startedAt = os.clock()
+    CaveTerrain.Build(function(text: string)
+        print("[Caverna] " .. text)
+    end)
+    workspace:SetAttribute("CaveVersion", Config.CaveVersion)
+    return true, string.format("Caverna gerada em %.0f s (versão %d). Salve o lugar com File > Save to Roblox.", os.clock() - startedAt, Config.CaveVersion)
 end
 
 -- Falha se houver qualquer script no cenário salvo ou na biblioteca de assets.

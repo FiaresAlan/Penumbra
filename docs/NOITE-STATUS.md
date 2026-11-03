@@ -40,7 +40,7 @@ O R3-lite não entrega o R3: o chão continua reto. A fila 4A vale acima da tabe
 | Módulo | Estado | Prova |
 |---|---|---|
 | X0 Foto | OK | Botões QA "Foto" e "Foto + luz" (`ui/Photo.lua`, `Config.PhotoSpots`): esconde a interface, tecla N avança, P sai; 8 pontos na superfície e 5 na caverna. Fotos de base em `docs/portao-visual/base/`. Crítica: a caverna é corredor reto de paredes lisas com cara de caixa, chão plano, cores sem identidade (A cinza, B azulada, C musgo); a vila e a praça da mina ficam bonitas em foto, mas com pouca gente e pouca coisa para tocar |
-| C1 Caverna em Terrain | Pendente | |
+| C1 Caverna em Terrain | OK | CaveShape.lua, CaveTerrain.lua, BakeCave; chão, paredes e teto em Terrain (Cobblestone/Sandstone na zona A, Slate/Basalt na B, Salt/Limestone na C). Auditar caminhos 28 ok / 0 falhas / 3 gancho; variação do chão A 3,4 / B 3,2 / C 3,0 studs (com relevo 1,8; o 2,4 final dá mais), inclinação máxima 16 graus, menor vão 13; gancho testado (chegou na saliência com o baú); prints antes e depois em docs/portao-visual/base e C1 |
 | C2 Identidade das zonas | Pendente | |
 | V1 Coisas para tocar | Pendente | |
 | V2 Praça e placares 3D | Pendente | |

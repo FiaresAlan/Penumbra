@@ -11,7 +11,8 @@ local CELL = Layout.CELL
 local COLS = Layout.COLS
 local ROWS = Layout.ROWS
 local WALL_H = Layout.WALL_H
-local FLOOR_Y = Layout.FLOOR_Y
+local floorAt = Layout.floorAt
+local ceilingAt = Layout.ceilingAt
 local STYLES = Layout.STYLES
 local ROCK_COLOR = Layout.ROCK_COLOR
 local cellCenter = Layout.cellCenter
@@ -30,7 +31,7 @@ local function buildCaveDecor(grid: Grid, rng: Random)
 
     -- Espinho de rocha feito de cilindros empilhados (estalactite para baixo, estalagmite para cima)
     local function spike(x: number, z: number, hangingFromCeiling: boolean, scale: number, color: Color3)
-        local baseY = if hangingFromCeiling then FLOOR_Y + WALL_H else FLOOR_Y
+        local baseY = if hangingFromCeiling then ceilingAt(x, z) + 0.6 else floorAt(x, z) - 0.4
         local direction = if hangingFromCeiling then -1 else 1
         local levels = { { 2.4, 3.2 }, { 2.2, 2.2 }, { 2.0, 1.2 }, { 1.6, 0.5 } }
         local offset = 0
@@ -62,7 +63,9 @@ local function buildCaveDecor(grid: Grid, rng: Random)
                 -- Pedras redondas no chão, em parte enterradas
                 if rng:NextNumber() < 0.12 then
                     local size = 3 + rng:NextNumber() * 4
-                    newPart("Boulder", Vector3.new(size, size * 0.8, size), CFrame.new(center.X + (rng:NextNumber() - 0.5) * 10, FLOOR_Y + size * 0.15, center.Z + (rng:NextNumber() - 0.5) * 10) * randomAngles(),
+                    local bx = center.X + (rng:NextNumber() - 0.5) * 10
+                    local bz = center.Z + (rng:NextNumber() - 0.5) * 10
+                    newPart("Boulder", Vector3.new(size, size * 0.8, size), CFrame.new(bx, floorAt(bx, bz) + size * 0.15, bz) * randomAngles(),
                         { Material = Enum.Material.Rock, Color = rock, Shape = Enum.PartType.Ball }, decor)
                 end
 
@@ -72,10 +75,9 @@ local function buildCaveDecor(grid: Grid, rng: Random)
                         local along = (rng:NextNumber() - 0.5) * (CELL - 4)
                         local height = 2 + rng:NextNumber() * 10
                         local edge = Vector3.new(center.X + dir[1] * CELL / 2, 0, center.Z + dir[2] * CELL / 2)
-                        local position = Vector3.new(
-                            edge.X - dir[1] * 1.0 + (if dir[1] == 0 then along else 0),
-                            FLOOR_Y + height,
-                            edge.Z - dir[2] * 1.0 + (if dir[2] == 0 then along else 0))
+                        local px = edge.X - dir[1] * 1.0 + (if dir[1] == 0 then along else 0)
+                        local pz = edge.Z - dir[2] * 1.0 + (if dir[2] == 0 then along else 0)
+                        local position = Vector3.new(px, floorAt(px, pz) + height, pz)
                         newPart("WallRock", Vector3.new(3 + rng:NextNumber() * 3, 3 + rng:NextNumber() * 5, 3 + rng:NextNumber() * 3),
                             CFrame.new(position) * randomAngles(), { Material = Enum.Material.Rock, Color = rock }, decor)
                     end
@@ -83,7 +85,9 @@ local function buildCaveDecor(grid: Grid, rng: Random)
 
                 -- Cristais luminosos na zona C
                 if zoneOf(c) == "C" and not isSpecial(c, r) and rng:NextNumber() < 0.3 then
-                    local base = Vector3.new(center.X + (rng:NextNumber() - 0.5) * 9, FLOOR_Y, center.Z + (rng:NextNumber() - 0.5) * 9)
+                    local baseX = center.X + (rng:NextNumber() - 0.5) * 9
+                    local baseZ = center.Z + (rng:NextNumber() - 0.5) * 9
+                    local base = Vector3.new(baseX, floorAt(baseX, baseZ) - 0.3, baseZ)
                     local color = if rng:NextNumber() < 0.5 then Color3.fromRGB(80, 255, 200) else Color3.fromRGB(160, 110, 255)
                     for index = 1, 3 do
                         local height = 2.5 + rng:NextNumber() * 3.5
@@ -103,7 +107,9 @@ local function buildCaveDecor(grid: Grid, rng: Random)
     local pillars = { { 2, 6 }, { 4, 6 }, { 2, 10 }, { 4, 10 }, { 21, 5 }, { 27, 5 }, { 21, 11 } }
     for _, cell in ipairs(pillars) do
         local center = cellCenter(cell[1], cell[2])
-        newPart("Pillar", Vector3.new(WALL_H, 4, 4), CFrame.new(center.X, FLOOR_Y + WALL_H / 2, center.Z) * CFrame.Angles(0, 0, math.pi / 2),
+        local pillarFloor = floorAt(center.X, center.Z)
+        local pillarCeiling = ceilingAt(center.X, center.Z)
+        newPart("Pillar", Vector3.new(pillarCeiling - pillarFloor + 2, 4, 4), CFrame.new(center.X, (pillarFloor + pillarCeiling) / 2, center.Z) * CFrame.Angles(0, 0, math.pi / 2),
             { Material = Enum.Material.Rock, Color = ROCK_COLOR:Lerp(STYLES[zoneOf(cell[1])].color, 0.4), Shape = Enum.PartType.Cylinder }, decor)
     end
 
@@ -114,17 +120,20 @@ local function buildCaveDecor(grid: Grid, rng: Random)
             if frames < 12 and grid[r][c] and not isSpecial(c, r) and rng:NextNumber() < 0.35 then
                 local center = cellCenter(c, r)
                 local wood = { Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(96, 68, 42) }
+                local postLength = ceilingAt(center.X, center.Z) - floorAt(center.X, center.Z) + 1
+                local postY = (ceilingAt(center.X, center.Z) + floorAt(center.X, center.Z)) / 2
+                local beamY = ceilingAt(center.X, center.Z) - 2
                 if grid[r][c - 1] and grid[r][c + 1] and not grid[r - 1][c] and not grid[r + 1][c] then
                     for _, side in ipairs({ -1, 1 }) do
-                        newPart("MinePost", Vector3.new(1.4, WALL_H - 1, 1.4), CFrame.new(center.X, FLOOR_Y + (WALL_H - 1) / 2, center.Z + side * (CELL / 2 - 1.2)), wood, decor)
+                        newPart("MinePost", Vector3.new(1.4, postLength, 1.4), CFrame.new(center.X, postY, center.Z + side * (CELL / 2 - 1.2)), wood, decor)
                     end
-                    newPart("MineBeam", Vector3.new(1.4, 1.4, CELL - 1), CFrame.new(center.X, FLOOR_Y + WALL_H - 2, center.Z), wood, decor)
+                    newPart("MineBeam", Vector3.new(1.4, 1.4, CELL - 1), CFrame.new(center.X, beamY, center.Z), wood, decor)
                     frames += 1
                 elseif grid[r - 1][c] and grid[r + 1][c] and not grid[r][c - 1] and not grid[r][c + 1] then
                     for _, side in ipairs({ -1, 1 }) do
-                        newPart("MinePost", Vector3.new(1.4, WALL_H - 1, 1.4), CFrame.new(center.X + side * (CELL / 2 - 1.2), FLOOR_Y + (WALL_H - 1) / 2, center.Z), wood, decor)
+                        newPart("MinePost", Vector3.new(1.4, postLength, 1.4), CFrame.new(center.X + side * (CELL / 2 - 1.2), postY, center.Z), wood, decor)
                     end
-                    newPart("MineBeam", Vector3.new(CELL - 1, 1.4, 1.4), CFrame.new(center.X, FLOOR_Y + WALL_H - 2, center.Z), wood, decor)
+                    newPart("MineBeam", Vector3.new(CELL - 1, 1.4, 1.4), CFrame.new(center.X, beamY, center.Z), wood, decor)
                     frames += 1
                 end
             end
@@ -137,7 +146,7 @@ local function buildCaveDecor(grid: Grid, rng: Random)
         local r = rng:NextInteger(1, ROWS - 2)
         if grid[r][c] then
             local center = cellCenter(c, r)
-            local box = newPart("DustEmitter", Vector3.new(CELL, 10, CELL), CFrame.new(center.X, FLOOR_Y + 7, center.Z), { Transparency = 1, CanCollide = false, CanTouch = false, CanQuery = false }, decor)
+            local box = newPart("DustEmitter", Vector3.new(CELL, 10, CELL), CFrame.new(center.X, center.Y + 7, center.Z), { Transparency = 1, CanCollide = false, CanTouch = false, CanQuery = false }, decor)
             local dust = Instance.new("ParticleEmitter")
             dust.Rate = 3
             dust.Lifetime = NumberRange.new(7, 11)

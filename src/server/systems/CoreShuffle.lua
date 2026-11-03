@@ -30,7 +30,7 @@ end
 local function isClear(center: Vector3): boolean
     local params = OverlapParams.new()
     params.FilterType = Enum.RaycastFilterType.Exclude
-    local parts = workspace:GetPartBoundsInBox(CFrame.new(center.X, Layout.FLOOR_Y + 3.5, center.Z), Vector3.new(9, 5, 9), params)
+    local parts = workspace:GetPartBoundsInBox(CFrame.new(center.X, center.Y + 3.5, center.Z), Vector3.new(9, 5, 9), params)
     for _, part in ipairs(parts) do
         if part.CanCollide and not part:GetAttribute("IsCore") and not part:FindFirstAncestorWhichIsA("Model") then
             return false

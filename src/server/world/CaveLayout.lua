@@ -31,8 +31,28 @@ local RARITY_COLORS: { [string]: Color3 } = {
     Legendary = Color3.fromRGB(255, 200, 60),
 }
 
+-- Alturas da caverna: começam planas e passam a vir do CaveShape quando ele é ligado (CaveShape.Bind)
+local Hooks = {
+    floorAt = function(_x: number, _z: number): number
+        return FLOOR_Y
+    end,
+    ceilingAt = function(_x: number, _z: number): number
+        return FLOOR_Y + WALL_H
+    end,
+}
+
+local function floorAt(x: number, z: number): number
+    return Hooks.floorAt(x, z)
+end
+
+local function ceilingAt(x: number, z: number): number
+    return Hooks.ceilingAt(x, z)
+end
+
 local function cellCenter(c: number, r: number): Vector3
-    return Vector3.new(ORIGIN_X + (c + 0.5) * CELL, FLOOR_Y, ORIGIN_Z + (r + 0.5) * CELL)
+    local x = ORIGIN_X + (c + 0.5) * CELL
+    local z = ORIGIN_Z + (r + 0.5) * CELL
+    return Vector3.new(x, floorAt(x, z), z)
 end
 
 local function zoneOf(c: number): string
@@ -147,5 +167,5 @@ return {
     STYLES = STYLES, ROCK_COLOR = ROCK_COLOR, RARITY_COLORS = RARITY_COLORS,
     cellCenter = cellCenter, zoneOf = zoneOf, inRect = inRect, isSpecial = isSpecial, newGrid = newGrid,
     carveMaze = carveMaze, carveRect = carveRect, carveCave = carveCave, shuffle = shuffle,
-    openCellsByZone = openCellsByZone,
+    openCellsByZone = openCellsByZone, Hooks = Hooks, floorAt = floorAt, ceilingAt = ceilingAt,
 }

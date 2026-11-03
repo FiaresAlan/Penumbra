@@ -21,6 +21,7 @@ local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local PathAudit = require(systems:WaitForChild("PathAudit") :: ModuleScript)
 local TravelSystem = require(systems:WaitForChild("TravelSystem") :: ModuleScript)
 local CoreShuffle = require(systems:WaitForChild("CoreShuffle") :: ModuleScript)
+local CaveShape = require((systems.Parent :: Instance):WaitForChild("world"):WaitForChild("CaveShape") :: ModuleScript)
 
 local QACommands = {}
 
@@ -192,6 +193,33 @@ local commands: { [string]: (player: Player) -> () } = {
             MovementGuard.Exempt(player, 3)
             character:PivotTo(CFrame.new(cart.Position + Vector3.new(0, 2, -6)))
         end
+    end,
+    CaveStats = function(_player)
+        local stats = CaveShape.Stats()
+        print(string.format("[CaveStats] variação do chão A=%.1f B=%.1f C=%.1f | inclinação máx %.1f graus | menor vão %.1f studs",
+            stats.variationA, stats.variationB, stats.variationC, stats.maxSlope, stats.minGap))
+        -- Confere se cada núcleo está sobre o Terrain de verdade (diferença entre o chão previsto e o real)
+        local map = workspace:FindFirstChild("Map")
+        local params = RaycastParams.new()
+        params.FilterType = Enum.RaycastFilterType.Include
+        params.FilterDescendantsInstances = { workspace.Terrain }
+        local checked, buried, worst = 0, 0, 0
+        for _, descendant in (if map then map:GetDescendants() else {}) do
+            if descendant:IsA("BasePart") and descendant:GetAttribute("IsCore") == true then
+                checked += 1
+                local hit = workspace:Raycast(descendant.Position + Vector3.new(0, 8, 0), Vector3.new(0, -40, 0), params)
+                if not hit then
+                    buried += 1
+                else
+                    local gap = descendant.Position.Y - hit.Position.Y
+                    worst = math.max(worst, math.abs(gap - 2.2))
+                    if gap < 0.8 then
+                        buried += 1
+                    end
+                end
+            end
+        end
+        print(string.format("[CaveStats] itens %d | enterrados ou sem chão %d | maior erro de altura %.1f studs", checked, buried, worst))
     end,
     ShuffleItems = function(_player)
         CoreShuffle.Run()

@@ -260,6 +260,10 @@ Config.PhotoSpots = {
     { name = "Floresta funda", x = -860, z = -35, tx = -940, tz = 60, eye = 3, ty = 5 },
     { name = "Mercado Negro", x = -1092, z = 72, tx = -1120, tz = 60, eye = 3, ty = 3 },
 }
+-- C1: forma da caverna em Terrain. Parede com reentrâncias (no máximo 4 studs, para o corredor de 16 nunca fechar) e relevo do chão.
+Config.CaveWarp = 4
+Config.CaveVersion = 1 -- mude ao mudar CaveWarp, CaveFloorRelief ou a grade; e rode "Gerar caverna" (WorldBake.BakeCave)
+Config.CaveFloorRelief = 2.4
 Config.QAButtons = {
     { id = "EndFailure", label = "Encerrar: falha" },
     { id = "EndSuccess", label = "Encerrar: sucesso" },
@@ -299,6 +303,7 @@ Config.QAButtons = {
     { id = "ForgetVillage", label = "Esquecer a vila" },
     { id = "CallGroup", label = "Chamar o grupo" },
     { id = "UISample", label = "Amostra de UI" },
+    { id = "CaveStats", label = "Medir caverna" },
     { id = "Photo", label = "Foto" },
     { id = "PhotoLit", label = "Foto + luz" },
     { id = "ShuffleItems", label = "Embaralhar itens" },

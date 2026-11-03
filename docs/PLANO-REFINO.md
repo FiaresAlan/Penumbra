@@ -288,6 +288,8 @@ Siga o R2 e a seção 6, com estas mudanças. Tag `antes-de-R2` já existe; faç
 
 **Aceite:** os 7 pontos de teste do R2; Auditar caminhos 28 / 0 / 3 (ou os números novos explicados); QA imprime a variação de altura do chão por zona, com pelo menos 3 studs em cada uma; prints antes e depois nos mesmos pontos do Foto; dois ciclos reais seguidos (descer, pegar núcleo, extrair pelo elevador, vender).
 
+**Resultado do C1 (03/11/2026):** feito sem o Plano B. Duas descobertas valem para qualquer Terrain novo: (1) o Roblox desenha o sólido 2 studs maior que a ocupação pedida (chão 2 acima, teto 2 abaixo, parede 2 para dentro), então `CaveTerrain` usa `BIAS = 2`; sem isso o auditor de caminhos falhou em 21 de 28 alvos, e com a correção passou 28 de 28; (2) o `Config` fica em cache no Studio, por isso `CaveShape.Params` guarda o valor usado na geração. Para refazer a caverna: Command Bar, clonar `world`, `require(w.CaveTerrain).Build(print)`, `workspace:SetAttribute("CaveVersion", 1)`, salvar o lugar. `Config.CaveFloorRelief` = 2,4 e `CaveWarp` = 4. Falta no C1: CrackedLava nas zonas de fúria e lagoas com água de verdade (hoje um disco de vidro).
+
 **Plano B, se o Guardião não andar no Terrain em 2 tentativas:** volte à tag, mantenha o chão de Parts invisível para colisão e navegação, e cubra com Terrain só o visual. Marque PARCIAL e registre.
 
 ### C2. Identidade das zonas (o R3 inteiro)

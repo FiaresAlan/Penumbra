@@ -10,6 +10,7 @@ local Util = require(script.Parent:WaitForChild("WorldUtil") :: ModuleScript)
 local Layout = require(script.Parent:WaitForChild("CaveLayout") :: ModuleScript)
 local Lobby = require(script.Parent:WaitForChild("Lobby") :: ModuleScript)
 local Forest = require(script.Parent:WaitForChild("Forest") :: ModuleScript)
+local CaveShape = require(script.Parent:WaitForChild("CaveShape") :: ModuleScript)
 local CaveGeometry = require(script.Parent:WaitForChild("CaveGeometry") :: ModuleScript)
 local CaveDecor = require(script.Parent:WaitForChild("CaveDecor") :: ModuleScript)
 local Cores = require(script.Parent:WaitForChild("Cores") :: ModuleScript)
@@ -67,6 +68,11 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
             tostring(savedVersion), Config.WorldVersion))
     end
 
+    if workspace:GetAttribute("CaveVersion") ~= Config.CaveVersion then
+        warn(string.format("[Map] A caverna salva é da versão %s, mas o Config pede a %d. Rode WorldBake.BakeCave (Command Bar) e salve o lugar.",
+            tostring(workspace:GetAttribute("CaveVersion")), Config.CaveVersion))
+    end
+
     local mapFolder = Instance.new("Folder")
     mapFolder.Name = "Map"
     Util.topLevel(mapFolder)
@@ -77,6 +83,7 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
     Forest.Build(Random.new(Config.MapSeed + 1)) -- gerador próprio: a caverna continua igual
 
     local grid = Layout.carveCave(rng)
+    CaveShape.Bind(grid)
     CaveGeometry.Build(grid)
     CaveDecor.Build(grid, Random.new(Config.MapSeed + 2))
     Cores.placeCores(grid, rng)
