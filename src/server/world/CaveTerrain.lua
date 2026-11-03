@@ -80,6 +80,78 @@ local function zoneAtX(x: number): string
     return Layout.zoneOf(c)
 end
 
+-- S2: formações rochosas esculpidas no próprio Terrain (no lugar dos blocos de Part): estalactites que descem do teto,
+-- estalagmites que sobem do chão e colunas que ligam os dois. Cada uma é um cone ou cilindro no mesmo campo de ocupação
+-- das paredes. Ficam perto das paredes das células para não fechar corredor; o auditor de caminhos confere.
+type Formation = { x: number, z: number, kind: string, r0: number, len: number, floorY: number, ceilY: number }
+
+local PILLAR_CELLS = { { 2, 6 }, { 4, 6 }, { 2, 10 }, { 4, 10 }, { 21, 5 }, { 27, 5 }, { 21, 11 } }
+local SHRINK = 1 -- o Terrain desenha o sólido um pouco maior que o pedido
+
+local function buildFormations(grid: Layout.Grid, seed: number): { Formation }
+    local rng = Random.new(seed + 7)
+    local list: { Formation } = {}
+    local function add(kind: string, x: number, z: number, r0: number, len: number)
+        local floorY = CaveShape.FloorAt(x, z) - BIAS
+        local ceilY = CaveShape.CeilingAt(x, z) + BIAS
+        if kind ~= "column" and (ceilY - floorY) - len < 8 then
+            return
+        end
+        table.insert(list, { x = x, z = z, kind = kind, r0 = r0 - SHRINK, len = len, floorY = floorY, ceilY = ceilY })
+    end
+    for r = 1, Layout.ROWS - 2 do
+        for c = 1, Layout.COLS - 2 do
+            if grid[r][c] and not Layout.isSpecial(c, r) then
+                local center = Layout.cellCenter(c, r)
+                local function spot(): (number, number)
+                    -- encosta num dos lados da célula, deixando o meio livre
+                    local sx = if rng:NextNumber() < 0.5 then -1 else 1
+                    local sz = if rng:NextNumber() < 0.5 then -1 else 1
+                    return center.X + sx * rng:NextNumber(3.5, 6), center.Z + sz * rng:NextNumber(3.5, 6)
+                end
+                if rng:NextNumber() < 0.45 then
+                    local x, z = spot()
+                    add("hang", x, z, rng:NextNumber(3, 4.6), rng:NextNumber(4, 7.5))
+                end
+                if rng:NextNumber() < 0.2 then
+                    local x, z = spot()
+                    add("rise", x, z, rng:NextNumber(2.8, 4), rng:NextNumber(3, 5.5))
+                end
+                if Layout.zoneOf(c) == "C" and rng:NextNumber() < 0.12 then
+                    local x, z = spot()
+                    add("column", x, z, 4.2, 0)
+                end
+            end
+        end
+    end
+    for _, cell in ipairs(PILLAR_CELLS) do
+        local center = Layout.cellCenter(cell[1], cell[2])
+        add("column", center.X, center.Z, 4.6, 0)
+    end
+    return list
+end
+
+local function formationOcc(f: Formation, x: number, y: number, z: number): number
+    local dx, dz = x - f.x, z - f.z
+    local dist = math.sqrt(dx * dx + dz * dz)
+    local radius = 0
+    if f.kind == "hang" then
+        local bottom = f.ceilY - f.len
+        if y >= bottom then
+            radius = f.r0 * math.min((y - bottom) / f.len, 1)
+        end
+    elseif f.kind == "rise" then
+        local top = f.floorY + f.len
+        if y <= top then
+            radius = f.r0 * math.min((top - y) / f.len, 1)
+        end
+    else
+        local flare = math.max(0, 1 - (y - f.floorY) / 5, 1 - (f.ceilY - y) / 5)
+        radius = f.r0 * (1 + 0.7 * flare)
+    end
+    return math.clamp((radius - dist) / RES + 0.5, 0, 1)
+end
+
 function CaveTerrain.Build(log: (string) -> (), siteName: string?)
     local startedAt = os.clock()
     local site = Config.CaveSites[siteName or Config.ActiveCaveSite]
@@ -94,6 +166,7 @@ function CaveTerrain.Build(log: (string) -> (), siteName: string?)
     local z1 = math.ceil((Layout.ORIGIN_Z + Layout.ROWS * Layout.CELL + MARGIN) / RES) * RES
     local y0 = math.floor((Layout.FLOOR_Y - BELOW) / RES) * RES
     local y1 = math.ceil((Layout.FLOOR_Y + Layout.WALL_H + 6 + ABOVE) / RES) * RES
+    local formations = buildFormations(grid, site.seed)
     local nx = (x1 - x0) // RES
     local ny = (y1 - y0) // RES
     local nz = (z1 - z0) // RES
@@ -121,14 +194,28 @@ function CaveTerrain.Build(log: (string) -> (), siteName: string?)
             local floorY = CaveShape.FloorAt(x, z) - BIAS
             local ceilingY = CaveShape.CeilingAt(x, z) + BIAS
             local zone = currentTheme[zoneAtX(x)]
+            local near: { Formation } = {}
+            for _, f in ipairs(formations) do
+                if math.abs(f.x - x) < f.r0 * 1.8 + RES and math.abs(f.z - z) < f.r0 * 1.8 + RES then
+                    table.insert(near, f)
+                end
+            end
             for yi = 1, ny do
                 local y = y0 + (yi - 0.5) * RES
                 local floorOcc = math.clamp((floorY - (y - RES / 2)) / RES, 0, 1)
                 local ceilingOcc = math.clamp(((y + RES / 2) - ceilingY) / RES, 0, 1)
                 local occ = math.max(wallOcc, floorOcc, ceilingOcc)
+                local formed = 0
+                for _, f in ipairs(near) do
+                    formed = math.max(formed, formationOcc(f, x, y, z))
+                end
+                local shapedByFormation = formed > occ
+                occ = math.max(occ, formed)
                 local material = Enum.Material.Air
                 if occ > 0 then
-                    if floorOcc >= wallOcc and floorOcc >= ceilingOcc then
+                    if shapedByFormation then
+                        material = zone.wall
+                    elseif floorOcc >= wallOcc and floorOcc >= ceilingOcc then
                         material = if isFuryFloor(x, z) then Enum.Material.CrackedLava else zone.floor
                     else
                         material = zone.wall

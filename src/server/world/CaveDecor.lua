@@ -29,22 +29,6 @@ local function buildCaveDecor(grid: Grid, rng: Random)
         return CFrame.Angles(rng:NextNumber() * math.pi, rng:NextNumber() * math.pi, rng:NextNumber() * math.pi)
     end
 
-    -- Espinho de rocha feito de cilindros empilhados (estalactite para baixo, estalagmite para cima)
-    local function spike(x: number, z: number, hangingFromCeiling: boolean, scale: number, color: Color3)
-        local baseY = if hangingFromCeiling then ceilingAt(x, z) + 0.6 else floorAt(x, z) - 0.4
-        local direction = if hangingFromCeiling then -1 else 1
-        local levels = { { 2.4, 3.2 }, { 2.2, 2.2 }, { 2.0, 1.2 }, { 1.6, 0.5 } }
-        local offset = 0
-        for _, level in ipairs(levels) do
-            local height = level[1] * scale
-            local diameter = level[2] * scale
-            local y = baseY + direction * (offset + height / 2)
-            newPart("Spike", Vector3.new(height, diameter, diameter), CFrame.new(x, y, z) * CFrame.Angles(0, 0, math.pi / 2),
-                { Material = Enum.Material.Rock, Color = color, CanCollide = false }, decor)
-            offset += height
-        end
-    end
-
     for r = 1, ROWS - 2 do
         for c = 1, COLS - 2 do
             if grid[r][c] then
@@ -52,13 +36,7 @@ local function buildCaveDecor(grid: Grid, rng: Random)
                 local style = STYLES[zoneOf(c)]
                 local rock = ROCK_COLOR:Lerp(style.color, 0.5)
 
-                -- Estalactites no teto e estalagmites no chão
-                if rng:NextNumber() < 0.3 then
-                    spike(center.X + (rng:NextNumber() - 0.5) * 10, center.Z + (rng:NextNumber() - 0.5) * 10, true, 0.7 + rng:NextNumber() * 1.1, rock)
-                end
-                if rng:NextNumber() < 0.15 and not isSpecial(c, r) then
-                    spike(center.X + (rng:NextNumber() - 0.5) * 10, center.Z + (rng:NextNumber() - 0.5) * 10, false, 0.5 + rng:NextNumber() * 0.8, rock)
-                end
+                -- Estalactites, estalagmites e colunas agora são esculpidas no Terrain (CaveTerrain, S2)
 
                 -- Pedras redondas no chão, em parte enterradas
                 if rng:NextNumber() < 0.12 then
@@ -67,20 +45,6 @@ local function buildCaveDecor(grid: Grid, rng: Random)
                     local bz = center.Z + (rng:NextNumber() - 0.5) * 10
                     newPart("Boulder", Vector3.new(size, size * 0.8, size), CFrame.new(bx, floorAt(bx, bz) + size * 0.15, bz) * randomAngles(),
                         { Material = Enum.Material.Rock, Color = rock, Shape = Enum.PartType.Ball }, decor)
-                end
-
-                -- Saliências nas paredes: blocos girados que quebram a superfície reta
-                for _, dir in ipairs({ { 0, -1 }, { 0, 1 }, { -1, 0 }, { 1, 0 } }) do
-                    if not grid[r + dir[2]][c + dir[1]] and rng:NextNumber() < 0.35 then
-                        local along = (rng:NextNumber() - 0.5) * (CELL - 4)
-                        local height = 2 + rng:NextNumber() * 10
-                        local edge = Vector3.new(center.X + dir[1] * CELL / 2, 0, center.Z + dir[2] * CELL / 2)
-                        local px = edge.X - dir[1] * 1.0 + (if dir[1] == 0 then along else 0)
-                        local pz = edge.Z - dir[2] * 1.0 + (if dir[2] == 0 then along else 0)
-                        local position = Vector3.new(px, floorAt(px, pz) + height, pz)
-                        newPart("WallRock", Vector3.new(3 + rng:NextNumber() * 3, 3 + rng:NextNumber() * 5, 3 + rng:NextNumber() * 3),
-                            CFrame.new(position) * randomAngles(), { Material = Enum.Material.Rock, Color = rock }, decor)
-                    end
                 end
 
                 -- Cristais luminosos na zona C
@@ -101,16 +65,6 @@ local function buildCaveDecor(grid: Grid, rng: Random)
                 end
             end
         end
-    end
-
-    -- Pilares nas salas grandes
-    local pillars = { { 2, 6 }, { 4, 6 }, { 2, 10 }, { 4, 10 }, { 21, 5 }, { 27, 5 }, { 21, 11 } }
-    for _, cell in ipairs(pillars) do
-        local center = cellCenter(cell[1], cell[2])
-        local pillarFloor = floorAt(center.X, center.Z)
-        local pillarCeiling = ceilingAt(center.X, center.Z)
-        newPart("Pillar", Vector3.new(pillarCeiling - pillarFloor + 2, 4, 4), CFrame.new(center.X, (pillarFloor + pillarCeiling) / 2, center.Z) * CFrame.Angles(0, 0, math.pi / 2),
-            { Material = Enum.Material.Rock, Color = ROCK_COLOR:Lerp(STYLES[zoneOf(cell[1])].color, 0.4), Shape = Enum.PartType.Cylinder }, decor)
     end
 
     -- Zona A: estacas e vigas de madeira nos corredores retos, como uma mina antiga
