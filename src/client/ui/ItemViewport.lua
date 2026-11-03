@@ -3,7 +3,10 @@
 -- núcleo denso é maior e roxo, relíquia é um cristal rosa com uma esfera. Uma só rotina gira todos os que estão na tela.
 local RunService = game:GetService("RunService")
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
 local Theme = require((script.Parent :: Instance):WaitForChild("Theme") :: ModuleScript)
+local ItemVisuals = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("ItemVisuals") :: ModuleScript)
 
 local ItemViewport = {}
 
@@ -37,7 +40,11 @@ local function ensureLoop()
             if not spinner.frame.Parent then
                 table.remove(spinners, index)
             else
-                spinner.model:PivotTo(CFrame.Angles(0.25, angle * spinner.speed, 0))
+                local rotation = CFrame.Angles(0.25, angle * spinner.speed, 0)
+                if spinner.model:FindFirstChild("ItemVisual") then
+                    rotation = rotation * ItemVisuals.StandUp
+                end
+                spinner.model:PivotTo(rotation)
             end
         end
         if #spinners == 0 and connection then
@@ -61,7 +68,12 @@ function ItemViewport.Create(parent: Instance, itemType: string, rarity: string,
     local model = Instance.new("Model")
     model.Name = "Item"
     local color = Theme.ForRarity(rarity)
-    if itemType == "Relic" then
+    -- F2: o modelo 3D do item (ItemVisuals); sem ele, as formas simples de antes
+    local visual = ItemVisuals.Create(itemType, rarity, #spinners + (string.byte(rarity, 1) or 0))
+    if visual then
+        visual.CFrame = ItemVisuals.StandUp
+        visual.Parent = model
+    elseif itemType == "Relic" then
         local body = neon(model, Enum.PartType.Block, Vector3.new(1.6, 1.6, 1.6), Color3.fromRGB(255, 120, 210), CFrame.Angles(math.rad(45), 0, math.rad(45)))
         body.Name = "Cristal"
         neon(model, Enum.PartType.Ball, Vector3.new(0.9, 0.9, 0.9), Color3.fromRGB(255, 230, 250), CFrame.new())
