@@ -44,7 +44,7 @@ local function placeCores(grid: Grid, rng: Random)
             if cell then
                 counter += 1
                 local center = cellCenter(cell[1], cell[2])
-                makeCore("Core" .. counter, center + Vector3.new(0, 2.2, 0), rarity, zone)
+                makeCore("Core" .. counter, center + Vector3.new(0, 2.2, 0), rarity, zone):SetAttribute("Shuffle", true)
             end
         end
     end
@@ -58,7 +58,7 @@ local function placeCores(grid: Grid, rng: Random)
         local cell = entry[1] :: { number }?
         if cell then
             counter += 1
-            makeCore("Relic" .. counter, cellCenter(cell[1], cell[2]) + Vector3.new(0, 2.4, 0), "Legendary", entry[2] :: string, "Relic")
+            makeCore("Relic" .. counter, cellCenter(cell[1], cell[2]) + Vector3.new(0, 2.4, 0), "Legendary", entry[2] :: string, "Relic"):SetAttribute("Shuffle", true)
         end
     end
     counter += 1

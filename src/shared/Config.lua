@@ -9,6 +9,11 @@ Config.BaseNoise = 0
 Config.RunNoiseMultiplier = 1.0
 Config.WeightNoiseMultiplier = 0.5
 Config.MaxCarryWeight = 10
+
+-- Variação entre partidas. Desligue (false) para o teste com pessoas medir sempre o mesmo mapa.
+Config.Variation = {
+    ShuffleItems = true, -- núcleos e relíquias normais mudam de lugar a cada expedição
+}
 Config.SlotWeight = 2 -- cada 2 de peso é 1 espaço na tela da mochila (só apresentação)
 Config.VoiceSpikeDecay = 2.0
 Config.VoiceSpikeAmount = 5.0
@@ -246,6 +251,7 @@ Config.QAButtons = {
     { id = "ForgetVillage", label = "Esquecer a vila" },
     { id = "CallGroup", label = "Chamar o grupo" },
     { id = "UISample", label = "Amostra de UI" },
+    { id = "ShuffleItems", label = "Embaralhar itens" },
 }
 
 return Config

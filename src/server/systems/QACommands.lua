@@ -20,6 +20,7 @@ local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
 local PlayerState = require(systems:WaitForChild("PlayerState") :: ModuleScript)
 local PathAudit = require(systems:WaitForChild("PathAudit") :: ModuleScript)
 local TravelSystem = require(systems:WaitForChild("TravelSystem") :: ModuleScript)
+local CoreShuffle = require(systems:WaitForChild("CoreShuffle") :: ModuleScript)
 
 local QACommands = {}
 
@@ -190,6 +191,9 @@ local commands: { [string]: (player: Player) -> () } = {
             MovementGuard.Exempt(player, 3)
             character:PivotTo(CFrame.new(cart.Position + Vector3.new(0, 2, -6)))
         end
+    end,
+    ShuffleItems = function(_player)
+        CoreShuffle.Run()
     end,
     CallGroup = function(_player)
         ExpeditionSystem.QABeginDescent()
