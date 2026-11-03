@@ -12,6 +12,11 @@ local ContractRules = require(Shared:WaitForChild("ContractRules") :: ModuleScri
 local ExpeditionSystem = require(systems:WaitForChild("ExpeditionSystem") :: ModuleScript)
 local ExtractionSystem = require(systems:WaitForChild("ExtractionSystem") :: ModuleScript)
 local NestSystem = require(systems:WaitForChild("NestSystem") :: ModuleScript)
+local RateLimiter = require(systems:WaitForChild("RateLimiter") :: ModuleScript)
+
+local remotes = ReplicatedStorage:WaitForChild("EcosRemotes")
+local RequestBoard = remotes:WaitForChild("RequestBoard") :: RemoteEvent
+local BoardData = remotes:WaitForChild("BoardData") :: RemoteEvent
 
 local HighlightsSystem = {}
 
@@ -146,7 +151,21 @@ function HighlightsSystem.Flush()
     task.delay(3, HighlightsSystem.Refresh)
 end
 
+-- Manda ao jogador o ranking semanal e as histórias recentes, para a tela de Placar
+function HighlightsSystem.SendBoard(player: Player)
+    local top = {}
+    for rank, entry in ipairs(lastTop) do
+        table.insert(top, { rank = rank, userId = entry.userId, name = nameOf(entry.userId), value = entry.value })
+    end
+    BoardData:FireClient(player, { top = top, stories = stories, failed = topFailed })
+end
+
 function HighlightsSystem.Init()
+    RequestBoard.OnServerEvent:Connect(function(player)
+        if RateLimiter.Allow(player, "RequestBoard", 1, 2) then
+            task.spawn(HighlightsSystem.SendBoard, player)
+        end
+    end)
     ExtractionSystem.Extracted:Connect(function(player: Player, receipt: any)
         local total = math.floor(receipt.total or 0)
         if total <= 0 then

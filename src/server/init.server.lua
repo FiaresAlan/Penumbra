@@ -47,6 +47,8 @@ getOrCreateRemote("CallCart", "RemoteEvent")
 getOrCreateRemote("RequestDescent", "RemoteEvent")
 getOrCreateRemote("ExpeditionSummary", "RemoteEvent")
 getOrCreateRemote("ClaimDaily", "RemoteEvent")
+getOrCreateRemote("RequestBoard", "RemoteEvent")
+getOrCreateRemote("BoardData", "RemoteEvent")
 
 -- O mapa é gerado antes dos sistemas, que procuram as peças pelo nome
 require(script:WaitForChild("world"):WaitForChild("MapBuilder")).Build()
