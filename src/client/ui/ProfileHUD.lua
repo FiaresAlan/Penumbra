@@ -2,6 +2,8 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local Theme = require(script.Parent:WaitForChild("Theme") :: ModuleScript) :: any
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local ProfileUpdate = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("ProfileUpdate") :: RemoteEvent
@@ -36,8 +38,8 @@ function ProfileHUD.Init()
     label.Size = UDim2.new(0, 300, 0, 26)
     label.Position = UDim2.new(0, 20, 0, 50)
     label.BackgroundTransparency = 1
-    label.TextColor3 = Color3.fromRGB(255, 220, 120)
-    label.Font = Enum.Font.Gotham
+    label.TextColor3 = Theme.Color.Gold
+    label.Font = Theme.Font.Strong
     label.TextSize = 16
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Text = "Moedas: 0 · Baú: 0 itens"
@@ -47,9 +49,9 @@ function ProfileHUD.Init()
     local notice = Instance.new("TextLabel")
     notice.Size = UDim2.new(0, 340, 0, 30)
     notice.Position = UDim2.new(0.5, -170, 0.55, 0)
-    notice.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    notice.BackgroundTransparency = 0.5
-    notice.TextColor3 = Color3.fromRGB(255, 200, 120)
+    notice.BackgroundColor3 = Theme.Color.PanelBg
+    notice.BackgroundTransparency = 0.08
+    notice.TextColor3 = Theme.Color.Gold
     notice.Font = Enum.Font.GothamBold
     notice.TextSize = 16
     notice.Visible = false
