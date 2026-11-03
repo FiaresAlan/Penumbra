@@ -12,7 +12,7 @@ local CaveLibrary = require(script.Parent:WaitForChild("CaveLibrary") :: ModuleS
 
 local CaveScatter = {}
 
-type Rule = { words: { string }, chance: number, height: { number }, light: boolean? }
+type Rule = { words: { string }, chance: number, height: { number }, light: boolean?, hang: boolean? }
 
 -- chance: probabilidade por célula; height: altura-alvo em studs (min, max)
 local MINE_RULES: { [string]: { Rule } } = {
@@ -78,6 +78,20 @@ local GROTTO_RULES: { [string]: { Rule } } = {
     },
 }
 
+-- Peças do 3TD Cave Pack Pro v1.0 (CC0): rochas, estalagmites, estalactites que descem do teto e samambaias.
+-- Entram em todas as zonas por cima das regras de cada tema (o Terrain já tem as formações grandes).
+local TD3_NATURAL: { Rule } = {
+    { words = { "TD3_Stalagtite" }, chance = 0.4, height = { 4, 9 }, hang = true },
+    { words = { "TD3_Stalagmite" }, chance = 0.22, height = { 3, 7 } },
+    { words = { "TD3_Boulder", "TD3_CaveRock", "TD3_Stone", "TD3_RockPile", "TD3_PitRock" }, chance = 0.3, height = { 2.5, 6 } },
+    { words = { "TD3_CaveRubble" }, chance = 0.2, height = { 1.5, 3.5 } },
+}
+local TD3_DUNGEON: { Rule } = {
+    { words = { "TD3_CaveRubble" }, chance = 0.25, height = { 1.5, 3.5 } },
+    { words = { "TD3_Stalagtite" }, chance = 0.2, height = { 3, 6 }, hang = true },
+}
+local TD3_FERN: Rule = { words = { "TD3_caveFern" }, chance = 0.2, height = { 2, 4 } }
+
 local THEME_RULES: { [string]: { [string]: { Rule } } } = { mine = MINE_RULES, dungeon = DUNGEON_RULES, grotto = GROTTO_RULES }
 
 local NEST_RULES: { Rule } = {
@@ -125,7 +139,7 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
         end
         local template = pool[rng:NextInteger(1, #pool)]
         local center = Layout.cellCenter(cell[1], cell[2])
-        local scale = math.clamp(rng:NextNumber(rule.height[1], rule.height[2]) / math.max(template.Size.Y, 0.1), 0.2, 8)
+        local scale = math.clamp(rng:NextNumber(rule.height[1], rule.height[2]) / math.max(template.Size.Y, 0.1), 0.02, 8)
         local size = template.Size * scale
         local radius = math.max(size.X, size.Z) / 2
         local x, z = center.X, center.Z
@@ -153,13 +167,22 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
             x += rng:NextNumber(-5, 5)
             z += rng:NextNumber(-5, 5)
         end
-        local ground = workspace:Raycast(Vector3.new(x, center.Y + 12, z), Vector3.new(0, -40, 0), params)
-        if not ground then
-            return
-        end
         local clone = template:Clone()
         clone.Size = size
-        clone.CFrame = CFrame.new(x, ground.Position.Y + size.Y / 2 - 0.15, z) * CFrame.Angles(0, rng:NextNumber(0, math.pi * 2), 0)
+        if rule.hang then
+            -- estalactite: pendurada no teto, com a ponta para baixo
+            local ceiling = workspace:Raycast(Vector3.new(x, center.Y + 4, z), Vector3.new(0, 60, 0), params)
+            if not ceiling then
+                return
+            end
+            clone.CFrame = CFrame.new(x, ceiling.Position.Y - size.Y / 2 + 0.6, z) * CFrame.Angles(0, rng:NextNumber(0, math.pi * 2), 0)
+        else
+            local ground = workspace:Raycast(Vector3.new(x, center.Y + 12, z), Vector3.new(0, -40, 0), params)
+            if not ground then
+                return
+            end
+            clone.CFrame = CFrame.new(x, ground.Position.Y + size.Y / 2 - 0.15, z) * CFrame.Angles(0, rng:NextNumber(0, math.pi * 2), 0)
+        end
         clone.Parent = folder
         placed += 1
         if rule.light then
@@ -182,6 +205,15 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
                         if rng:NextNumber() < rule.chance * density then
                             place(rule, cell, true)
                         end
+                    end
+                    local extra = if Layout.Site.theme == "dungeon" then TD3_DUNGEON else TD3_NATURAL
+                    for _, rule in ipairs(extra) do
+                        if rng:NextNumber() < rule.chance * density then
+                            place(rule, cell, false)
+                        end
+                    end
+                    if Layout.zoneOf(c) == "C" and Layout.Site.theme ~= "dungeon" and rng:NextNumber() < TD3_FERN.chance * density then
+                        place(TD3_FERN, cell, true)
                     end
                 end
             end

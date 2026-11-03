@@ -29,3 +29,7 @@
 - `Tavern` 80388954716054 "Medieval Tavern Ambience" (DistrokidOfficial, 397 s): burburinho baixo na vila.
 - `Campfire` 134379431802298 "campfire wood crackling" (FormalCircuit_dev, 3 s em laço): fogueiras das praças.
 - Licença exata de cada faixa não foi conferida (só aparecem como "verificado" na Creator Store). Se o Alan preferir só áudio da própria Roblox, troque os IDs em `Config.Audio`.
+
+## 3TD Cave Pack Pro v1.0 (CC0)
+
+Autor: RonMain (3TD), OpenGameArt: https://opengameart.org/content/3td-cave-pack-pro-v10 . Licença CC0 (domínio público). Usamos 15 peças (estalagmite, 3 estalactites, 2 entulhos, penhasco, 6 rochas e uma samambaia), convertidas de DAE para OBJ por `tools/dae2obj.py` e importadas no Studio. O download (200 MB) fica em `tools/downloads/` (fora do Git).

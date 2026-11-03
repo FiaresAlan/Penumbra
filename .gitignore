@@ -23,3 +23,6 @@ tools/assets/quaternius-village/glb/_texturas.glb
 
 # Backups do lugar (binários grandes)
 tools/backups/
+
+# Downloads de terceiros (kits grandes, só para converter)
+tools/downloads/
