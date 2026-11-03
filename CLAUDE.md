@@ -57,6 +57,7 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 ## Missão noturna
 - `plano-refino.md` é `docs/PLANO-REFINO.md`. A fila, as regras e o que fazer ao chegar por tarefa agendada estão na seção 4. Andamento em `docs/NOITE-STATUS.md`.
 - **Caverna em Terrain (C1, 03/11/2026):** `CaveShape` (funções puras: IsOpen, FloorAt, CeilingAt) e `CaveTerrain` (escrita dos voxels, só por botão/Command Bar: `WorldBake.BakeCave`, salvo no lugar). O Terrain desenha o sólido 2 studs maior que o pedido (`BIAS = 2` em CaveTerrain); `Layout.cellCenter` já devolve a altura do chão. `CaveLibrary`/`CaveScatter` põem as peças Synty Dungeon. Foto de QA: botões "Foto" e "Foto + luz" (tecla N avança, P sai).
+- **Locais de caverna (C3):** `Config.CaveSites` (Mina, Masmorra, Gruta; mesmo X, Z diferente) e `Config.ActiveCaveSite`. Os três Terrains ficam salvos no lugar; o `MapBuilder` cria só o local ativo. Temas de material em `CaveTerrain`, peças por tema em `CaveScatter`.
 - **Fila atual: seção 4A do plano** (caverna com relevo, várias cavernas, vila interativa). Não encerre o turno entre módulos.
 - Filtro de novas ideias: `design_psicologico.md`.
 

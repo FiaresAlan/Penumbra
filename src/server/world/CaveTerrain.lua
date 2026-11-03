@@ -23,11 +23,24 @@ local function isOpenDilated(x: number, z: number): boolean
     return CaveShape.IsOpen(x, z) or CaveShape.IsOpen(x + BIAS, z) or CaveShape.IsOpen(x - BIAS, z) or CaveShape.IsOpen(x, z + BIAS) or CaveShape.IsOpen(x, z - BIAS)
 end
 
--- Um material só por lugar: SetMaterialColor vale para o Terrain inteiro (a superfície usa Grass, Ground, Rock, Mud e Sand)
-local ZONE_MATERIALS: { [string]: { floor: Enum.Material, wall: Enum.Material } } = {
-    A = { floor = Enum.Material.Cobblestone, wall = Enum.Material.Sandstone },
-    B = { floor = Enum.Material.Slate, wall = Enum.Material.Basalt },
-    C = { floor = Enum.Material.Salt, wall = Enum.Material.Limestone },
+-- Cada tema tem materiais próprios. SetMaterialColor vale para o Terrain inteiro, então um material só tem uma cor: o que
+-- se repete entre temas (Sandstone, Limestone, Salt, Slate, Basalt) fica com a mesma cor nos dois.
+local THEMES: { [string]: { [string]: { floor: Enum.Material, wall: Enum.Material } } } = {
+    mine = {
+        A = { floor = Enum.Material.Cobblestone, wall = Enum.Material.Sandstone },
+        B = { floor = Enum.Material.Slate, wall = Enum.Material.Basalt },
+        C = { floor = Enum.Material.Salt, wall = Enum.Material.Limestone },
+    },
+    dungeon = {
+        A = { floor = Enum.Material.Concrete, wall = Enum.Material.Asphalt },
+        B = { floor = Enum.Material.Pavement, wall = Enum.Material.Asphalt },
+        C = { floor = Enum.Material.Pavement, wall = Enum.Material.Concrete },
+    },
+    grotto = {
+        A = { floor = Enum.Material.Sandstone, wall = Enum.Material.Limestone },
+        B = { floor = Enum.Material.Ice, wall = Enum.Material.Glacier },
+        C = { floor = Enum.Material.Salt, wall = Enum.Material.Glacier },
+    },
 }
 
 local MATERIAL_COLORS: { [Enum.Material]: Color3 } = {
@@ -37,6 +50,11 @@ local MATERIAL_COLORS: { [Enum.Material]: Color3 } = {
     [Enum.Material.Basalt] = Color3.fromRGB(46, 50, 60),
     [Enum.Material.Salt] = Color3.fromRGB(78, 104, 112),
     [Enum.Material.Limestone] = Color3.fromRGB(52, 74, 72),
+    [Enum.Material.Concrete] = Color3.fromRGB(84, 82, 82),
+    [Enum.Material.Asphalt] = Color3.fromRGB(40, 40, 46),
+    [Enum.Material.Pavement] = Color3.fromRGB(58, 56, 64),
+    [Enum.Material.Ice] = Color3.fromRGB(120, 168, 196),
+    [Enum.Material.Glacier] = Color3.fromRGB(84, 128, 160),
 }
 
 -- Zonas de fúria (entrada e câmara do núcleo): rachaduras de lava no chão, em manchas por ruído
@@ -53,14 +71,19 @@ local function isFuryFloor(x: number, z: number): boolean
     return false
 end
 
+local currentTheme = THEMES.mine
+
 local function zoneAtX(x: number): string
     local c = math.clamp(math.floor((x - Layout.ORIGIN_X) / Layout.CELL), 0, Layout.COLS - 1)
     return Layout.zoneOf(c)
 end
 
-function CaveTerrain.Build(log: (string) -> ())
+function CaveTerrain.Build(log: (string) -> (), siteName: string?)
     local startedAt = os.clock()
-    local grid = Layout.carveCave(Random.new(Config.MapSeed))
+    local site = Config.CaveSites[siteName or Config.ActiveCaveSite]
+    Layout.SetSite(site)
+    currentTheme = THEMES[site.theme] or THEMES.mine
+    local grid = Layout.siteGrid()
     CaveShape.Bind(grid)
 
     local x0 = math.floor((Layout.ORIGIN_X - MARGIN) / RES) * RES
@@ -95,7 +118,7 @@ function CaveTerrain.Build(log: (string) -> ())
             local wallOcc = closed / 4
             local floorY = CaveShape.FloorAt(x, z) - BIAS
             local ceilingY = CaveShape.CeilingAt(x, z) + BIAS
-            local zone = ZONE_MATERIALS[zoneAtX(x)]
+            local zone = currentTheme[zoneAtX(x)]
             for yi = 1, ny do
                 local y = y0 + (yi - 0.5) * RES
                 local floorOcc = math.clamp((floorY - (y - RES / 2)) / RES, 0, 1)

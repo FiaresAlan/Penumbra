@@ -31,6 +31,11 @@ local RARITY_COLORS: { [string]: Color3 } = {
     Legendary = Color3.fromRGB(255, 200, 60),
 }
 
+-- Local da caverna (C3): a mesma grade em outro lugar do mapa (mesmo X, outro Z). SetSite troca a origem, a semente e os parâmetros.
+local Site: { name: string, originZ: number, seed: number, loops: number, warp: number?, relief: number?, theme: string } = {
+    name = "Mina", originZ = ORIGIN_Z, seed = 0, loops = 45, warp = nil, relief = nil, theme = "mine",
+}
+
 -- Alturas da caverna: começam planas e passam a vir do CaveShape quando ele é ligado (CaveShape.Bind)
 local Hooks = {
     floorAt = function(_x: number, _z: number): number
@@ -130,7 +135,7 @@ local function carveCave(rng: Random): Grid
     carveRect(grid, { c0 = 14, r0 = 11, c1 = 16, r1 = 13 })
 
     -- Laços extras: cada zona fica com rotas alternativas
-    for _ = 1, 45 do
+    for _ = 1, Site.loops do
         local c = rng:NextInteger(2, COLS - 3)
         local r = rng:NextInteger(2, ROWS - 3)
         if not grid[r][c] and (r + c) % 2 == 1 then
@@ -161,11 +166,30 @@ local function openCellsByZone(grid: Grid): { [string]: { { number } } }
     return lists
 end
 
-return {
+local exported = {
     CELL = CELL, COLS = COLS, ROWS = ROWS, WALL_H = WALL_H, ORIGIN_X = ORIGIN_X, ORIGIN_Z = ORIGIN_Z, FLOOR_Y = FLOOR_Y,
     ENTRANCE = ENTRANCE, CHAMBER = CHAMBER, NEST = NEST,
     STYLES = STYLES, ROCK_COLOR = ROCK_COLOR, RARITY_COLORS = RARITY_COLORS,
     cellCenter = cellCenter, zoneOf = zoneOf, inRect = inRect, isSpecial = isSpecial, newGrid = newGrid,
     carveMaze = carveMaze, carveRect = carveRect, carveCave = carveCave, shuffle = shuffle,
-    openCellsByZone = openCellsByZone, Hooks = Hooks, floorAt = floorAt, ceilingAt = ceilingAt,
+    openCellsByZone = openCellsByZone, Hooks = Hooks, floorAt = floorAt, ceilingAt = ceilingAt, Site = Site,
 }
+
+function exported.SetSite(info: { name: string, originZ: number, seed: number, loops: number?, warp: number?, relief: number?, theme: string? })
+    Site.name = info.name
+    Site.originZ = info.originZ
+    Site.seed = info.seed
+    Site.loops = info.loops or 45
+    Site.warp = info.warp
+    Site.relief = info.relief
+    Site.theme = info.theme or "mine"
+    ORIGIN_Z = info.originZ
+    exported.ORIGIN_Z = info.originZ
+end
+
+-- Grade do local ativo (a mesma sempre, porque a semente é do local)
+function exported.siteGrid(): Grid
+    return carveCave(Random.new(Site.seed))
+end
+
+return exported

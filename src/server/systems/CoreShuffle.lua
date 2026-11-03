@@ -19,7 +19,7 @@ local function zoneCells(): { [string]: { { number } } }
     if cached then
         return cached
     end
-    local grid = Layout.carveCave(Random.new(Config.MapSeed))
+    local grid = Layout.siteGrid()
     local lists = Layout.openCellsByZone(grid)
     cellsByZone = lists
     return lists

@@ -272,6 +272,14 @@ Config.VillageNotices = {
     "A taverna abre quando o sino toca.", "Ninguém desce sozinho no escuro. Chame o grupo.",
 }
 Config.CaveWarp = 4
+-- C3: locais de caverna. Cada um é a mesma grade em outro Z (mesmo X, para as zonas por coluna valerem). O Terrain de todos fica
+-- salvo no lugar (um "Gerar caverna" por local); a cada partida só o local ativo recebe núcleos, marcadores e Guardião.
+Config.ActiveCaveSite = "Mina"
+Config.CaveSites = {
+    Mina = { name = "Mina", originZ = -136, seed = Config.MapSeed, theme = "mine" },
+    Masmorra = { name = "Masmorra", originZ = 200, seed = 4021, theme = "dungeon", relief = 1.2 },
+    Gruta = { name = "Gruta", originZ = -472, seed = 8803, loops = 80, warp = 5, relief = 3, theme = "grotto" },
+}
 Config.CaveMaxLights = 60
 Config.CaveScatterDensity = 1 -- C2: multiplica a chance das peças de zona (0 desliga)
 Config.CaveVersion = 1 -- mude ao mudar CaveWarp, CaveFloorRelief ou a grade; e rode "Gerar caverna" (WorldBake.BakeCave)

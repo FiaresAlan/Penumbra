@@ -15,7 +15,7 @@ local CaveScatter = {}
 type Rule = { words: { string }, chance: number, height: { number }, light: boolean? }
 
 -- chance: probabilidade por célula; height: altura-alvo em studs (min, max)
-local RULES: { [string]: { Rule } } = {
+local MINE_RULES: { [string]: { Rule } } = {
     A = {
         { words = { "Barrel" }, chance = 0.16, height = { 3, 4.5 } },
         { words = { "Crate" }, chance = 0.16, height = { 2.4, 4 } },
@@ -37,6 +37,48 @@ local RULES: { [string]: { Rule } } = {
         { words = { "Tech_Crystal" }, chance = 0.16, height = { 3, 6 } },
     },
 }
+
+local DUNGEON_RULES: { [string]: { Rule } } = {
+    A = {
+        { words = { "Ruins_Pillar", "Rock_Pillar" }, chance = 0.2, height = { 7, 11 } },
+        { words = { "Crate", "Barrel" }, chance = 0.16, height = { 2.4, 4 } },
+        { words = { "Rubble", "RockPile_Square" }, chance = 0.18, height = { 2, 5 } },
+        { words = { "Candle_Chandelier", "Candle_Stand", "Prop_Candle" }, chance = 0.14, height = { 1.4, 2.4 }, light = true },
+    },
+    B = {
+        { words = { "Coffin" }, chance = 0.12, height = { 2.4, 3 } },
+        { words = { "Cage", "Rigcage", "Toture" }, chance = 0.14, height = { 4, 6 } },
+        { words = { "StoneTable", "Skeleton_Table" }, chance = 0.1, height = { 2.4, 3.4 } },
+        { words = { "BonePile", "Bone_Skull" }, chance = 0.2, height = { 1, 2.4 } },
+        { words = { "Candle_Stand", "Prop_Candle" }, chance = 0.12, height = { 1.4, 2.2 }, light = true },
+    },
+    C = {
+        { words = { "Ruins_Pillar", "Rock_Pillar", "RockPile_Pillar" }, chance = 0.3, height = { 8, 13 } },
+        { words = { "Chest" }, chance = 0.06, height = { 2, 2.6 } },
+        { words = { "Rubble", "RockPile_Rounded" }, chance = 0.22, height = { 2, 5 } },
+        { words = { "Candle_Chandelier", "Prop_Candle" }, chance = 0.14, height = { 1.4, 2.4 }, light = true },
+    },
+}
+
+local GROTTO_RULES: { [string]: { Rule } } = {
+    A = {
+        { words = { "Stalagmite" }, chance = 0.3, height = { 4, 9 } },
+        { words = { "RockPile_Rounded", "RockPile_Square" }, chance = 0.25, height = { 3, 7 } },
+        { words = { "BonePile" }, chance = 0.06, height = { 1, 1.8 } },
+    },
+    B = {
+        { words = { "Stalagmite" }, chance = 0.34, height = { 5, 11 } },
+        { words = { "RockPile_Pillar", "RockPile_Rounded" }, chance = 0.26, height = { 4, 9 } },
+        { words = { "Tech_Crystal" }, chance = 0.2, height = { 3, 6 } },
+    },
+    C = {
+        { words = { "Stalagmite" }, chance = 0.4, height = { 6, 13 } },
+        { words = { "Tech_Crystal" }, chance = 0.3, height = { 4, 8 } },
+        { words = { "RockPile_Pillar", "RockPile_Square" }, chance = 0.2, height = { 4, 9 } },
+    },
+}
+
+local THEME_RULES: { [string]: { [string]: { Rule } } } = { mine = MINE_RULES, dungeon = DUNGEON_RULES, grotto = GROTTO_RULES }
 
 local NEST_RULES: { Rule } = {
     { words = { "BonePile", "Bone_Cracked", "Bone_Horn" }, chance = 0.7, height = { 1.4, 3 } },
@@ -73,6 +115,7 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
     params.FilterDescendantsInstances = { workspace.Terrain }
 
     local density = Config.CaveScatterDensity
+    local rules = THEME_RULES[Layout.Site.theme] or MINE_RULES
     local placed = 0
 
     local function place(rule: Rule, cell: { number }, towardWall: boolean)
@@ -135,7 +178,7 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
                         end
                     end
                 elseif not Layout.isSpecial(c, r) then
-                    for _, rule in ipairs(RULES[Layout.zoneOf(c)]) do
+                    for _, rule in ipairs(rules[Layout.zoneOf(c)]) do
                         if rng:NextNumber() < rule.chance * density then
                             place(rule, cell, true)
                         end

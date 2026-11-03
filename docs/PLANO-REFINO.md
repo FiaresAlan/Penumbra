@@ -339,6 +339,8 @@ Crie `Config.CaveSites` com `{ name, originZ, seed, theme, warp, relief }` e pas
 
 **Aceite:** com só a Mina em `CaveSites`, o jogo fica igual (assinatura do mapa igual à deixada pelo C2). Auditar caminhos igual.
 
+**Resultado do C3 (03/11/2026): OK.** Para gerar o Terrain de um local: Command Bar, clonar `world`, `require(w.CaveTerrain).Build(print, "Masmorra")` (o `Config` pode estar em cache no Studio: se o Output reclamar de `CaveSites`, atribua `C.CaveSites` à mão na própria linha ou reinicie o Studio). Para jogar num local, mude `Config.ActiveCaveSite` e dê Play. C4 e C5 saíram PARCIAIS (ver status).
+
 ### C4. Segunda caverna: Masmorra
 
 Com as peças Synty do C2 e o KayKit já importado: corredores de pedra lavrada, colunas, grades, salas com tumbas. O chão continua sendo Terrain com pouco relevo, em `Cobblestone`; as peças vão encostadas nas paredes. Candidatos só se a Synty não bastar, e só com a regra da seção 7 (não testados, sem votos): Modular Dungeon Kit (122861654832870), Modular Mining Cave Kit (82286205928333), Mine & Cave Kit (114323050970490). **Não importe** geradores da loja como Warren ou DungeonForge: têm scripts.

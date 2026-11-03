@@ -79,7 +79,8 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
     Util.topLevel(mapFolder)
     Util.MapFolder = mapFolder
 
-    local rng = Random.new(Config.MapSeed)
+    Layout.SetSite(Config.CaveSites[Config.ActiveCaveSite])
+    local rng = Random.new(Layout.Site.seed)
     Lobby.Build()
     Forest.Build(Random.new(Config.MapSeed + 1)) -- gerador próprio: a caverna continua igual
 

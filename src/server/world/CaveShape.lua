@@ -12,7 +12,6 @@ local COLS = Layout.COLS
 local ROWS = Layout.ROWS
 local WALL_H = Layout.WALL_H
 local ORIGIN_X = Layout.ORIGIN_X
-local ORIGIN_Z = Layout.ORIGIN_Z
 local FLOOR_Y = Layout.FLOOR_Y
 
 local MIN_CLEARANCE = 13 -- o Guardião tem AgentHeight 9: o vão nunca fica abaixo disso
@@ -41,7 +40,7 @@ local function smooth(t: number): number
 end
 
 local function cellOf(x: number, z: number): (number, number)
-    return math.floor((x - ORIGIN_X) / CELL), math.floor((z - ORIGIN_Z) / CELL)
+    return math.floor((x - ORIGIN_X) / CELL), math.floor((z - Layout.ORIGIN_Z) / CELL)
 end
 
 local function isOpenCell(c: number, r: number): boolean
@@ -56,8 +55,8 @@ end
 local function distanceToRect(x: number, z: number, rect: Layout.Rect): number
     local x0 = ORIGIN_X + rect.c0 * CELL
     local x1 = ORIGIN_X + (rect.c1 + 1) * CELL
-    local z0 = ORIGIN_Z + rect.r0 * CELL
-    local z1 = ORIGIN_Z + (rect.r1 + 1) * CELL
+    local z0 = Layout.ORIGIN_Z + rect.r0 * CELL
+    local z1 = Layout.ORIGIN_Z + (rect.r1 + 1) * CELL
     local dx = math.max(x0 - x, 0, x - x1)
     local dz = math.max(z0 - z, 0, z - z1)
     return math.sqrt(dx * dx + dz * dz)
@@ -70,13 +69,14 @@ end
 
 function CaveShape.Bind(newGrid: Layout.Grid)
     grid = newGrid
+    seed = Layout.Site.seed * 0.013
     Layout.Hooks.floorAt = CaveShape.FloorAt
     Layout.Hooks.ceilingAt = CaveShape.CeilingAt
 end
 
 -- Parede: desloca o ponto com ruído (no máximo Config.CaveWarp studs) e só então consulta a célula
 function CaveShape.IsOpen(x: number, z: number): boolean
-    local warp = CaveShape.Params.warp
+    local warp = Layout.Site.warp or CaveShape.Params.warp
     local wx = x + clamp1(math.noise(x / 24, z / 24, seed + 1) * 2) * warp + clamp1(math.noise(x / 9, z / 9, seed + 7)) * warp * 0.3
     local wz = z + clamp1(math.noise(x / 24, z / 24, seed + 2) * 2) * warp + clamp1(math.noise(x / 9, z / 9, seed + 8)) * warp * 0.3
     local c, r = cellOf(wx, wz)
@@ -98,7 +98,7 @@ local function pondInfluence(x: number, z: number): number
         for dr = -1, 1 do
             if CaveShape.IsPond(c + dc, r + dr) then
                 local cx = ORIGIN_X + (c + dc + 0.5) * CELL
-                local cz = ORIGIN_Z + (r + dr + 0.5) * CELL
+                local cz = Layout.ORIGIN_Z + (r + dr + 0.5) * CELL
                 local distance = math.sqrt((x - cx) ^ 2 + (z - cz) ^ 2)
                 influence = math.max(influence, 1 - smooth((distance - POND_RADIUS * 0.3) / (POND_RADIUS * 1.4)))
             end
@@ -108,7 +108,7 @@ local function pondInfluence(x: number, z: number): number
 end
 
 function CaveShape.FloorAt(x: number, z: number): number
-    local relief = CaveShape.Params.relief
+    local relief = Layout.Site.relief or CaveShape.Params.relief
     local pond = pondInfluence(x, z)
     local mask = reliefMask(x, z) * (1 - 0.85 * pond)
     -- Ondulações largas e suaves: o navegador de caminhos do Roblox não aguenta chão áspero (testado: relevo com
@@ -146,7 +146,7 @@ function CaveShape.Stats(): { [string]: any }
                 local zone = Layout.zoneOf(c)
                 for step = 0, 15 do
                     local x = ORIGIN_X + c * CELL + (step % 4 + 0.5) * CELL / 4
-                    local z = ORIGIN_Z + r * CELL + (step // 4 + 0.5) * CELL / 4
+                    local z = Layout.ORIGIN_Z + r * CELL + (step // 4 + 0.5) * CELL / 4
                     local floor = CaveShape.FloorAt(x, z)
                     zones[zone].min = math.min(zones[zone].min, floor)
                     zones[zone].max = math.max(zones[zone].max, floor)

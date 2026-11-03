@@ -86,14 +86,14 @@ end
 
 -- Escreve só a caverna em Terrain (região X a partir de 396). Não apaga o resto do Terrain. Depois, salve o lugar.
 -- Atenção: "Gerar mundo" (BakeWorld) apaga todo o Terrain, a caverna inclusive: rode BakeCave de novo depois dele.
-function WorldBake.BakeCave(): (boolean, string)
+function WorldBake.BakeCave(siteName: string?): (boolean, string)
     if RunService:IsRunning() then
         return false, "Pare o jogo antes de gerar a caverna."
     end
     local startedAt = os.clock()
     CaveTerrain.Build(function(text: string)
         print("[Caverna] " .. text)
-    end)
+    end, siteName)
     workspace:SetAttribute("CaveVersion", Config.CaveVersion)
     return true, string.format("Caverna gerada em %.0f s (versão %d). Salve o lugar com File > Save to Roblox.", os.clock() - startedAt, Config.CaveVersion)
 end
