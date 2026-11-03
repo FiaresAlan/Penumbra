@@ -275,6 +275,7 @@ Config.CaveWarp = 4
 -- C3: locais de caverna. Cada um é a mesma grade em outro Z (mesmo X, para as zonas por coluna valerem). O Terrain de todos fica
 -- salvo no lugar (um "Gerar caverna" por local); a cada partida só o local ativo recebe núcleos, marcadores e Guardião.
 Config.ActiveCaveSite = "Mina"
+Config.CavePickMode = "fixed" -- "random" sorteia o local a cada servidor (V3 em versão simples; a votação entre expedições ficou bloqueada)
 Config.CaveSites = {
     Mina = { name = "Mina", originZ = -136, seed = Config.MapSeed, theme = "mine" },
     Masmorra = { name = "Masmorra", originZ = 200, seed = 4021, theme = "dungeon", relief = 1.2 },

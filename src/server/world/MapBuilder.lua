@@ -79,7 +79,19 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
     Util.topLevel(mapFolder)
     Util.MapFolder = mapFolder
 
-    Layout.SetSite(Config.CaveSites[Config.ActiveCaveSite])
+    -- Local da caverna deste servidor: fixo (Config.ActiveCaveSite) ou sorteado entre os locais (Config.CavePickMode = "random")
+    local siteName = Config.ActiveCaveSite
+    if Config.CavePickMode == "random" then
+        local names: { string } = {}
+        for name in pairs(Config.CaveSites) do
+            table.insert(names, name)
+        end
+        table.sort(names)
+        siteName = names[Random.new(os.time()):NextInteger(1, #names)]
+    end
+    Layout.SetSite(Config.CaveSites[siteName])
+    workspace:SetAttribute("CaveSite", siteName)
+    print("[Map] caverna deste servidor: " .. siteName)
     local rng = Random.new(Layout.Site.seed)
     Lobby.Build()
     Forest.Build(Random.new(Config.MapSeed + 1)) -- gerador próprio: a caverna continua igual
