@@ -184,10 +184,9 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
             clone.CFrame = CFrame.new(x, ground.Position.Y + size.Y / 2 - 0.15, z) * CFrame.Angles(0, rng:NextNumber(0, math.pi * 2), 0)
         end
         if rule.solid and Config.CaveRockCollision then
-            -- rochas e estalagmites têm corpo: colisão em casco (Hull), e entram no mapa de caminhos do Guardião
+            -- rochas e estalagmites têm corpo e entram no mapa de caminhos do Guardião (CollisionFidelity não pode ser escrita em jogo: as peças TD3_ já vêm com Hull, definido no modo de edição)
             clone.CanCollide = true
             clone.CanQuery = true
-            clone.CollisionFidelity = Enum.CollisionFidelity.Hull
         end
         if string.sub(template.Name, 1, 4) == "TD3_" then
             -- as peças do 3TD vêm claras: escurece conforme a zona (A quente, B arroxeada, C azulada)
