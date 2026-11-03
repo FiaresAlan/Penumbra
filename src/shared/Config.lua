@@ -98,6 +98,7 @@ Config.CaveSiteInfo = {
     Masmorra = { title = "Masmorra Antiga", color = { 200, 90, 80 } },
     Gruta = { title = "Gruta de Cristal", color = { 90, 200, 230 } },
 }
+Config.CaveExtras = true -- C2/C4/C5: trilhos, lama, sal, arcos, símbolos, poças e marcas de garra (desligue se atrapalhar)
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",

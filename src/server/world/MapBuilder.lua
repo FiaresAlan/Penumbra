@@ -17,6 +17,7 @@ local Cores = require(script.Parent:WaitForChild("Cores") :: ModuleScript)
 local CaveMarkers = require(script.Parent:WaitForChild("CaveMarkers") :: ModuleScript)
 local Props = require(script.Parent:WaitForChild("Props") :: ModuleScript)
 local CaveScatter = require(script.Parent:WaitForChild("CaveScatter") :: ModuleScript)
+local CaveExtras = require(script.Parent:WaitForChild("CaveExtras") :: ModuleScript)
 local GuardianModel = require(script.Parent:WaitForChild("GuardianModel") :: ModuleScript)
 
 local MapBuilder = {}
@@ -148,6 +149,9 @@ function MapBuilder.Build(opts: { waitForProps: boolean? }?)
     CaveMarkers.BuildLedges()
     GuardianModel.Build()
     CaveScatter.Build(grid, Random.new(Config.MapSeed + 4))
+    if Config.CaveExtras then
+        CaveExtras.Build(grid, Random.new(Config.MapSeed + 5))
+    end
 
     local propsRng = Random.new(Config.MapSeed + 3)
     if opts and opts.waitForProps then
@@ -202,6 +206,9 @@ function MapBuilder.RebuildCave(siteName: string)
     CaveMarkers.BuildLedges()
     GuardianModel.Build()
     CaveScatter.Build(grid, Random.new(Config.MapSeed + 4))
+    if Config.CaveExtras then
+        CaveExtras.Build(grid, Random.new(Config.MapSeed + 5))
+    end
     task.spawn(Props.Build, grid, Random.new(Config.MapSeed + 3))
     limitLights(mapFolder)
     print(string.format("[Map] caverna refeita: %s em %.1f s", siteName, os.clock() - startedAt))
