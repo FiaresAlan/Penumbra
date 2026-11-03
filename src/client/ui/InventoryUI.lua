@@ -62,12 +62,14 @@ local RARITY_ADJECTIVE: { [string]: string } = { Common = "", Rare = " raro", Le
 local function itemName(itemType: string, rarity: string): string
     if itemType == "Relic" then
         return "Relíquia"
+    elseif itemType == "DenseCore" then
+        return "Núcleo denso"
     end
     return "Núcleo" .. (RARITY_ADJECTIVE[rarity] or "")
 end
 
 local function itemEmoji(itemType: string): string
-    return if itemType == "Relic" then "🏺" else "💎"
+    return if itemType == "Relic" then "🏺" elseif itemType == "DenseCore" then "🔷" else "💎"
 end
 
 local function describeBackpack(item: BackpackItem): string

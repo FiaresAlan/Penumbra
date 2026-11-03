@@ -27,7 +27,7 @@ Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de
 | 19 | A3 Portão visual e capa | PARCIAL | ver Git | 7 imagens em docs/portao-visual/ (spawn nos 4 lados, trilha, praça da vila, caverna zona A) e respostas no LEIA-ME | Zonas B e C saíram pretas (sem lanterna), Mercado Negro sem imagem útil, nenhuma capa escolhida |
 | 20 | S1 `--!strict` restante | NÃO FEITO | | | Sem analisador de tipos Luau na máquina não dá para conferir os erros dos 9 arquivos (GuardianAI tem centenas de linhas); mudar às cegas arriscaria quebrar. Fica para o Alan ou para uma sessão com `luau-analyze` |
 | 21 | I2, I3, I4 (desligados) | Pendente | | | |
-| 22 | J2 a J5, J13, J14 (desligados) | Pendente | | | |
+| 22 | J2 a J5, J13, J14 (desligados) | PARCIAL: P3/J14 Núcleo denso feito | ver Git | Play com a flag ligada: "[Dense] 2 núcleos densos nesta expedição" ao descer, sem erros no Output. Módulo `DenseCore.lua` (até 2 núcleos nas zonas B/C ficam roxos, maiores, valor x3, peso 4), nome "Núcleo denso" na mochila. Flag `Config.Features.DenseCore` voltou para false | Não testado: pegar o núcleo denso e extrair (valor x3 no recibo), 2 jogadores, volta ao normal na expedição seguinte com a flag desligada. Os outros (J2 a J5, J13) não feitos |
 | 23 | R8 (só em branch) | Pendente | | | |
 
 ## Pesquisa de imprevisibilidade

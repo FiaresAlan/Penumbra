@@ -29,7 +29,7 @@ Config.NpcLines = {
 Config.Features = {
     TensionDirector = false, -- P1
     SilenceMoment = false, -- P2 / J13
-    DenseCore = false, -- P3 / J14
+    DenseCore = false, -- P3 / J14 (testado ligado em 02/11: 2 núcleos densos por descida)
     ShiftingRoute = false, -- P4
     LearningGuardian = false, -- P5
     DescentCondition = false, -- P6
@@ -156,7 +156,7 @@ Config.CaptiveBangCooldown = 3
 Config.CaptivePulse = 1.0
 
 -- Itens e profundidade
-Config.ItemWeights = { Core = 2, Relic = 6 }
+Config.ItemWeights = { Core = 2, Relic = 6, DenseCore = 4 } -- DenseCore só aparece com Config.Features.DenseCore
 Config.RelicValue = 500
 Config.DepthBonus = { A = 1.0, B = 1.15, C = 1.3 }
 

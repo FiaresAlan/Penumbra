@@ -109,6 +109,8 @@ function LootSystem.GrantItem(player, itemType, rarity, depthZone)
     local base
     if itemType == "Relic" then
         base = Config.RelicValue
+    elseif itemType == "DenseCore" then
+        base = (Config.CoreValue[rarity] or 10) * 3
     else
         base = Config.CoreValue[rarity] or 10
     end
