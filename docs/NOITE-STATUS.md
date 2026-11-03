@@ -23,9 +23,9 @@ Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de
 | 15 | A2 Música e sons | Pendente | | | |
 | 16 | R7b NPCs e balões | Pendente | | | |
 | 17 | R7c Animais, morcegos e poeira | Pendente | | | |
-| 18 | P1 Desempenho e celular | Pendente | | | |
-| 19 | A3 Portão visual e capa | Pendente | | | |
-| 20 | S1 `--!strict` restante | Pendente | | | |
+| 18 | P1 Desempenho e celular | NÃO FEITO | | | Depende do Device Emulator e do MicroProfiler, que o Computer Use mal consegue ler. Recomendo o Alan olhar |
+| 19 | A3 Portão visual e capa | PARCIAL | ver Git | 7 imagens em docs/portao-visual/ (spawn nos 4 lados, trilha, praça da vila, caverna zona A) e respostas no LEIA-ME | Zonas B e C saíram pretas (sem lanterna), Mercado Negro sem imagem útil, nenhuma capa escolhida |
+| 20 | S1 `--!strict` restante | NÃO FEITO | | | Sem analisador de tipos Luau na máquina não dá para conferir os erros dos 9 arquivos (GuardianAI tem centenas de linhas); mudar às cegas arriscaria quebrar. Fica para o Alan ou para uma sessão com `luau-analyze` |
 | 21 | I2, I3, I4 (desligados) | Pendente | | | |
 | 22 | J2 a J5, J13, J14 (desligados) | Pendente | | | |
 | 23 | R8 (só em branch) | Pendente | | | |
