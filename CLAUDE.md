@@ -56,6 +56,7 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 
 ## Missão noturna
 - `plano-refino.md` é `docs/PLANO-REFINO.md`. A fila, as regras e o que fazer ao chegar por tarefa agendada estão na seção 4. Andamento em `docs/NOITE-STATUS.md`.
+- **Fila atual: seção 4A do plano** (caverna com relevo, várias cavernas, vila interativa). Não encerre o turno entre módulos.
 - Filtro de novas ideias: `design_psicologico.md`.
 
 ## Estado atual
