@@ -30,6 +30,10 @@ Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de
 | 22 | J2 a J5, J13, J14 (desligados) | Pendente | | | |
 | 23 | R8 (só em branch) | Pendente | | | |
 
+## Pesquisa de imprevisibilidade
+
+Feita (seção 10B do plano): 7 melhorias com fonte, pilar, risco e teste, todas desligadas em `Config.Features`. Nenhuma implementada ainda.
+
 ## Decisões tomadas sem o Alan
 
 - N0: o hash do mapa continua o mesmo (as peças de carroça são de jogo e entram fora da assinatura).

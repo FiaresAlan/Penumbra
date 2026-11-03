@@ -827,6 +827,29 @@ A fila da noite pode construir J2 a J5, J13 e J14 **desligadas por padrão**, em
 
 Ao escolher, peça ao Opus os prompts: as regras podem mudar com o que o teste mostrar.
 
+## 10B. Melhorias de Pesquisa - Imprevisibilidade
+
+Pesquisa feita pelo Sonnet na noite de 02 a 03/11/2026, com o filtro do `design_psicologico.md` (10 pilares) e a regra mestre: **a imprevisibilidade fica no desafio da expedição, nunca em sorteio pago nem em obrigação de entrar todo dia.** Nada aqui cobra moeda real, esconde probabilidade ou pune quem falta. Todas entram **desligadas** em `Config.Features` até o Portão 1.
+
+**O que a pesquisa mostrou (e o que não consegui confirmar):**
+- O [diretor de Left 4 Dead](https://www.gamedeveloper.com/design/the-discomfort-zone-the-hidden-potential-of-valve-s-ai-director) e o [Alien: Isolation](https://www.gamedeveloper.com/design/revisiting-the-ai-of-alien-isolation) usam um "diretor" que dosa a pressão: momentos de silêncio para criar tensão e depois a soltam. Fontes dizem que ameaça constante cansa e que o diretor deve mirar áreas perto do jogador, nunca teleportar o monstro em cima dele.
+- [99 Nights in the Forest](https://en.wikipedia.org/wiki/List_of_Roblox_games) cresceu com eventos periódicos e sazonais. Não achei análise confiável de quais mecânicas seguram o jogador; é só prova de que conteúdo vivo ajuda.
+- Não confirmei dados de retenção por mecânica. Tudo abaixo é hipótese a medir no Portão 1.
+
+| # | Ideia | De onde veio | Pilares | Risco | Como testar |
+|---|---|---|---|---|---|
+| P1 | **Diretor de tensão**: o Guardião alterna fases de caça e de silêncio, com durações sorteadas em faixas. Alvos sempre perto do grupo, nunca teleporte em cima. Sem aumentar a velocidade base | Left 4 Dead e Alien: Isolation | Flow, Competência | Médio | Em 10 expedições o tempo entre sustos varia e ninguém é pego do nada |
+| P2 | **Momento de silêncio** (J13): apagão curto e respiração; quem andar faz barulho alto. Aviso de 3 s antes | DeepSeek (revisado) | Aversão à perda do saque, Autonomia | Baixo | Dá para escolher ficar parado; avisa antes; não punir quem está num prompt de extração |
+| P3 | **Núcleo Denso** (J14): vale 3x, pesa mais e deixa mais lento e barulhento | DeepSeek (revisado) | Autonomia, Recompensa variável justa | Baixo | Decisão clara: quem escolhe não é prejudicado; o peso aparece na mochila |
+| P4 | **Rota que muda**: um desabamento curto fecha um corredor por cerca de 60 s, com som de aviso. Sempre sobra caminho (rodar **Auditar caminhos** com a rota fechada) | Eventos ambientais | Competência, Flow | Médio | Nunca prende o grupo e nunca fecha o caminho do elevador |
+| P5 | **Guardião que aprende dentro da expedição**: lembra onde houve barulho alto e passa lá antes. Esquece ao fim da expedição | IA que muda de padrão | Competência (aprender o perigo) | Médio | Quem faz barulho no mesmo lugar é visitado, e a próxima expedição começa limpa |
+| P6 | **Condição da descida**: antes de descer, o elevador mostra uma condição do dia visível (ex.: "neblina: lanterna curta", "poças: passos mais altos"). Informada, sem custo | Banners da referência e eventos de 99 Nights | Autonomia, Baixa barreira | Médio | O jogador lê antes de descer e pode escolher entrar mesmo assim |
+| P7 | **Boatos da vila**: um morador diz uma dica sobre a expedição, às vezes só parcialmente certa, sempre sinalizada como "boato" | NPCs (R7b) | Efeito Zeigarnik, lore em fragmentos | Baixo | A dica nunca é a única forma de achar algo importante |
+
+**Descartado pelo filtro:** caixas de recompensa pagas, probabilidades escondidas, recompensas que somem se faltar um dia, notificação que força a voltar e qualquer evento que obrigue a estar online em hora marcada.
+
+**Regras comuns:** a faixa de sorteio de cada uma fica em `Config.Variation`, e `Config.Features` liga ou desliga. Cada uma precisa de botão no QA, de `Auditar caminhos` limpo e de um teste de 3 expedições seguidas. Nenhuma pode mexer nas regras de ruído, de peso ou de captura da Fase 1 sem o Alan.
+
 ## 11. Portão visual
 
 Depois da fila da noite, antes de chamar pessoas, o Alan olha estas 10 imagens, enviadas pelo Sonnet: spawn olhando para cada lado (4), trilha na floresta, praça da vila, Mercado Negro, e uma de cada zona da caverna (3).

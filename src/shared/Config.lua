@@ -25,6 +25,20 @@ Config.NpcLines = {
     hooded = { "Psiu... tenho pedidos especiais.", "Aqui nunca esteve ninguém.", "Traga o que pedi e eu pago melhor." },
 }
 
+-- Mecânicas novas, todas DESLIGADAS até o Portão 1 (ver docs/PLANO-REFINO.md seção 10B). Ligue uma por vez.
+Config.Features = {
+    TensionDirector = false, -- P1
+    SilenceMoment = false, -- P2 / J13
+    DenseCore = false, -- P3 / J14
+    ShiftingRoute = false, -- P4
+    LearningGuardian = false, -- P5
+    DescentCondition = false, -- P6
+    VillageRumors = false, -- P7
+    DropItems = false, -- I2
+    ThrowItems = false, -- I3
+    VisibleBackpack = false, -- I4
+}
+
 Config.Variation = {
     ShuffleItems = true, -- núcleos e relíquias normais mudam de lugar a cada expedição
 }
