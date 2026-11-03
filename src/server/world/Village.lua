@@ -8,6 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config") :: ModuleScript)
 local VillageHouses = require(script.Parent:WaitForChild("VillageHouses") :: ModuleScript)
 local VillagePieces = require(script.Parent:WaitForChild("VillagePieces") :: ModuleScript)
+local Plaza = require(script.Parent:WaitForChild("Plaza") :: ModuleScript)
 
 local Village = {}
 
@@ -146,9 +147,11 @@ function Village.Build(root: Folder, log: (string) -> ())
     local vila = Config.WorldPads.Vila
     local VX, VZ = vila.x, vila.z
     local houses = 0
+    local jitter = Random.new(Config.MapSeed + 21)
     local function house(dx: number, dz: number, facing: number, w: number, d: number, extra: { wall: string?, chimney: boolean?, shutters: boolean? }?)
         local spec: VillageHouses.Spec = { w = w, d = d, wall = if extra then extra.wall else nil, chimney = if extra then extra.chimney else nil, shutters = if extra then extra.shutters else nil }
-        VillageHouses.BuildCentered(VX + dx, FLOOR, VZ + dz, facing, spec, folder)
+        -- Pequeno giro de cada casa (até 7 graus), para a vila não parecer uma grade
+        VillageHouses.BuildCentered(VX + dx, FLOOR, VZ + dz, facing + jitter:NextNumber(-7, 7), spec, folder)
         houses += 1
     end
 
@@ -189,6 +192,7 @@ function Village.Build(root: Folder, log: (string) -> ())
     VillagePieces.Place("Prop_Crate", CFrame.new(black.x - 6, FLOOR, black.z + 9) * CFrame.Angles(0, math.rad(-30), 0), folder)
     houses += 1
 
+    Plaza.Build(folder, log)
     local posts = trailSigns(folder)
     log(string.format("vila: %d casas, poço, placas, torre da mina, cabana do Mercado Negro e %d placas na trilha", houses, posts))
 end

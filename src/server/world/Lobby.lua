@@ -11,11 +11,19 @@ local newFolder = Util.newFolder
 local addPrompt = Util.addPrompt
 local addLight = Util.addLight
 
+local WOOD = Color3.fromRGB(92, 62, 40)
+local WOOD_DARK = Color3.fromRGB(64, 44, 30)
+
+-- Lampião de madeira: poste levemente torto, braço, caixa de luz quente e telhadinho. Nada de neon branco.
 local function lampPost(x: number, z: number)
     local mapFolder = Util.MapFolder :: Folder
-    newPart("LampPole", Vector3.new(1, 12, 1), CFrame.new(x, 7, z), { Material = Enum.Material.Metal, Color = Color3.fromRGB(60, 60, 65) }, mapFolder)
-    local bulb = newPart("LampBulb", Vector3.new(2, 2, 2), CFrame.new(x, 13.5, z), { Material = Enum.Material.Neon, Color = Color3.fromRGB(255, 240, 200), CanCollide = false }, mapFolder)
-    addLight(bulb, Color3.fromRGB(255, 240, 200), 40, 1.5)
+    local tilt = math.rad(((math.floor(x * 7 + z * 3) % 5) - 2) * 0.8)
+    local base = CFrame.new(x, 0, z) * CFrame.Angles(0, math.rad((x * 13 + z * 7) % 360), tilt)
+    newPart("LampPole", Vector3.new(0.9, 12, 0.9), base * CFrame.new(0, 6.5, 0), { Material = Enum.Material.Wood, Color = WOOD_DARK }, mapFolder)
+    newPart("LampArm", Vector3.new(2.6, 0.5, 0.5), base * CFrame.new(1.1, 12.4, 0), { Material = Enum.Material.Wood, Color = WOOD_DARK }, mapFolder)
+    local lantern = newPart("LampBulb", Vector3.new(1.6, 2, 1.6), base * CFrame.new(2.2, 11.3, 0), { Material = Enum.Material.Neon, Color = Color3.fromRGB(255, 190, 105), Transparency = 0.15, CanCollide = false }, mapFolder)
+    newPart("LampCap", Vector3.new(2.2, 0.5, 2.2), base * CFrame.new(2.2, 12.5, 0), { Material = Enum.Material.Metal, Color = Color3.fromRGB(50, 44, 40), CanCollide = false }, mapFolder)
+    addLight(lantern, Color3.fromRGB(255, 185, 110), 34, 1.3)
 end
 
 local function buildLobby()
@@ -38,8 +46,8 @@ local function buildLobby()
     end
 
     -- Plataforma do elevador (leste)
-    newPart("ElevatorDeck", Vector3.new(24, 0.4, 24), CFrame.new(48, 1.2, 0), { Material = Enum.Material.DiamondPlate, Color = Color3.fromRGB(110, 115, 125) }, mapFolder)
-    local lobbyElevator = newPart("LobbyElevator", Vector3.new(10, 5, 10), CFrame.new(48, 3.7, 0), { Material = Enum.Material.Metal, Color = Color3.fromRGB(70, 140, 220) }, workspace)
+    newPart("ElevatorDeck", Vector3.new(24, 0.4, 24), CFrame.new(48, 1.2, 0), { Material = Enum.Material.Cobblestone, Color = Color3.fromRGB(122, 116, 108) }, mapFolder)
+    local lobbyElevator = newPart("LobbyElevator", Vector3.new(10, 5, 10), CFrame.new(48, 3.7, 0), { Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(112, 78, 50) }, workspace)
     lobbyElevator:SetAttribute("Generated", true)
     addPrompt(lobbyElevator, "Descer", 1, 14)
 
@@ -53,19 +61,36 @@ local function buildLobby()
     local statusLabel = Instance.new("TextLabel")
     statusLabel.Name = "Status"
     statusLabel.Size = UDim2.fromScale(1, 1)
-    statusLabel.BackgroundTransparency = 1
-    statusLabel.TextColor3 = Color3.new(1, 1, 1)
+    statusLabel.TextColor3 = Color3.fromRGB(246, 206, 96)
+    statusLabel.BackgroundColor3 = Color3.fromRGB(26, 19, 15)
+    statusLabel.BackgroundTransparency = 0.25
     statusLabel.Font = Enum.Font.GothamBold
     statusLabel.TextScaled = true
     statusLabel.Text = "Pronto para descer"
     statusLabel.Parent = statusGui
     for _, dz in ipairs({ -7, 7 }) do
-        newPart("ElevatorPillar", Vector3.new(2, 14, 2), CFrame.new(48, 8, dz), { Material = Enum.Material.Metal, Color = Color3.fromRGB(50, 55, 65) }, mapFolder)
+        newPart("ElevatorPillar", Vector3.new(2, 14, 2), CFrame.new(48, 8, dz), { Material = Enum.Material.WoodPlanks, Color = WOOD_DARK }, mapFolder)
     end
+    -- Viga e placa "A MINA" sobre o elevador, voltada para o spawn
+    newPart("ElevatorBeam", Vector3.new(2, 1.2, 16), CFrame.new(48, 15, 0), { Material = Enum.Material.WoodPlanks, Color = WOOD_DARK }, mapFolder)
+    local mineSign = newPart("MineSign", Vector3.new(0.6, 3, 10), CFrame.new(46.8, 12.6, 0), { Material = Enum.Material.WoodPlanks, Color = WOOD, CanCollide = false }, mapFolder)
+    local signGui = Instance.new("SurfaceGui")
+    signGui.Face = Enum.NormalId.Left
+    signGui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+    signGui.PixelsPerStud = 40
+    signGui.Parent = mineSign
+    local signLabel = Instance.new("TextLabel")
+    signLabel.Size = UDim2.fromScale(1, 1)
+    signLabel.BackgroundTransparency = 1
+    signLabel.Text = "A MINA"
+    signLabel.TextScaled = true
+    signLabel.Font = Enum.Font.Fondamento
+    signLabel.TextColor3 = Color3.fromRGB(246, 206, 96)
+    signLabel.Parent = signGui
     marker("LobbyArrival", Vector3.new(4, 1, 4), CFrame.new(36, 2, 12), workspace):SetAttribute("Generated", true)
 
     -- Mural de destaques e quadro de pedidos (preparados para os módulos de UI)
-    local wall = newPart("HighlightsWall", Vector3.new(1, 10, 22), CFrame.new(64, 7, -22), { Material = Enum.Material.SmoothPlastic, Color = Color3.fromRGB(30, 30, 38) }, workspace)
+    local wall = newPart("HighlightsWall", Vector3.new(1, 10, 22), CFrame.new(64, 7, -22), { Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(66, 46, 32) }, workspace)
     wall:SetAttribute("Generated", true)
     local wallGui = Instance.new("SurfaceGui")
     wallGui.Name = "HighlightsGui"
@@ -84,7 +109,7 @@ local function buildLobby()
     wallLabel.TextYAlignment = Enum.TextYAlignment.Top
     wallLabel.Text = "MURAL DE DESTAQUES"
     wallLabel.Parent = wallGui
-    local orders = newPart("OrdersBoard", Vector3.new(1, 8, 14), CFrame.new(64, 6, 24), { Material = Enum.Material.SmoothPlastic, Color = Color3.fromRGB(40, 30, 25) }, workspace)
+    local orders = newPart("OrdersBoard", Vector3.new(1, 8, 14), CFrame.new(64, 6, 24), { Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(86, 60, 40) }, workspace)
     orders:SetAttribute("Generated", true)
 
     -- Vila: mercado, oficina e contratos ficam em volta de VX (o centro da área plana da vila)
