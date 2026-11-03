@@ -165,7 +165,7 @@ function CaveTerrain.Build(log: (string) -> (), siteName: string?)
     local z0 = math.floor((Layout.ORIGIN_Z - MARGIN) / RES) * RES
     local z1 = math.ceil((Layout.ORIGIN_Z + Layout.ROWS * Layout.CELL + MARGIN) / RES) * RES
     local y0 = math.floor((Layout.FLOOR_Y - BELOW) / RES) * RES
-    local y1 = math.ceil((Layout.FLOOR_Y + Layout.WALL_H + 6 + ABOVE) / RES) * RES
+    local y1 = math.ceil((Layout.FLOOR_Y + 52 + ABOVE) / RES) * RES -- o teto chega a uns 46 acima do chão nas cúpulas
     local formations = buildFormations(grid, site.seed)
     local nx = (x1 - x0) // RES
     local ny = (y1 - y0) // RES

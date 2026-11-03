@@ -32,7 +32,7 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
   ContractSystem, BlackMarketSystem, HighlightsSystem, ClipSystem, MovementGuard, ClientSync etc.).
 - `src/server/world/` — MapBuilder (só chama os módulos, na ordem), CaveLayout (grade e zonas, funções puras), WorldUtil,
   Lobby, Forest, CaveGeometry, CaveDecor, Cores, CaveMarkers, Props, GuardianModel e WorldBake (prévia no modo de edição).
-  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=490 hash=84289505 nucleos=26` (mudou no R6 e no L5: casas, lampiões de madeira e elevador novo; e no R3-lite: lâmpadas da caverna por zona; e no C1/C2: a caverna passou para Terrain e ganhou peças por zona; o chão não tem mais Parts; e no S2: estalactites, estalagmites e colunas passaram para o Terrain e saíram os blocos de Part):
+  Autorizado pelo Alan em 02/11/2026. O Output mostra `[Map] assinatura partes=466 hash=80326583 nucleos=26` (mudou no R6 e no L5: casas, lampiões de madeira e elevador novo; e no R3-lite: lâmpadas da caverna por zona; e no C1/C2: a caverna passou para Terrain e ganhou peças por zona; o chão não tem mais Parts; e no S2: estalactites, estalagmites e colunas passaram para o Terrain e saíram os blocos de Part; e no S4: salões nos cruzamentos, paredes com alargamento irregular, teto de 24 studs com cúpulas e relevo maior):
   se mudar sem querer, o gerador mudou o mapa. O QA tem "Auditar caminhos" (esperado: 28 ok, 0 falhas, 3 só pelo gancho).
 - `src/client/` — init, VoiceNoise, ZoneLighting, Flashlight, SneakInput, GuardianPresence, HookController;
   `ui/` (NoiseBar, ExtractionUI, QAPanel, NestUI, ProfileHUD, ShopUI, ClipPrompt, TutorialHints),

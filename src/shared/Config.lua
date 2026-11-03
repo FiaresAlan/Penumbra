@@ -292,13 +292,13 @@ Config.ActiveCaveSite = "Mina"
 Config.CavePickMode = "fixed" -- "random" sorteia o local a cada servidor (V3 em versão simples; a votação entre expedições ficou bloqueada)
 Config.CaveSites = {
     Mina = { name = "Mina", originZ = -136, seed = Config.MapSeed, theme = "mine" },
-    Masmorra = { name = "Masmorra", originZ = 200, seed = 4021, theme = "dungeon", relief = 1.2 },
-    Gruta = { name = "Gruta", originZ = -472, seed = 8803, loops = 80, warp = 5, relief = 3, theme = "grotto" },
+    Masmorra = { name = "Masmorra", originZ = 200, seed = 4021, theme = "dungeon", relief = 1.5 },
+    Gruta = { name = "Gruta", originZ = -472, seed = 8803, loops = 80, warp = 5, relief = 6, theme = "grotto" },
 }
 Config.CaveMaxLights = 60
 Config.CaveScatterDensity = 1 -- C2: multiplica a chance das peças de zona (0 desliga)
-Config.CaveVersion = 1 -- mude ao mudar CaveWarp, CaveFloorRelief ou a grade; e rode "Gerar caverna" (WorldBake.BakeCave)
-Config.CaveFloorRelief = 2.4
+Config.CaveVersion = 2 -- mude ao mudar CaveWarp, CaveFloorRelief ou a grade; e rode "Gerar caverna" (WorldBake.BakeCave)
+Config.CaveFloorRelief = 4.5
 Config.QAButtons = {
     { id = "EndFailure", label = "Encerrar: falha" },
     { id = "EndSuccess", label = "Encerrar: sucesso" },

@@ -32,8 +32,8 @@ local RARITY_COLORS: { [string]: Color3 } = {
 }
 
 -- Local da caverna (C3): a mesma grade em outro lugar do mapa (mesmo X, outro Z). SetSite troca a origem, a semente e os parâmetros.
-local Site: { name: string, originZ: number, seed: number, loops: number, warp: number?, relief: number?, theme: string } = {
-    name = "Mina", originZ = ORIGIN_Z, seed = 0, loops = 45, warp = nil, relief = nil, theme = "mine",
+local Site: { name: string, originZ: number, seed: number, loops: number, warp: number?, relief: number?, theme: string, halls: boolean?, reach: boolean? } = {
+    name = "Mina", originZ = ORIGIN_Z, seed = 0, loops = 45, warp = nil, relief = nil, theme = "mine", halls = nil, reach = nil,
 }
 
 -- Alturas da caverna: começam planas e passam a vir do CaveShape quando ele é ligado (CaveShape.Bind)
@@ -175,7 +175,7 @@ local exported = {
     openCellsByZone = openCellsByZone, Hooks = Hooks, floorAt = floorAt, ceilingAt = ceilingAt, Site = Site,
 }
 
-function exported.SetSite(info: { name: string, originZ: number, seed: number, loops: number?, warp: number?, relief: number?, theme: string? })
+function exported.SetSite(info: { name: string, originZ: number, seed: number, loops: number?, warp: number?, relief: number?, theme: string?, halls: boolean?, reach: boolean? })
     Site.name = info.name
     Site.originZ = info.originZ
     Site.seed = info.seed
@@ -183,6 +183,8 @@ function exported.SetSite(info: { name: string, originZ: number, seed: number, l
     Site.warp = info.warp
     Site.relief = info.relief
     Site.theme = info.theme or "mine"
+    Site.halls = info.halls
+    Site.reach = info.reach
     ORIGIN_Z = info.originZ
     exported.ORIGIN_Z = info.originZ
 end
