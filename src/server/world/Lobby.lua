@@ -114,7 +114,8 @@ local function buildLobby()
         local pad = newPart(name, Vector3.new(8, 4, 8), CFrame.new(x, 3, z), { Transparency = 1, CanCollide = false }, workspace)
         pad:SetAttribute("Generated", true)
         addPrompt(pad, "Viajar de carroça", 0.5, Config.CartPromptRadius)
-        marker(arrivalName, Vector3.new(4, 1, 4), CFrame.new(arrivalX, 2, arrivalZ), workspace):SetAttribute("Generated", true)
+        -- A chegada olha para a carroça, para o jogador já ver o prompt da volta
+        marker(arrivalName, Vector3.new(4, 1, 4), CFrame.lookAt(Vector3.new(arrivalX, 2, arrivalZ), Vector3.new(x, 2, z)), workspace):SetAttribute("Generated", true)
     end
     cart("CartMina", 20, 34, "CartArrivalMina", 20, 27)
     cart("CartVila", VX + 12, VZ + 36, "CartArrivalVila", VX + 12, VZ + 29)

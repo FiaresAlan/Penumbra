@@ -60,6 +60,13 @@ end
 function MapBuilder.Build(opts: { waitForProps: boolean? }?)
     MapBuilder.Clear()
 
+    -- O cenário (Terrain, floresta, vila) é gerado por botão e salvo no lugar: avisa se veio de outra versão do Config
+    local savedVersion = workspace:GetAttribute("WorldVersion")
+    if savedVersion ~= Config.WorldVersion then
+        warn(string.format("[Map] O mundo salvo é da versão %s, mas o Config pede a %d. Use \"Gerar mundo\" no plugin Ecos Tools e salve o lugar.",
+            tostring(savedVersion), Config.WorldVersion))
+    end
+
     local mapFolder = Instance.new("Folder")
     mapFolder.Name = "Map"
     Util.topLevel(mapFolder)

@@ -20,3 +20,6 @@ tools/assets/quaternius-village/**/*.png
 
 # Portador de texturas do MegaKit (13 MB, regenerado por tools/convert_megakit.py)
 tools/assets/quaternius-village/glb/_texturas.glb
+
+# Backups do lugar (binários grandes)
+tools/backups/

@@ -177,8 +177,29 @@ function ZoneLighting.Init(onZoneChange: ((boolean) -> ())?)
 
     -- Viagem de carroça: a tela escurece enquanto o servidor move o jogador e volta depois
     local travelFade = ReplicatedStorage:WaitForChild("EcosRemotes"):WaitForChild("TravelFade") :: RemoteEvent
-    travelFade.OnClientEvent:Connect(function()
+    travelFade.OnClientEvent:Connect(function(lookTarget: unknown)
         TweenService:Create(frame, TweenInfo.new(0.3), { BackgroundTransparency = 0 }):Play()
+        if typeof(lookTarget) == "Vector3" then
+            -- Depois do teleporte, vira a câmera para a carroça de chegada (o prompt só aparece com ela à vista)
+            task.delay(0.8, function()
+                local camera = workspace.CurrentCamera
+                local character = player.Character
+                local root = character and character:FindFirstChild("HumanoidRootPart")
+                if not camera or not root or not root:IsA("BasePart") then
+                    return
+                end
+                local flat = Vector3.new(lookTarget.X - root.Position.X, 0, lookTarget.Z - root.Position.Z)
+                if flat.Magnitude < 0.1 then
+                    return
+                end
+                local direction = flat.Unit
+                local previousType = camera.CameraType
+                camera.CameraType = Enum.CameraType.Scriptable
+                camera.CFrame = CFrame.lookAt(root.Position - direction * 14 + Vector3.new(0, 7, 0), root.Position + direction * 6)
+                task.wait()
+                camera.CameraType = previousType
+            end)
+        end
         task.delay(0.9, function()
             TweenService:Create(frame, TweenInfo.new(0.7), { BackgroundTransparency = 1 }):Play()
         end)

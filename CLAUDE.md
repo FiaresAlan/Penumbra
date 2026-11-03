@@ -45,6 +45,10 @@ controla o Rojo e o Studio; você nunca roda comandos de Rojo.
 - **Floresta (R5):** `NatureLibrary` copia o Synty Nature Pack (@Roblox, grátis, 200 peças, sem scripts) para `ServerStorage.EcosAssets.Nature`;
   `SurfaceDecor` espalha cerca de 1.200 árvores e 2.400 detalhes em `workspace.WorldBaked`, mais clareiras (ruína, acampamento) e a ponte.
   `WorldBake.BakeForest()` refaz só isso (rápido); `WorldBake.AuditAssets()` falha se houver script em WorldBaked ou EcosAssets.
+- **Vila e viagem (R6 e R9):** `Village.lua` e `VillageHouses.lua` (peças do Quaternius MegaKit via `VillagePieces`) gravam a vila em `WorldBaked.Village`
+  (`WorldBake.BakeVillage()`, botão "Gerar só a vila"). `TravelSystem` liga as carroças `CartMina` e `CartVila` (prompts criados em `Lobby.lua`, cooldown, vila só
+  depois de descoberta no perfil); `SneakSystem` também trata a corrida (Shift, só em Lobby). Cliente: `ui/GroupCallUI` (aviso da contagem de 30 s), `ui/Compass`
+  e `WorldLife` (fumaça, vaga-lumes, pássaros e nuvens, só na superfície). Backups do lugar em `tools/backups/` (fora do Git).
 - **Próxima fase:** `docs/PLANO-REFINO.md` (mundo vivo, floresta grande, assets Synty, inventário). Nele, o cenário
   (Terrain, árvores, casas) passa a ser gerado por botão no Studio e salvo no lugar; o `MapBuilder` continua criando
   só o que é de jogo (núcleos, elevadores, marcadores, Guardião) a cada partida.

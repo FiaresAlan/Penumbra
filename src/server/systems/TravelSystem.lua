@@ -49,12 +49,13 @@ local function flatDistance(a: Vector3, b: Vector3): number
 end
 
 -- Leva o jogador até o ponto de chegada, com a tela escurecendo no meio
-local function teleport(player: Player, arrival: BasePart)
+local function teleport(player: Player, arrival: BasePart, lookTarget: Vector3?)
     local character = player.Character
     if not character then
         return
     end
-    TravelFade:FireClient(player)
+    -- lookTarget: o cliente vira a câmera para a carroça de chegada, para o prompt da volta já aparecer
+    TravelFade:FireClient(player, lookTarget)
     task.wait(FADE_TIME)
     if player.Character ~= character or not character.Parent or PlayerState.Get(player) ~= Enums.PlayerLocation.Lobby then
         return
@@ -105,7 +106,8 @@ local function travel(player: Player, fromCart: BasePart?, destination: string)
 
     lastTravel[player] = now
     traveling[player] = true
-    teleport(player, arrival)
+    local arrivalCart = getPart("Cart" .. destination)
+    teleport(player, arrival, if arrivalCart then arrivalCart.Position else nil)
     traveling[player] = nil
     print(string.format("[Travel] %s foi de carroça para %s", player.Name, destination))
 end

@@ -135,6 +135,10 @@ addButton("Gerar só a floresta (rápido)", function()
     runWorldBake("BakeForest", "Gerando a floresta Synty...")
 end)
 
+addButton("Gerar só a vila (rápido)", function()
+    runWorldBake("BakeVillage", "Gerando a vila...")
+end)
+
 addButton("Auditar assets (scripts)", function()
     runWorldBake("AuditAssets", "Auditando scripts em WorldBaked e EcosAssets...")
 end)

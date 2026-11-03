@@ -2,11 +2,11 @@
 
 Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de `docs/PLANO-REFINO.md`.
 
-**Situação:** aguardando início.
+**Situação:** em andamento (iniciada 02/11 às 21:20). O Studio estava fechado ao começar: reaberto, conectado ao Rojo e maximizado.
 
 | # | Módulo | Estado | Commit | Testado | Não testado ou observação |
 |---|---|---|---|---|---|
-| 1 | N0 Preparar e fechar pontas | Pendente | | | |
+| 1 | N0 Preparar e fechar pontas | OK | ver Git | Auditar caminhos (28 ok, 0 falhas, 3 gancho), Auditar assets (sem scripts), WorldVersion=1, chegada de carroça com prompt à vista, backup .rbxl | **Teste com 2 clientes NÃO feito**: "Server and Clients" abriu só o servidor, sem clientes (tentei uma vez e encerrei) |
 | 2 | L1 Tema e componentes | Pendente | | | |
 | 3 | L2 HUD do lobby | Pendente | | | |
 | 4 | I1 Mochila e Baú | Pendente | | | |
@@ -32,11 +32,12 @@ Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de
 
 ## Decisões tomadas sem o Alan
 
-Nenhuma ainda.
+- N0: o hash do mapa continua o mesmo (as peças de carroça são de jogo e entram fora da assinatura).
+- Rojo foi iniciado por mim em segundo plano com reinício automático.
 
 ## Bloqueios e problemas
 
-Nenhum ainda.
+- Teste de 2 clientes (R9): não consegui abrir clientes pelo "Server and Clients". Fica para o Alan testar com a opção Clients and Servers.
 
 ## Para o Alan decidir de manhã
 

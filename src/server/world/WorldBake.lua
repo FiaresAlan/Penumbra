@@ -5,7 +5,6 @@ local RunService = game:GetService("RunService")
 local ServerStorage = game:GetService("ServerStorage")
 
 local MapBuilder = require(script.Parent:WaitForChild("MapBuilder") :: ModuleScript)
-local VillageHouses = require(script.Parent:WaitForChild("VillageHouses") :: ModuleScript)
 local SurfaceTerrain = require(script.Parent:WaitForChild("SurfaceTerrain") :: ModuleScript)
 local SurfaceDecor = require(script.Parent:WaitForChild("SurfaceDecor") :: ModuleScript)
 local Village = require(script.Parent:WaitForChild("Village") :: ModuleScript)
@@ -91,33 +90,6 @@ function WorldBake.AuditAssets(): (boolean, string)
         return false, string.format("Auditoria FALHOU: %d scripts em WorldBaked ou EcosAssets. Apague-os.", count)
     end
     return true, "Auditoria ok: nenhum script em WorldBaked nem em EcosAssets."
-end
-
--- Casa de teste feita com as peças do Quaternius, em um chão simples a oeste do mapa. Serve para ver as texturas e as medidas.
-function WorldBake.PreviewTestHouse(): (boolean, string)
-    if RunService:IsRunning() then
-        return false, "Pare o jogo antes de gerar a casa de teste."
-    end
-    for _, old in ipairs(workspace:GetChildren()) do
-        if old.Name == "CasaDeTeste" then
-            old:Destroy()
-        end
-    end
-    local folder = Instance.new("Folder")
-    folder.Name = "CasaDeTeste"
-    folder:SetAttribute("Generated", true)
-    local ground = Instance.new("Part")
-    ground.Name = "ChaoDeTeste"
-    ground.Anchored = true
-    ground.Size = Vector3.new(120, 1, 120)
-    ground.Material = Enum.Material.Grass
-    ground.Color = Color3.fromRGB(70, 110, 60)
-    ground.CFrame = CFrame.new(-600, -0.5, 0)
-    ground.Parent = folder
-    -- A frente fica virada para +Z (sul): a câmera do Studio, sem giro, olha para -Z
-    VillageHouses.BuildCentered(-600, 0, 0, 180, { w = 3, d = 4, chimney = true, shutters = true }, folder)
-    folder.Parent = workspace
-    return true, "Casa de teste criada em X -600. Use F com a casa selecionada para enquadrar."
 end
 
 -- Remove a prévia e devolve quantos itens saíram do Workspace.
