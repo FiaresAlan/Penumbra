@@ -33,7 +33,7 @@ Atualizado pelo Sonnet a cada módulo. A fila e as regras estão na seção 4 de
 
 ## Pesquisa de imprevisibilidade
 
-Feita (seção 10B do plano): 7 melhorias com fonte, pilar, risco e teste, todas desligadas em `Config.Features`. Nenhuma implementada ainda.
+Feita (seção 10B do plano): 7 melhorias com fonte, pilar, risco e teste, todas desligadas em `Config.Features`. Segunda rodada (seção 10B-2, a pedido do Alan): mais 6 ideias (P8 a P13) com fontes de HUSH e 99 Nights; "Drifters" não achei em nenhuma busca. Implementada só a P3 (Núcleo denso).
 
 ## Decisões tomadas sem o Alan
 
