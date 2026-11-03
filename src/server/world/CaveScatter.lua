@@ -12,7 +12,7 @@ local CaveLibrary = require(script.Parent:WaitForChild("CaveLibrary") :: ModuleS
 
 local CaveScatter = {}
 
-type Rule = { words: { string }, chance: number, height: { number }, light: boolean?, hang: boolean? }
+type Rule = { words: { string }, chance: number, height: { number }, light: boolean?, hang: boolean?, solid: boolean? }
 
 -- chance: probabilidade por célula; height: altura-alvo em studs (min, max)
 local MINE_RULES: { [string]: { Rule } } = {
@@ -82,8 +82,8 @@ local GROTTO_RULES: { [string]: { Rule } } = {
 -- Entram em todas as zonas por cima das regras de cada tema (o Terrain já tem as formações grandes).
 local TD3_NATURAL: { Rule } = {
     { words = { "TD3_Stalagtite" }, chance = 0.4, height = { 4, 9 }, hang = true },
-    { words = { "TD3_Stalagmite" }, chance = 0.22, height = { 3, 7 } },
-    { words = { "TD3_Boulder", "TD3_CaveRock", "TD3_Stone", "TD3_RockPile", "TD3_PitRock" }, chance = 0.3, height = { 2.5, 6 } },
+    { words = { "TD3_Stalagmite" }, chance = 0.22, height = { 3, 7 }, solid = true },
+    { words = { "TD3_Boulder", "TD3_CaveRock", "TD3_Stone", "TD3_RockPile", "TD3_PitRock" }, chance = 0.3, height = { 2.5, 6 }, solid = true },
     { words = { "TD3_CaveRubble" }, chance = 0.2, height = { 1.5, 3.5 } },
 }
 local TD3_DUNGEON: { Rule } = {
@@ -183,6 +183,12 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
             end
             clone.CFrame = CFrame.new(x, ground.Position.Y + size.Y / 2 - 0.15, z) * CFrame.Angles(0, rng:NextNumber(0, math.pi * 2), 0)
         end
+        if rule.solid and Config.CaveRockCollision then
+            -- rochas e estalagmites têm corpo: colisão em casco (Hull), e entram no mapa de caminhos do Guardião
+            clone.CanCollide = true
+            clone.CanQuery = true
+            clone.CollisionFidelity = Enum.CollisionFidelity.Hull
+        end
         if string.sub(template.Name, 1, 4) == "TD3_" then
             -- as peças do 3TD vêm claras: escurece conforme a zona (A quente, B arroxeada, C azulada)
             local zoneTint = ({ A = Color3.fromRGB(150, 130, 110), B = Color3.fromRGB(120, 110, 150), C = Color3.fromRGB(110, 140, 150) })[Layout.zoneOf(cell[1])]
@@ -214,7 +220,7 @@ function CaveScatter.Build(grid: Layout.Grid, rng: Random)
                     local extra = if Layout.Site.theme == "dungeon" then TD3_DUNGEON else TD3_NATURAL
                     for _, rule in ipairs(extra) do
                         if rng:NextNumber() < rule.chance * density then
-                            place(rule, cell, false)
+                            place(rule, cell, rule.solid == true)
                         end
                     end
                     if Layout.zoneOf(c) == "C" and Layout.Site.theme ~= "dungeon" and rng:NextNumber() < TD3_FERN.chance * density then

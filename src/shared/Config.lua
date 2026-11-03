@@ -102,6 +102,7 @@ Config.CaveSiteInfo = {
 Config.CaveExtras = true -- C2/C4/C5: trilhos, lama, sal, arcos, símbolos, poças e marcas de garra (desligue se atrapalhar)
 -- O Guardião escurece as luzes de enfeite por onde passa (só com Features.GuardianShadow)
 Config.GuardianShadow = { Radius = 22, Dim = 0.15 }
+Config.CaveRockCollision = true -- rochas e estalagmites do 3TD têm colisão (nas bordas dos corredores); rode Auditar caminhos
 Config.RumorChance = 0.4
 Config.VillageRumors = {
     "dizem que o Guardião ouve passos de longe, mas quase não ouve quem anda devagar.",
