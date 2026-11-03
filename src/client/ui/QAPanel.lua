@@ -66,6 +66,10 @@ function QAPanel.Init()
                 require((script.Parent :: Instance):WaitForChild("UISample") :: ModuleScript).Toggle()
                 return
             end
+            if definition.id == "EndPreview" then
+                require((script.Parent :: Instance):WaitForChild("EndScreen") :: ModuleScript).Preview()
+                return
+            end
             if definition.id == "Photo" or definition.id == "PhotoLit" then
                 require((script.Parent :: Instance):WaitForChild("Photo") :: ModuleScript).Start(definition.id == "PhotoLit")
                 return

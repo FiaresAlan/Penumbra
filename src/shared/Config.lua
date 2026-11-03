@@ -330,6 +330,7 @@ Config.QAButtons = {
     { id = "Photo", label = "Foto" },
     { id = "PhotoLit", label = "Foto + luz" },
     { id = "ShuffleItems", label = "Embaralhar itens" },
+    { id = "EndPreview", label = "Tela de fim" },
 }
 
 return Config
