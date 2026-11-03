@@ -261,6 +261,16 @@ Config.PhotoSpots = {
     { name = "Mercado Negro", x = -1092, z = 72, tx = -1120, tz = 60, eye = 3, ty = 3 },
 }
 -- C1: forma da caverna em Terrain. Parede com reentrâncias (no máximo 4 studs, para o corredor de 16 nunca fechar) e relevo do chão.
+-- V1: frases do poço e recados do quadro da vila (cosméticos)
+Config.VillageWishes = {
+    "Que o elevador suba sempre.", "Quero um núcleo azul bem grande.", "Que ninguém fique para trás.",
+    "Que o Guardião durma hoje.", "Moedas para a oficina!", "Que a lanterna não apague.",
+}
+Config.VillageNotices = {
+    "Procura-se: alguém que traga uma relíquia inteira.", "O capataz pede silêncio na zona B.",
+    "Perdi meu chapéu na mina. Recompensa: um sorriso.", "Dica: andar devagar (Ctrl) acalma a caverna.",
+    "A taverna abre quando o sino toca.", "Ninguém desce sozinho no escuro. Chame o grupo.",
+}
 Config.CaveWarp = 4
 Config.CaveMaxLights = 60
 Config.CaveScatterDensity = 1 -- C2: multiplica a chance das peças de zona (0 desliga)

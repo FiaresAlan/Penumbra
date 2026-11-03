@@ -96,6 +96,8 @@ local function playAnimations(humanoid: Humanoid)
     end)
 end
 
+local say: (Npc, Random) -> ()
+
 local function spawnNpc(name: string, role: string, position: Vector3, facing: number, wander: number, dark: boolean, rng: Random, folder: Folder)
     local ok, model = pcall(function()
         return Players:CreateHumanoidModelFromDescription(description(rng, dark), Enum.HumanoidRigType.R15)
@@ -117,7 +119,19 @@ local function spawnNpc(name: string, role: string, position: Vector3, facing: n
     model.Parent = folder
     root:SetNetworkOwner(nil)
     playAnimations(humanoid)
-    table.insert(npcs, { model = model, humanoid = humanoid, bubble = addBubble(model), role = role, home = position, wander = wander })
+    local entry: Npc = { model = model, humanoid = humanoid, bubble = addBubble(model), role = role, home = position, wander = wander }
+    table.insert(npcs, entry)
+    -- V1: conversar com o morador. Só faz o balão de fala aparecer na hora (sem custo, sem efeito de jogo)
+    local talk = Instance.new("ProximityPrompt")
+    talk.ActionText = "Conversar"
+    talk.ObjectText = name
+    talk.HoldDuration = 0
+    talk.MaxActivationDistance = 8
+    talk.RequiresLineOfSight = false
+    talk.Parent = root
+    talk.Triggered:Connect(function()
+        say(entry, rng)
+    end)
 end
 
 local function nearPlayer(position: Vector3, range: number): boolean
@@ -130,7 +144,7 @@ local function nearPlayer(position: Vector3, range: number): boolean
     return false
 end
 
-local function say(npc: Npc, rng: Random)
+say = function(npc: Npc, rng: Random)
     local lines = Config.NpcLines[npc.role]
     if not lines or #lines == 0 then
         return
